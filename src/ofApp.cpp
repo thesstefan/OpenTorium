@@ -1,71 +1,45 @@
 #include "ofApp.h"
 
-//--------------------------------------------------------------
-void ofApp::setup(){
+void ofApp::setup() {
+    ofSetFrameRate(60);
 
+    int width = ofGetWidth();
+    int height = ofGetHeight();
+
+    fbo.allocate(width, height, GL_RGB32F_ARB);
+
+    fbo.begin();
+    ofBackground(0, 0, 0);
+    fbo.end();
+
+    emitter.setup();
+
+    history = 0.995;
+
+    timePassed = ofGetElapsedTimef();
 }
 
-//--------------------------------------------------------------
-void ofApp::update(){
+void ofApp::update() {
+    float time = ofGetElapsedTimef();
+    float d_time = ofClamp(time - timePassed, 0, 0.1);
 
+    timePassed = time;
+
+    if (!particle.isAlive())
+        particle.setup(emitter);
+
+    particle.update(d_time);
 }
 
-//--------------------------------------------------------------
-void ofApp::draw(){
+void ofApp::draw() {
+    ofBackground(0, 0, 0);
 
-}
+    fbo.begin();
 
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key){
+    particle.draw();
 
-}
+    fbo.end();
 
-//--------------------------------------------------------------
-void ofApp::keyReleased(int key){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
-
+    ofSetColor(255, 255, 255);
+    fbo.draw(0, 0);
 }
