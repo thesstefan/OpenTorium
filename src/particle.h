@@ -2,8 +2,6 @@
 
 #include "ofMain.h"
 
-#include "emitter.h"
-
 class Particle {
     private:
         ofPoint position;
@@ -15,19 +13,10 @@ class Particle {
         bool live;
 
     public:
-        Particle();
+        Particle(const ofPoint& position, const ofPoint& velocity, float lifeTime);
 
-        void setup(const Emitter &emitter);
-        void update(float d_time);
-        void draw();
-
-        /*
-        ofPoint getPosition() const;
-        void setPosition(const ofPoint& position);
-
-        ofPoint getVelocity() const;
-        void setVelocity(const ofPoint& velocity);
-        */
+        void update(float deltaTime);
+        void draw() const;
 
         bool isAlive() const;
 };
