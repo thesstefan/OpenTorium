@@ -10,7 +10,6 @@ class ofApp : public ofBaseApp {
 
     ofFbo fbo;
 
-    float history;
     float timePassed;
 
     public:

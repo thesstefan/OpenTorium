@@ -14,8 +14,6 @@ void ofApp::setup() {
 
     emitter.setup();
 
-    history = 0.995;
-
     timePassed = ofGetElapsedTimef();
 }
 
