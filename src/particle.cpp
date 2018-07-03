@@ -1,41 +1,27 @@
 #include "particle.h"
 
-Particle::Particle() {
-    live = false;
-}
+Particle::Particle(const ofPoint& position, const ofPoint& velocity, int lifeTime) {
+    this->position = position;
+    this->velocity = velocity;
 
-// Get a random point in a square by returning relative coordinates to its
-// center.
-ofPoint randomPointInSquare(const int squareSize) {
-    int x = ofRandom(-(squareSize / 2), squareSize / 2);
-    int y = ofRandom(-(squareSize / 2), squareSize / 2);
-
-    return ofPoint(x, y);
-}
-
-void Particle::setup(const Emitter& emitter) {
-    position = emitter.getCenter() + randomPointInSquare(emitter.getSize());
-
-    velocity = emitter.getDirection() * ofRandom(emitter.getMaxVelocity());
-
+    this->lifeTime = lifeTime;
     time = 0;
-    lifeTime = emitter.getLifeTime();
 
     live = true;
 }
 
-void Particle::update(float d_time) {
+void Particle::update(float deltaTime) {
     if (live) {
         position += velocity * time;
 
-        time += d_time;
+        time += deltaTime;
 
         if (time >= lifeTime)
             live = false;
     }
 }
 
-void Particle::draw() {
+void Particle::draw() const {
     if (live) {
         float size = 2;
 
