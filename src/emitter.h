@@ -2,6 +2,8 @@
 
 #include "ofMain.h"
 
+#include "particle.h"
+
 class Emitter {
     private:
         ofPoint center;
@@ -13,13 +15,7 @@ class Emitter {
         float size;
 
     public:
-        void setup();
+        Emitter();
 
-        ofPoint getCenter() const;
-        ofPoint getDirection() const;
-
-        float getMaxVelocity() const;
-        float getLifeTime() const;
-
-        float getSize() const;
+        Particle createParticle() const;
 };

@@ -1,9 +1,8 @@
 #include "emitter.h"
 
-void Emitter::setup() {
+Emitter::Emitter() {
     center = ofPoint(ofGetWidth() / 2, ofGetHeight() / 2);
 
-    // Right
     direction = ofPoint(1, 0, 0);
 
     maxVelocity = 100.0;
@@ -12,22 +11,20 @@ void Emitter::setup() {
     size = 200;
 }
 
-ofPoint Emitter::getCenter() const {
-    return center;
+// Get a random point in a square by returning relative coordinates to its
+// center.
+ofPoint randomPointInSquare(const int squareSize) {
+    int x = ofRandom(-(squareSize / 2), squareSize / 2);
+    int y = ofRandom(-(squareSize / 2), squareSize / 2);
+
+    return ofPoint(x, y);
 }
 
-ofPoint Emitter::getDirection() const {
-    return direction;
-}
+Particle Emitter::createParticle() const {
+    ofPoint position = center + randomPointInSquare(size);
+    ofPoint velocity = direction * ofRandom(1, maxVelocity);
 
-float Emitter::getMaxVelocity() const {
-    return maxVelocity;
-}
+    Particle particle(position, velocity, lifeTime);
 
-float Emitter::getLifeTime() const {
-    return lifeTime;
-}
-
-float Emitter::getSize() const {
-    return size;
+    return particle;
 }
