@@ -2,18 +2,18 @@
 
 #include "ofMain.h"
 
-#include "particle.h"
+#include "emitter.h"
 
 class ofApp : public ofBaseApp {
     Emitter emitter;
-    Particle particle;
+    std::vector<Particle> particles;
 
     ofFbo fbo;
 
     float timePassed;
 
     public:
-	void setup();
+        void setup();
         void update();
         void draw();
 };

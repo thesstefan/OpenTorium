@@ -12,21 +12,22 @@ void ofApp::setup() {
     ofBackground(0, 0, 0);
     fbo.end();
 
-    emitter.setup();
-
     timePassed = ofGetElapsedTimef();
 }
 
 void ofApp::update() {
     float time = ofGetElapsedTimef();
-    float d_time = ofClamp(time - timePassed, 0, 0.1);
+    float deltaTime = ofClamp(time - timePassed, 0, 0.1);
 
     timePassed = time;
 
-    if (!particle.isAlive())
-        particle.setup(emitter);
+    if (particles.size() == 0)
+        particles.push_back(emitter.createParticle());
 
-    particle.update(d_time);
+    if (!particles[0].isAlive())
+        particles[0] = emitter.createParticle();
+
+    particles[0].update(deltaTime);
 }
 
 void ofApp::draw() {
@@ -34,7 +35,7 @@ void ofApp::draw() {
 
     fbo.begin();
 
-    particle.draw();
+    particles[0].draw();
 
     fbo.end();
 
