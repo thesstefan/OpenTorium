@@ -6,9 +6,12 @@ Emitter::Emitter() {
     direction = ofPoint(1, 0, 0);
 
     maxVelocity = 100.0;
-    lifeTime = 1.0;
+    lifeTime = 1.00;
 
     size = 200;
+
+    spawnCount = 0;
+    spawnRate = 100;
 }
 
 // Get a random point in a square by returning relative coordinates to its
@@ -27,4 +30,20 @@ Particle Emitter::createParticle() const {
     Particle particle(position, velocity, lifeTime);
 
     return particle;
+}
+
+void Emitter::update(float deltaTime, std::vector<Particle>& particles) {
+    spawnCount = deltaTime * spawnRate;
+
+    if (spawnCount >= 1) {
+        int spawnNumber = int(spawnCount);
+
+        spawnCount -= spawnNumber;
+
+        for (int index = 0; index < spawnNumber; index++) {
+            Particle particle = createParticle();
+
+            particles.push_back(particle);
+        }
+    }
 }

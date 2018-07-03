@@ -14,8 +14,13 @@ class Emitter {
 
         float size;
 
+        float spawnRate;
+        float spawnCount;
+
     public:
         Emitter();
 
         Particle createParticle() const;
+
+        void update(float deltaTime, std::vector<Particle>& particles);
 };
