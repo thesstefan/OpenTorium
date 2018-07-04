@@ -14,26 +14,23 @@ void ofApp::update() {
 
     timePassed = time;
 
-    if (particles.size() == 0)
-        particles.push_back(emitter.createParticle());
-
-    int index = 0;
-    while (index < particles.size()) {
-        if (particles[index].isAlive() == false) 
-            particles.erase(particles.begin() + index);
+    auto it = particles.begin();
+    while (it != particles.end()) {
+        if (it->isAlive() == false) 
+            it = particles.erase(it);
         else
-            index++;
+            ++it;
     }
     
     emitter.update(deltaTime, particles);
 
-    for (int index = 0; index < particles.size(); index++)
-        particles[index].update(deltaTime);
+    for (auto it = particles.begin(); it != particles.end(); it++)
+        it->update(deltaTime);
 }
 
 void ofApp::draw() {
     ofBackground(0, 0, 0);
 
-    for (int index = 0; index < particles.size(); index++)
-        particles[index].draw();
+    for (auto it = particles.begin(); it != particles.end(); it++)
+        it->draw();
 }

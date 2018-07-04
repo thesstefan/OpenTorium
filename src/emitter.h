@@ -22,5 +22,5 @@ class Emitter {
 
         Particle createParticle() const;
 
-        void update(float deltaTime, std::vector<Particle>& particles);
+        void update(float deltaTime, std::list<Particle>& particles);
 };

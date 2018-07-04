@@ -32,7 +32,7 @@ Particle Emitter::createParticle() const {
     return particle;
 }
 
-void Emitter::update(float deltaTime, std::vector<Particle>& particles) {
+void Emitter::update(float deltaTime, std::list<Particle>& particles) {
     spawnCount = deltaTime * spawnRate;
 
     if (spawnCount >= 1) {

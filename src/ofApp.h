@@ -6,7 +6,7 @@
 
 class ofApp : public ofBaseApp {
     Emitter emitter;
-    std::vector<Particle> particles;
+    std::list<Particle> particles;
 
     float timePassed;
 
