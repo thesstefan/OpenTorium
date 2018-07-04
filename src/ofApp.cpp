@@ -16,21 +16,23 @@ void ofApp::update() {
 
     auto it = particles.begin();
     while (it != particles.end()) {
-        if (it->isAlive() == false) 
+        if ((*it)->isAlive() == false) {
+            delete *it;
+
             it = particles.erase(it);
-        else
+        } else
             ++it;
     }
     
     emitter.update(deltaTime, particles);
 
     for (auto it = particles.begin(); it != particles.end(); it++)
-        it->update(deltaTime);
+        (*it)->update(deltaTime);
 }
 
 void ofApp::draw() {
     ofBackground(0, 0, 0);
 
     for (auto it = particles.begin(); it != particles.end(); it++)
-        it->draw();
+        (*it)->draw();
 }

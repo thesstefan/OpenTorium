@@ -23,16 +23,16 @@ ofPoint randomPointInSquare(const int squareSize) {
     return ofPoint(x, y);
 }
 
-Particle Emitter::createParticle() const {
+Particle *Emitter::createParticle() const {
     ofPoint position = center + randomPointInSquare(size);
     ofPoint velocity = direction * ofRandom(1, maxVelocity);
 
-    Particle particle(position, velocity, lifeTime);
+    Particle *particle = new Particle(position, velocity, lifeTime);
 
     return particle;
 }
 
-void Emitter::update(float deltaTime, std::list<Particle>& particles) {
+void Emitter::update(float deltaTime, std::list<Particle *>& particles) {
     spawnCount = deltaTime * spawnRate;
 
     if (spawnCount >= 1) {
@@ -40,10 +40,7 @@ void Emitter::update(float deltaTime, std::list<Particle>& particles) {
 
         spawnCount -= spawnNumber;
 
-        for (int index = 0; index < spawnNumber; index++) {
-            Particle particle = createParticle();
-
-            particles.push_back(particle);
-        }
+        for (int index = 0; index < spawnNumber; index++)
+            particles.push_back(createParticle());
     }
 }
