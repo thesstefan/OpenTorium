@@ -36,7 +36,7 @@ void Emitter::update(float deltaTime, std::list<Particle *>& particles) {
     spawnCount = deltaTime * spawnRate;
 
     if (spawnCount >= 1) {
-        int spawnNumber = int(spawnCount);
+        int spawnNumber = static_cast<int>(spawnCount);
 
         spawnCount -= spawnNumber;
 
