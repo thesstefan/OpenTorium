@@ -8,8 +8,6 @@ class ofApp : public ofBaseApp {
     Emitter emitter;
     std::vector<Particle> particles;
 
-    ofFbo fbo;
-
     float timePassed;
 
     public:

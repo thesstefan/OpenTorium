@@ -3,14 +3,7 @@
 void ofApp::setup() {
     ofSetFrameRate(60);
 
-    int width = ofGetWidth();
-    int height = ofGetHeight();
-
-    fbo.allocate(width, height, GL_RGB32F_ARB);
-
-    fbo.begin();
     ofBackground(0, 0, 0);
-    fbo.end();
 
     timePassed = ofGetElapsedTimef();
 }
@@ -41,13 +34,6 @@ void ofApp::update() {
 void ofApp::draw() {
     ofBackground(0, 0, 0);
 
-    fbo.begin();
-
     for (int index = 0; index < particles.size(); index++)
         particles[index].draw();
-
-    fbo.end();
-
-    ofSetColor(255, 255, 255);
-    fbo.draw(0, 0);
 }
