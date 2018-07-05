@@ -1,7 +1,7 @@
 /**
  * @file emitter.h
  *
- * This module provides the interface of Emitter.
+ * @brief This module provides the interface of Emitter.
  */
 
 #pragma once
