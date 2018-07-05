@@ -20,7 +20,7 @@ class Emitter {
     public:
         Emitter();
 
-        Particle *createParticle() const;
+        std::unique_ptr<Particle> createParticle() const;
 
-        void update(float deltaTime, std::list<Particle *>& particles);
+        void update(float deltaTime, std::list<std::unique_ptr<Particle>>& particles);
 };

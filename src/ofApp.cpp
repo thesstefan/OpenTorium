@@ -16,11 +16,9 @@ void ofApp::update() {
 
     auto it = particles.begin();
     while (it != particles.end()) {
-        if ((*it)->isAlive() == false) {
-            delete *it;
-
+        if ((*it)->isAlive() == false)
             it = particles.erase(it);
-        } else
+        else
             ++it;
     }
     

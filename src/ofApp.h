@@ -6,7 +6,7 @@
 
 class ofApp : public ofBaseApp {
     Emitter emitter;
-    std::list<Particle *> particles;
+    std::list<std::unique_ptr<Particle>> particles;
 
     float timePassed;
 
