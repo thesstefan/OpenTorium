@@ -1,5 +1,4 @@
 #include "particle.h"
-#include <iostream>
 
 Particle::Particle(const ofPoint& position, const ofPoint& velocity, float lifeTime) {
     this->position = position;
