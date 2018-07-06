@@ -12,7 +12,7 @@ Particle::Particle(const ofPoint& position, const ofPoint& velocity, float lifeT
 
 void Particle::update(float deltaTime) {
     if (live) {
-        position += velocity * time;
+        position += velocity * deltaTime;
 
         time += deltaTime;
 
