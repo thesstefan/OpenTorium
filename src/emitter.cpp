@@ -14,18 +14,23 @@ Emitter::Emitter(const ofPolyline& emitterShape) {
     spawnRate = 100;
 }
 
-ofPoint randomPointInRectangle(const int width, const int height) {
-    int x = ofRandom(-(width / 2), width / 2);
-    int y = ofRandom(-(height / 2), height / 2);
+ofPoint randomPointInShape(const ofPolyline& shape, const ofRectangle& boundingBox) {
+    ofPoint position;
 
-    return ofPoint(x, y);
+    while (shape.inside(position) == false) {
+        int xRandInBoundingBox = ofRandom(-(boundingBox.getWidth() / 2), boundingBox.getWidth() / 2);
+        int yRandInBoundingBox = ofRandom(-(boundingBox.getHeight() / 2), boundingBox.getHeight() / 2);
+
+        ofPoint randInBoundingBox(xRandInBoundingBox, yRandInBoundingBox);
+
+        position = boundingBox.getCenter() + randInBoundingBox;
+    }
+
+    return position;
 }
 
 std::unique_ptr<Particle> Emitter::createParticle() const {
-    ofPoint position;
-
-    while (shape.inside(position) == false)
-        position = boundingBox.getCenter() + randomPointInRectangle(boundingBox.getWidth(), boundingBox.getHeight());
+    ofPoint position = randomPointInShape(shape, boundingBox);
 
     ofPoint velocity = direction * ofRandom(1, maxVelocity);
 
