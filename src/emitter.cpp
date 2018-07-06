@@ -1,10 +1,6 @@
 #include "emitter.h"
 
-Emitter::Emitter(const ofPolyline& emitterShape) {
-    this->shape = emitterShape;
-
-    boundingBox = shape.getBoundingBox();
-
+Emitter::Emitter(const ofPolyline& shape) : shape(shape), boundingBox(shape.getBoundingBox()) {
     direction = ofPoint(1, 0, 0);
 
     maxVelocity = 100.0;

@@ -26,10 +26,10 @@
 class Emitter {
     private:
         /** @brief The shape of the Emitter. **/
-        ofPolyline shape;
+        const ofPolyline shape;
 
         /** @brief The bounding box of the @b shape of the Emitter. **/
-        ofRectangle boundingBox;
+        const ofRectangle boundingBox;
 
         /** @brief The direction of the Particle motion. **/
         ofPoint direction;
@@ -53,7 +53,7 @@ class Emitter {
 
     public:
         /** @brief Constructs the Emitter. */
-        Emitter(const ofPolyline& emitterShape);
+        Emitter(const ofPolyline& shape);
 
         /** @brief Creates a Particle.
          *
