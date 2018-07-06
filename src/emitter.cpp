@@ -1,30 +1,32 @@
 #include "emitter.h"
 
-Emitter::Emitter() {
-    center = ofPoint(ofGetWidth() / 2, ofGetHeight() / 2);
+Emitter::Emitter(const ofPolyline& emitterShape) {
+    this->shape = emitterShape;
+
+    boundingBox = shape.getBoundingBox();
 
     direction = ofPoint(1, 0, 0);
 
     maxVelocity = 100.0;
     lifeTime = 1.00;
 
-    size = 200;
-
     spawnCount = 0;
     spawnRate = 100;
 }
 
-// Get a random point in a square by returning relative coordinates to its
-// center.
-ofPoint randomPointInSquare(const int squareSize) {
-    int x = ofRandom(-(squareSize / 2), squareSize / 2);
-    int y = ofRandom(-(squareSize / 2), squareSize / 2);
+ofPoint randomPointInRectangle(const int width, const int height) {
+    int x = ofRandom(-(width / 2), width / 2);
+    int y = ofRandom(-(height / 2), height / 2);
 
     return ofPoint(x, y);
 }
 
 std::unique_ptr<Particle> Emitter::createParticle() const {
-    ofPoint position = center + randomPointInSquare(size);
+    ofPoint position;
+
+    while (shape.inside(position) == false)
+        position = boundingBox.getCenter() + randomPointInRectangle(boundingBox.getWidth(), boundingBox.getHeight());
+
     ofPoint velocity = direction * ofRandom(1, maxVelocity);
 
     std::unique_ptr<Particle> particle(new Particle(position, velocity, lifeTime));

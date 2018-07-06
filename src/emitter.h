@@ -25,8 +25,12 @@
  */
 class Emitter {
     private:
-        /** @brief The center of the square-shaped Emitter. **/
-        ofPoint center;
+        /** @brief The shape of the Emitter. **/
+        ofPolyline shape;
+
+        /** @brief The bounding box of the @b shape of the Emitter. **/
+        ofRectangle boundingBox;
+
         /** @brief The direction of the Particle motion. **/
         ofPoint direction;
 
@@ -49,7 +53,7 @@ class Emitter {
 
     public:
         /** @brief Constructs the Emitter. */
-        Emitter();
+        Emitter(const ofPolyline& emitterShape);
 
         /** @brief Creates a Particle.
          *
