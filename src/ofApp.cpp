@@ -6,6 +6,19 @@ void ofApp::setup() {
     ofBackground(0, 0, 0);
 
     timePassed = ofGetElapsedTimef();
+
+    ofPoint center(ofGetWidth() / 2, ofGetHeight() / 2);
+
+    shape.addVertex(center);
+
+    shape.addVertex(center + ofPoint(100, 0));
+    shape.addVertex(center + ofPoint(100, 50));
+    shape.addVertex(center + ofPoint(200, 200));
+    shape.addVertex(center + ofPoint(0, 50));
+
+    shape.addVertex(center);
+
+    emitter = std::unique_ptr<Emitter>(new Emitter(shape));
 }
 
 void ofApp::update() {
@@ -22,7 +35,7 @@ void ofApp::update() {
             ++it;
     }
     
-    emitter.update(deltaTime, particles);
+    emitter->update(deltaTime, particles);
 
     for (auto it = particles.begin(); it != particles.end(); it++)
         (*it)->update(deltaTime);
@@ -30,6 +43,9 @@ void ofApp::update() {
 
 void ofApp::draw() {
     ofBackground(0, 0, 0);
+
+    ofSetColor(0, 0, 255);
+    shape.draw();
 
     for (auto it = particles.begin(); it != particles.end(); it++)
         (*it)->draw();
