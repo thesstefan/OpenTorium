@@ -27,8 +27,11 @@ CircleParticle::CircleParticle(int size, const ofColor& color, const ofPoint& po
 
 void CircleParticle::draw() const {
     if (live) {
-        ofSetColor(color);
+        ofPushStyle();
 
+        ofSetColor(color);
         ofDrawCircle(position, size);
+
+        ofPopStyle();
     }
 }
