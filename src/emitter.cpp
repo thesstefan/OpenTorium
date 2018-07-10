@@ -1,6 +1,6 @@
 #include "emitter.h"
 
-#include "circle_particle.h"
+#include "particle.h"
 
 Emitter::Emitter() {
     center = ofPoint(ofGetWidth() / 2, ofGetHeight() / 2);
