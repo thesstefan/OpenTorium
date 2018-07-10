@@ -55,7 +55,7 @@ class Emitter {
          *
          * @return std::unique_ptr to the created Particle. 
          */
-        std::unique_ptr<Particle> createParticle() const;
+        std::unique_ptr<Particle> createParticle(const enum ParticleType& type) const;
 
         /**
          * @brief Updates the Emitter.
