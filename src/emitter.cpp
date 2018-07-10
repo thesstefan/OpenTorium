@@ -1,6 +1,8 @@
 #include "emitter.h"
+#include "particle.h"
 
 Emitter::Emitter(const ofPolyline& shape) : shape(shape), boundingBox(shape.getBoundingBox()) {
+
     direction = ofPoint(1, 0, 0);
 
     maxVelocity = 100.0;
@@ -25,12 +27,17 @@ ofPoint randomPointInShape(const ofPolyline& shape, const ofRectangle& boundingB
     return position;
 }
 
-std::unique_ptr<Particle> Emitter::createParticle() const {
-    ofPoint position = randomPointInShape(shape, boundingBox);
+std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType& type) const {
+    std::unique_ptr<Particle> particle;
 
+    ofPoint position = randomPointInShape(shape, boundingBox);
     ofPoint velocity = direction * ofRandom(1, maxVelocity);
 
-    std::unique_ptr<Particle> particle(new Particle(position, velocity, lifeTime));
+    int size = ofRandom(5, 10);
+    ofColor color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
+
+    if (type == ParticleType::Circle)
+        particle = std::unique_ptr<Particle>(new CircleParticle(size, color, position, velocity, lifeTime));
 
     return particle;
 }
@@ -44,6 +51,6 @@ void Emitter::update(float deltaTime, std::list<std::unique_ptr<Particle>>& part
         spawnCount -= spawnNumber;
 
         for (int index = 0; index < spawnNumber; index++)
-            particles.push_back(createParticle());
+            particles.push_back(createParticle(ParticleType::Circle));
     }
 }

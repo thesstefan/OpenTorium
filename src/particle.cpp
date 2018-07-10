@@ -1,13 +1,10 @@
 #include "particle.h"
 
-Particle::Particle(const ofPoint& position, const ofPoint& velocity, float lifeTime) {
-    this->position = position;
-    this->velocity = velocity;
+Particle::Particle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, float lifeTime)
+    : size(size), color(color), position(position), velocity(velocity), lifeTime(lifeTime) {
+        time = 0;
 
-    this->lifeTime = lifeTime;
-    time = 0;
-
-    live = true;
+        live = true;
 }
 
 void Particle::update(float deltaTime) {
@@ -21,18 +18,20 @@ void Particle::update(float deltaTime) {
     }
 }
 
-void Particle::draw() const {
-    if (live) {
-        float size = 2;
-
-        ofColor color = ofColor::red;
-
-        ofSetColor(color);
-
-        ofDrawCircle(position, size);
-    }
-}
-
 bool Particle::isAlive() const {
     return live;
+}
+
+CircleParticle::CircleParticle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, int lifeTime)
+    : Particle(size, color, position, velocity, lifeTime) {}
+
+void CircleParticle::draw() const {
+    if (live) {
+        ofPushStyle();
+
+        ofSetColor(color);
+        ofDrawCircle(position, size);
+
+        ofPopStyle();
+    }
 }
