@@ -6,6 +6,8 @@ void ofApp::setup() {
     ofBackground(0, 0, 0);
 
     timePassed = ofGetElapsedTimef();
+
+    emitter = std::unique_ptr<Emitter>(new Emitter());
 }
 
 void ofApp::update() {
@@ -22,7 +24,7 @@ void ofApp::update() {
             ++it;
     }
     
-    emitter.update(deltaTime, particles);
+    emitter->update(deltaTime, particles);
 
     for (auto it = particles.begin(); it != particles.end(); it++)
         (*it)->update(deltaTime);
