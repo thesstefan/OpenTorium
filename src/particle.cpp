@@ -1,13 +1,10 @@
 #include "particle.h"
 
-Particle::Particle(const ofPoint& position, const ofPoint& velocity, float lifeTime) {
-    this->position = position;
-    this->velocity = velocity;
+Particle::Particle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, float lifeTime)
+    : size(size), color(color), position(position), velocity(velocity), lifeTime(lifeTime) {
+        time = 0;
 
-    this->lifeTime = lifeTime;
-    time = 0;
-
-    live = true;
+        live = true;
 }
 
 void Particle::update(float deltaTime) {
@@ -21,18 +18,52 @@ void Particle::update(float deltaTime) {
     }
 }
 
-void Particle::draw() const {
-    if (live) {
-        float size = 2;
+bool Particle::isAlive() const {
+    return live;
+}
 
-        ofColor color = ofColor::red;
+CircleParticle::CircleParticle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, int lifeTime)
+    : Particle(size, color, position, velocity, lifeTime) {}
+
+void CircleParticle::draw() const {
+    if (live) {
+        ofPushStyle();
 
         ofSetColor(color);
-
         ofDrawCircle(position, size);
+
+        ofPopStyle();
     }
 }
 
-bool Particle::isAlive() const {
-    return live;
+ofPoint Particle::getPosition() const {
+    return position;
+}
+
+void Particle::setPosition(const ofPoint& position) {
+    this->position = position;
+}
+
+ofPoint Particle::getVelocity() const {
+    return velocity;
+}
+
+void Particle::setVelocity(const ofPoint& velocity) {
+    this->velocity = velocity;
+}
+
+int Particle::getSize() const {
+    return size;
+}
+
+void Particle::setSize(int size) {
+    this->size = size;
+}
+
+ofColor Particle::getColor() const {
+    return this->color;
+}
+
+void Particle::setColor(const ofColor& color) {
+    this->color = color;
 }

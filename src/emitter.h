@@ -25,8 +25,12 @@
  */
 class Emitter {
     private:
-        /** @brief The center of the square-shaped Emitter. **/
-        ofPoint center;
+        /** @brief The shape of the Emitter. **/
+        const ofPolyline shape;
+
+        /** @brief The bounding box of the @b shape of the Emitter. **/
+        const ofRectangle boundingBox;
+
         /** @brief The direction of the Particle motion. **/
         ofPoint direction;
 
@@ -49,13 +53,13 @@ class Emitter {
 
     public:
         /** @brief Constructs the Emitter. */
-        Emitter();
+        Emitter(const ofPolyline& shape);
 
         /** @brief Creates a Particle.
          *
          * @return std::unique_ptr to the created Particle. 
          */
-        std::unique_ptr<Particle> createParticle() const;
+        std::unique_ptr<Particle> createParticle(const enum ParticleType& type) const;
 
         /**
          * @brief Updates the Emitter.

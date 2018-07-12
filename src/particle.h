@@ -8,6 +8,12 @@
 
 #include "ofMain.h"
 
+/** @brief Defines the existing Particle types. */
+enum ParticleType { 
+    /** @brief The type of CircleParticle. */
+    Circle 
+};
+
 /**
  * @class Particle
  *
@@ -25,10 +31,15 @@
  * and the <b>time between frames</b>. When the object is updated, its time of living is updated.
  * If the new time exceeds the maximum lifeTime, the Particle is marked as @b dead.
  *
- * The Particle can be @b drawn by drawing a circle of a certain color (ofColor::red) and size (2px).
+ * The Particle also has a color and a size.
  */
 class Particle {
-    private:
+    protected:
+        /** @brief The size of the Particle. **/
+        int size;
+        /** @brief The color of the Particle. **/
+        ofColor color;
+
         /** @brief The position of the Particle. **/
         ofPoint position;
         /** @brief The velocity of the Particle. **/
@@ -37,13 +48,18 @@ class Particle {
         /** @brief The time passed since the Particle was created. **/
         float time;
         /** @brief The time at which the Particle is marked as @b dead. **/
-        float lifeTime;
+        const float lifeTime;
 
         /** @brief The alive / dead marker. **/
         bool live;
 
     public:
-        /** @brief Constructs the Particle, using several properties.
+        /** 
+         * @brief Constructs the Particle, using several properties.
+         *
+         * @param size -> The size of the Particle.
+         *
+         * @param color -> The color of the Particle.
          *
          * @param position -> The position of the Particle.
          *
@@ -51,7 +67,7 @@ class Particle {
          *
          * @param lifeTime -> The maximum lifeTime of the Particle.
          */
-        Particle(const ofPoint& position, const ofPoint& velocity, float lifeTime);
+        Particle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, float lifeTime);
 
         /** @brief Updates the Particle.
          *
@@ -64,16 +80,87 @@ class Particle {
          */
         void update(float deltaTime);
 
-        /** @brief Draws the Particle.
-         *
-         * Currently the Particle is drawn as a red @b circle with a 2px radius at the @b position
-         * of the Particle.
-         */
-        void draw() const;
+        /** @brief Draws the Particle. **/
+        virtual void draw() const = 0;
 
-        /** @brief Checks if the Particle is @b alive.
+        /** 
+         * @brief Checks if the Particle is @b alive.
          *
          * @return @b true if the Paticle is @b alive, false otherwise.
          */
         bool isAlive() const;
+
+        /**
+         * @brief Returns the position of the Particle.
+         */
+        ofPoint getPosition() const;
+        /**
+         * @brief Assigns a new position to the Particle.
+         *
+         * @param position -> The new position.
+         */
+        void setPosition(const ofPoint& position);
+
+        /**
+         * @brief Returns the velocity of the Particle.
+         */
+        ofPoint getVelocity() const;
+        /**
+         * @brief Assigns a new veloicty to the Particle.
+         *
+         * @param velocity -> The new velocity.
+         */
+        void setVelocity(const ofPoint& velocity);
+
+        /**
+         * @brief Returns the size of the Particle.
+         */
+        int getSize() const;
+        /**
+         * @brief Assigns a new size to the Particle.
+         *
+         * @param size -> The new size.
+         */
+        void setSize(int size);
+
+        /**
+         * @brief Returns the color of the Particle.
+         */
+        ofColor getColor() const;
+        /**
+         * @brief Assigns a new color to the Particle.
+         *
+         * @param color -> The new color.
+         */
+        void setColor(const ofColor& color);
+};
+
+/**
+ * @class CircleParticle
+ *
+ * @brief This class represents a circle-shaped Particle.
+ */
+class CircleParticle : public Particle {
+    public:
+        /** 
+         * @brief Constructs the CircleParticle, using several properties.
+         *
+         * @param size -> The size of the Particle.
+         *
+         * @param color -> The color of the Particle.
+         *
+         * @param position -> The position of the Particle.
+         *
+         * @param velocity -> The velocity of the Particle.
+         *
+         * @param lifeTime -> The maximum lifeTime of the Particle.
+         */
+        CircleParticle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, int lifeTime);
+
+        /**
+         * @brief Draws the CircleParticle.
+         *
+         * The Particle is drawn as a circle, using the size, color and position of the CircleParticle.
+         */
+        void draw() const;
 };

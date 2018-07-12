@@ -20,8 +20,10 @@
  */
 class ofApp : public ofBaseApp {
     private:
+        ofPolyline shape;
+
         /** @brief The Emitter used to create Particle instances. **/
-        Emitter emitter;
+        std::unique_ptr<Emitter> emitter;
         /** @brief The std::list used to store the Particle instances used. **/
         std::list<std::unique_ptr<Particle>> particles;
 
