@@ -35,15 +35,15 @@ enum ParticleType {
  */
 class Particle {
     protected:
+        /** @brief The size of the Particle. **/
+        int size;
+        /** @brief The color of the Particle. **/
+        ofColor color;
+
         /** @brief The position of the Particle. **/
         ofPoint position;
         /** @brief The velocity of the Particle. **/
         ofPoint velocity;
-
-        /** @brief The size of the Particle. **/
-        const int size;
-        /** @brief The color of the Particle. **/
-        const ofColor color;
 
         /** @brief The time passed since the Particle was created. **/
         float time;
@@ -89,6 +89,50 @@ class Particle {
          * @return @b true if the Paticle is @b alive, false otherwise.
          */
         bool isAlive() const;
+
+        /**
+         * @brief Returns the position of the Particle.
+         */
+        ofPoint getPosition() const;
+        /**
+         * @brief Assigns a new position to the Particle.
+         *
+         * @param position -> The new position.
+         */
+        void setPosition(const ofPoint& position);
+
+        /**
+         * @brief Returns the velocity of the Particle.
+         */
+        ofPoint getVelocity() const;
+        /**
+         * @brief Assigns a new veloicty to the Particle.
+         *
+         * @param velocity -> The new velocity.
+         */
+        void setVelocity(const ofPoint& velocity);
+
+        /**
+         * @brief Returns the size of the Particle.
+         */
+        int getSize() const;
+        /**
+         * @brief Assigns a new size to the Particle.
+         *
+         * @param size -> The new size.
+         */
+        void setSize(int size);
+
+        /**
+         * @brief Returns the color of the Particle.
+         */
+        ofColor getColor() const;
+        /**
+         * @brief Assigns a new color to the Particle.
+         *
+         * @param color -> The new color.
+         */
+        void setColor(const ofColor& color);
 };
 
 /**

@@ -35,3 +35,35 @@ void CircleParticle::draw() const {
         ofPopStyle();
     }
 }
+
+ofPoint Particle::getPosition() const {
+    return position;
+}
+
+void Particle::setPosition(const ofPoint& position) {
+    this->position = position;
+}
+
+ofPoint Particle::getVelocity() const {
+    return velocity;
+}
+
+void Particle::setVelocity(const ofPoint& velocity) {
+    this->velocity = velocity;
+}
+
+int Particle::getSize() const {
+    return size;
+}
+
+void Particle::setSize(int size) {
+    this->size = size;
+}
+
+ofColor Particle::getColor() const {
+    return this->color;
+}
+
+void Particle::setColor(const ofColor& color) {
+    this->color = color;
+}
