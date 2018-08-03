@@ -10,6 +10,7 @@
 
 #include "emitter.h"
 #include "field.h"
+#include "field_map.h"
 
 /**
  * @class ofApp
@@ -23,7 +24,7 @@ class ofApp : public ofBaseApp {
     private:
         ofPolyline shape;
 
-        std::unique_ptr<Field> field;
+        std::unique_ptr<FieldMap> map;
 
         /** @brief The Emitter used to create Particle instances. **/
         std::unique_ptr<Emitter> emitter;

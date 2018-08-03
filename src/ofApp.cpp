@@ -19,7 +19,9 @@ void ofApp::setup() {
     shape.addVertex(center);
 
     emitter = std::unique_ptr<Emitter>(new Emitter(shape));
-    field = std::unique_ptr<Field>(new Field(ofPoint(3 * ofGetWidth() / 2, ofGetHeight()) / 2, 100));
+    map = std::unique_ptr<FieldMap>(new FieldMap(ofGetWidth(), ofGetHeight()));
+
+    map->addField(new ColorField(new Rectangle(ofPoint(300, 300), 200.0, 100.0), ofColor::blue));
 }
 
 void ofApp::update() {
@@ -38,19 +40,22 @@ void ofApp::update() {
     
     emitter->update(deltaTime, particles);
 
-    field->update(particles);
+    map->update();
 
-    for (auto it = particles.begin(); it != particles.end(); it++)
+    for (auto it = particles.begin(); it != particles.end(); it++) {
+        map->updateParticle(*it);
+
         (*it)->update(deltaTime);
+    }
 }
 
 void ofApp::draw() {
     ofBackground(0, 0, 0);
 
     ofSetColor(0, 0, 255);
-    shape.draw();
 
-    field->draw();
+    emitter->draw();
+    map->draw();
 
     for (auto it = particles.begin(); it != particles.end(); it++)
         (*it)->draw();
