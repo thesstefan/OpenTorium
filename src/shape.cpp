@@ -10,7 +10,7 @@ void Rectangle::draw() const {
 }
 
 bool Rectangle::inside(const ofPoint& point) const {
-    return point.x >= origin.x && point.x <= origin.y + width &&
+    return point.x >= origin.x && point.x <= origin.x + width &&
            point.y >= origin.y && point.y <= origin.y + height;
 }
 
@@ -22,5 +22,7 @@ void Ellipse::draw() const {
 }
 
 bool Ellipse::inside(const ofPoint& point) const {
-    return (point.x * point.x + point.y + point.y) <= (width * width + height * height);
+    return (((point.x - center.x) * (point.x - center.x)) / ((width * width) / 4)) +
+           (((point.y - center.y) * (point.y - center.y)) / ((height * height) / 4)) <= 1;
+
 }
