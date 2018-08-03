@@ -61,6 +61,8 @@ class Emitter {
          */
         std::unique_ptr<Particle> createParticle(const enum ParticleType& type) const;
 
+        void draw() const;
+
         /**
          * @brief Updates the Emitter.
          *

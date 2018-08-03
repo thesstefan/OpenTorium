@@ -2,7 +2,6 @@
 #include "particle.h"
 
 Emitter::Emitter(const ofPolyline& shape) : shape(shape), boundingBox(shape.getBoundingBox()) {
-
     direction = ofPoint(1, 0, 0);
 
     maxVelocity = 100.0;
@@ -40,6 +39,10 @@ std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType& type)
         particle = std::unique_ptr<Particle>(new CircleParticle(size, color, position, velocity, lifeTime));
 
     return particle;
+}
+
+void Emitter::draw() const {
+    shape.draw();
 }
 
 void Emitter::update(float deltaTime, std::list<std::unique_ptr<Particle>>& particles) {
