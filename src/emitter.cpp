@@ -1,7 +1,6 @@
 #include "emitter.h"
-#include "particle.h"
 
-Emitter::Emitter(const ofPolyline& shape) : shape(shape), boundingBox(shape.getBoundingBox()) {
+Emitter::Emitter(Shape *shape) : shape(shape) {
     direction = ofPoint(1, 0, 0);
 
     maxVelocity = 100.0;
@@ -11,25 +10,10 @@ Emitter::Emitter(const ofPolyline& shape) : shape(shape), boundingBox(shape.getB
     spawnRate = 100;
 }
 
-ofPoint randomPointInShape(const ofPolyline& shape, const ofRectangle& boundingBox) {
-    ofPoint position;
-
-    while (shape.inside(position) == false) {
-        int xRandInBoundingBox = ofRandom(-(boundingBox.getWidth() / 2), boundingBox.getWidth() / 2);
-        int yRandInBoundingBox = ofRandom(-(boundingBox.getHeight() / 2), boundingBox.getHeight() / 2);
-
-        ofPoint randInBoundingBox(xRandInBoundingBox, yRandInBoundingBox);
-
-        position = boundingBox.getCenter() + randInBoundingBox;
-    }
-
-    return position;
-}
-
 std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType& type) const {
     std::unique_ptr<Particle> particle;
 
-    ofPoint position = randomPointInShape(shape, boundingBox);
+    ofPoint position = shape->getRandomPoint();
     ofPoint velocity = direction * ofRandom(1, maxVelocity);
 
     int size = ofRandom(5, 10);
@@ -42,7 +26,7 @@ std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType& type)
 }
 
 void Emitter::draw() const {
-    shape.draw();
+    shape->draw();
 }
 
 void Emitter::update(float deltaTime, std::list<std::unique_ptr<Particle>>& particles) {
