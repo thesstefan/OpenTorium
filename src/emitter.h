@@ -9,6 +9,7 @@
 #include "ofMain.h"
 
 #include "particle.h"
+#include "shape.h"
 
 /**
  * @class Emitter
@@ -25,8 +26,9 @@
  */
 class Emitter {
     private:
-        /** @brief The center of the square-shaped Emitter. **/
-        ofPoint center;
+        /** @brief The shape of the Emitter. **/
+        const std::unique_ptr<Shape> shape;
+
         /** @brief The direction of the Particle motion. **/
         ofPoint direction;
 
@@ -49,13 +51,15 @@ class Emitter {
 
     public:
         /** @brief Constructs the Emitter. */
-        Emitter();
+        Emitter(Shape *shape);
 
         /** @brief Creates a Particle.
          *
          * @return std::unique_ptr to the created Particle. 
          */
-        std::unique_ptr<Particle> createParticle() const;
+        std::unique_ptr<Particle> createParticle(const enum ParticleType& type) const;
+
+        void draw() const;
 
         /**
          * @brief Updates the Emitter.

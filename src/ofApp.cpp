@@ -6,6 +6,31 @@ void ofApp::setup() {
     ofBackground(0, 0, 0);
 
     timePassed = ofGetElapsedTimef();
+
+    ofPoint center(ofGetWidth() / 2, ofGetHeight() / 2);
+
+    emitter_1 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0)));
+    emitter_2 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 400), 200.0, 200.0)));
+    emitter_3 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 700), 200.0, 200.0)));
+
+    map = std::unique_ptr<FieldMap>(new FieldMap(ofGetWidth(), ofGetHeight()));
+
+    map->addField(new ColorField(new Ellipse(ofPoint(900, 100), 200.0, 200.0), ofColor::blue));
+    map->addField(new ColorField(new Rectangle(ofPoint(800, 400), 200.0, 200.0), ofColor::red));
+
+    PolylineShape *poly = new PolylineShape();
+
+    poly->addVertex(700, 600);
+
+    poly->addVertex(750, 650);
+    poly->addVertex(800, 700);
+    poly->addVertex(750, 700);
+
+    poly->addVertex(700, 600);
+
+    map->addField(new ColorField(poly, ofColor::green));
+
+    map->update();
 }
 
 void ofApp::update() {
@@ -22,14 +47,26 @@ void ofApp::update() {
             ++it;
     }
     
-    emitter.update(deltaTime, particles);
+    emitter_1->update(deltaTime, particles);
+    emitter_2->update(deltaTime, particles);
+    emitter_3->update(deltaTime, particles);
 
-    for (auto it = particles.begin(); it != particles.end(); it++)
+    for (auto it = particles.begin(); it != particles.end(); it++) {
+        map->updateParticle(*it);
+
         (*it)->update(deltaTime);
+    }
 }
 
 void ofApp::draw() {
     ofBackground(0, 0, 0);
+
+    ofSetColor(0, 0, 255);
+
+    emitter_1->draw();
+    emitter_2->draw();
+    emitter_3->draw();
+    map->draw();
 
     for (auto it = particles.begin(); it != particles.end(); it++)
         (*it)->draw();
