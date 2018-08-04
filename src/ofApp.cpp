@@ -9,19 +9,26 @@ void ofApp::setup() {
 
     ofPoint center(ofGetWidth() / 2, ofGetHeight() / 2);
 
-    shape.addVertex(center);
+    emitter_1 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0)));
+    emitter_2 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 400), 200.0, 200.0)));
+    emitter_3 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 700), 200.0, 200.0)));
 
-    shape.addVertex(center + ofPoint(100, 0));
-    shape.addVertex(center + ofPoint(100, 50));
-    shape.addVertex(center + ofPoint(200, 200));
-    shape.addVertex(center + ofPoint(0, 50));
-
-    shape.addVertex(center);
-
-    emitter = std::unique_ptr<Emitter>(new Emitter(shape));
     map = std::unique_ptr<FieldMap>(new FieldMap(ofGetWidth(), ofGetHeight()));
 
-    map->addField(new ColorField(new Ellipse(ofPoint(900, 400), 200.0, 200.0), ofColor::blue));
+    map->addField(new ColorField(new Ellipse(ofPoint(900, 100), 200.0, 200.0), ofColor::blue));
+    map->addField(new ColorField(new Rectangle(ofPoint(800, 400), 200.0, 200.0), ofColor::red));
+
+    PolylineShape *poly = new PolylineShape();
+
+    poly->addVertex(700, 600);
+
+    poly->addVertex(750, 650);
+    poly->addVertex(800, 700);
+    poly->addVertex(750, 700);
+
+    poly->addVertex(700, 600);
+
+    map->addField(new ColorField(poly, ofColor::green));
 
     map->update();
 }
@@ -40,7 +47,9 @@ void ofApp::update() {
             ++it;
     }
     
-    emitter->update(deltaTime, particles);
+    emitter_1->update(deltaTime, particles);
+    emitter_2->update(deltaTime, particles);
+    emitter_3->update(deltaTime, particles);
 
     for (auto it = particles.begin(); it != particles.end(); it++) {
         map->updateParticle(*it);
@@ -54,7 +63,9 @@ void ofApp::draw() {
 
     ofSetColor(0, 0, 255);
 
-    emitter->draw();
+    emitter_1->draw();
+    emitter_2->draw();
+    emitter_3->draw();
     map->draw();
 
     for (auto it = particles.begin(); it != particles.end(); it++)
