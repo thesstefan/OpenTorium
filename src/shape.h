@@ -8,6 +8,7 @@ class Shape {
 
         virtual void draw() const = 0;
 
+        virtual ofPoint getRandomPoint() const = 0;
         virtual bool inside(const ofPoint& point) const = 0;
 };
 
@@ -24,6 +25,7 @@ class Rectangle : public Shape {
 
         void draw() const;
 
+        ofPoint getRandomPoint() const;
         bool inside(const ofPoint& point) const;
 };
 
@@ -39,5 +41,16 @@ class Ellipse : public Shape {
 
         void draw() const;
 
+        ofPoint getRandomPoint() const;
+        bool inside(const ofPoint& point) const;
+};
+
+class PolylineShape : public ofPolyline, public Shape {
+    public:
+        PolylineShape();
+
+        void draw() const;
+
+        ofPoint getRandomPoint() const;
         bool inside(const ofPoint& point) const;
 };
