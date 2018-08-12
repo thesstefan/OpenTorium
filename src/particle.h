@@ -94,45 +94,25 @@ class Particle {
          * @brief Returns the position of the Particle.
          */
         ofPoint getPosition() const;
-        /**
-         * @brief Assigns a new position to the Particle.
-         *
-         * @param position -> The new position.
-         */
-        void setPosition(const ofPoint& position);
-
-        /**
-         * @brief Returns the velocity of the Particle.
-         */
-        ofPoint getVelocity() const;
-        /**
-         * @brief Assigns a new veloicty to the Particle.
-         *
-         * @param velocity -> The new velocity.
-         */
-        void setVelocity(const ofPoint& velocity);
-
-        /**
-         * @brief Returns the size of the Particle.
-         */
-        int getSize() const;
-        /**
-         * @brief Assigns a new size to the Particle.
-         *
-         * @param size -> The new size.
-         */
-        void setSize(int size);
 
         /**
          * @brief Returns the color of the Particle.
          */
         ofColor getColor() const;
+
         /**
          * @brief Assigns a new color to the Particle.
          *
          * @param color -> The new color.
          */
         void setColor(const ofColor& color);
+
+        /**
+         * @brief Applies a force on the Particle (modifies its velocity).
+         *
+         * @param force The force to be applied.
+         */
+        void applyForce(const ofPoint& force);
 };
 
 /**
