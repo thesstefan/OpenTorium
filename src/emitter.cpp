@@ -6,10 +6,10 @@ Emitter::Emitter(const ofPolyline& shape) : shape(shape), boundingBox(shape.getB
     direction = ofPoint(1, 0, 0);
 
     maxVelocity = 100.0;
-    lifeTime = 1.00;
+    lifeTime = 10.00;
 
     spawnCount = 0;
-    spawnRate = 100;
+    spawnRate = 10;
 }
 
 ofPoint randomPointInShape(const ofPolyline& shape, const ofRectangle& boundingBox) {
@@ -34,10 +34,11 @@ std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType& type)
     ofPoint velocity = direction * ofRandom(1, maxVelocity);
 
     int size = ofRandom(5, 10);
+    float mass = 1;
     ofColor color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
 
     if (type == ParticleType::Circle)
-        particle = std::unique_ptr<Particle>(new CircleParticle(size, color, position, velocity, lifeTime));
+        particle = std::unique_ptr<Particle>(new CircleParticle(size, mass, color, position, velocity, lifeTime));
 
     return particle;
 }

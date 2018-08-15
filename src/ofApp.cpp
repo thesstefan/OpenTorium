@@ -7,7 +7,7 @@ void ofApp::setup() {
 
     timePassed = ofGetElapsedTimef();
 
-    ofPoint center(ofGetWidth() / 2, ofGetHeight() / 2);
+    ofPoint center(ofGetWidth() / 4, ofGetHeight() / 2);
 
     shape.addVertex(center);
 
@@ -37,8 +37,12 @@ void ofApp::update() {
     
     emitter->update(deltaTime, particles);
 
-    for (auto it = particles.begin(); it != particles.end(); it++)
+    for (auto it = particles.begin(); it != particles.end(); it++) {
         (*it)->update(deltaTime);
+
+        if ((*it)->getPosition().x > ofGetWidth() / 2)
+            (*it)->applyForce(ofPoint(10, 10), deltaTime);
+    }
 }
 
 void ofApp::draw() {
