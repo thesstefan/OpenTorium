@@ -1,7 +1,7 @@
 #include "particle.h"
 
-Particle::Particle(int size, float mass, const ofColor& color, const ofPoint& position, const ofPoint& velocity, float lifeTime)
-    : size(size), mass(mass), color(color), position(position), velocity(velocity), lifeTime(lifeTime) {
+Particle::Particle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, float lifeTime, float mass)
+    : size(size), color(color), position(position), velocity(velocity), lifeTime(lifeTime), mass(mass) {
         time = 0;
 
         live = true;
@@ -22,8 +22,8 @@ bool Particle::isAlive() const {
     return live;
 }
 
-CircleParticle::CircleParticle(int size, float mass, const ofColor& color, const ofPoint& position, const ofPoint& velocity, int lifeTime)
-    : Particle(size, mass, color, position, velocity, lifeTime) {}
+CircleParticle::CircleParticle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, int lifeTime, float mass)
+    : Particle(size, color, position, velocity, lifeTime, mass) {}
 
 void CircleParticle::draw() const {
     if (live) {
