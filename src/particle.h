@@ -36,7 +36,11 @@ enum ParticleType {
 class Particle {
     protected:
         /** @brief The size of the Particle. **/
-        int size;
+        const int size;
+
+        /** @brief The mass of the Particle. **/
+        const float mass;
+
         /** @brief The color of the Particle. **/
         ofColor color;
 
@@ -59,6 +63,8 @@ class Particle {
          *
          * @param size -> The size of the Particle.
          *
+         * @param mass -> The mass of the Particle.
+         *
          * @param color -> The color of the Particle.
          *
          * @param position -> The position of the Particle.
@@ -67,7 +73,7 @@ class Particle {
          *
          * @param lifeTime -> The maximum lifeTime of the Particle.
          */
-        Particle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, float lifeTime);
+        Particle(int size, float mass, const ofColor& color, const ofPoint& position, const ofPoint& velocity, float lifeTime);
 
         /** @brief Updates the Particle.
          *
@@ -111,8 +117,10 @@ class Particle {
          * @brief Applies a force on the Particle (modifies its velocity).
          *
          * @param force The force to be applied.
+         *
+         * @param deltaTime The time in which the force is applied.
          */
-        void applyForce(const ofPoint& force);
+        void applyForce(const ofPoint& force, float deltaTime);
 };
 
 /**
@@ -129,13 +137,15 @@ class CircleParticle : public Particle {
          *
          * @param color -> The color of the Particle.
          *
+         * @param mass -> The mass of the Particle.
+         *
          * @param position -> The position of the Particle.
          *
          * @param velocity -> The velocity of the Particle.
          *
          * @param lifeTime -> The maximum lifeTime of the Particle.
          */
-        CircleParticle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, int lifeTime);
+        CircleParticle(int size, float mass, const ofColor& color, const ofPoint& position, const ofPoint& velocity, int lifeTime);
 
         /**
          * @brief Draws the CircleParticle.

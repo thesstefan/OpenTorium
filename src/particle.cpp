@@ -1,7 +1,7 @@
 #include "particle.h"
 
-Particle::Particle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, float lifeTime)
-    : size(size), color(color), position(position), velocity(velocity), lifeTime(lifeTime) {
+Particle::Particle(int size, float mass, const ofColor& color, const ofPoint& position, const ofPoint& velocity, float lifeTime)
+    : size(size), mass(mass), color(color), position(position), velocity(velocity), lifeTime(lifeTime) {
         time = 0;
 
         live = true;
@@ -22,8 +22,8 @@ bool Particle::isAlive() const {
     return live;
 }
 
-CircleParticle::CircleParticle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, int lifeTime)
-    : Particle(size, color, position, velocity, lifeTime) {}
+CircleParticle::CircleParticle(int size, float mass, const ofColor& color, const ofPoint& position, const ofPoint& velocity, int lifeTime)
+    : Particle(size, mass, color, position, velocity, lifeTime) {}
 
 void CircleParticle::draw() const {
     if (live) {
@@ -48,8 +48,8 @@ void Particle::setColor(const ofColor& color) {
     this->color = color;
 }
 
-void Particle::applyForce(const ofPoint& force) {
-    velocity.x += force.x;
-    velocity.y += force.y;
-    velocity.z += force.z;
+void Particle::applyForce(const ofPoint& force, float deltaTime) {
+    ofPoint addedVelocity = force * (deltaTime / mass);
+
+    velocity += addedVelocity;
 }
