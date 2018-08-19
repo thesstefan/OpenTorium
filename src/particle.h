@@ -44,10 +44,10 @@ class Particle {
         /** @brief The position of the Particle. **/
         ofPoint position;
         /** @brief The velocity of the Particle. **/
-        ofPoint velocity;
+        ofVec2f velocity;
 
         /** @brief The acceleration of the Particle. **/
-        ofPoint acceleration;
+        ofVec2f acceleration;
 
         /** @brief The time passed since the Particle was created. **/
         float age;
@@ -76,7 +76,7 @@ class Particle {
          *
          * @param lifeTime -> The maximum lifeTime of the Particle.
          */
-        Particle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, float lifeTime, float mass = 1.0);
+        Particle(int size, const ofColor& color, const ofPoint& position, const ofVec2f& velocity, float lifeTime, float mass = 1.0);
 
         /** @brief Updates the Particle.
          *
@@ -146,7 +146,7 @@ class CircleParticle : public Particle {
          *
          * @param lifeTime -> The maximum lifeTime of the Particle.
          */
-        CircleParticle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, int lifeTime, float mass = 1.0);
+        CircleParticle(int size, const ofColor& color, const ofPoint& position, const ofVec2f& velocity, int lifeTime, float mass = 1.0);
 
         /**
          * @brief Draws the CircleParticle.
