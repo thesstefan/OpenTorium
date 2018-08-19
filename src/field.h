@@ -28,3 +28,13 @@ class ColorField : public Field {
 
         void updateParticle(std::unique_ptr<Particle>& particle) const;
 };
+
+class ForceField : public Field {
+    private:
+        ofVec2f force;
+
+    public:
+        ForceField(Shape *shape, const ofVec2f& force);
+
+        void updateParticle(std::unique_ptr<Particle>& particle) const;
+};
