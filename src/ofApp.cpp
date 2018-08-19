@@ -15,8 +15,8 @@ void ofApp::setup() {
 
     map = std::unique_ptr<FieldMap>(new FieldMap(ofGetWidth(), ofGetHeight()));
 
-    map->addField(new ColorField(new Ellipse(ofPoint(900, 100), 200.0, 200.0), ofColor::blue));
-    map->addField(new ColorField(new Rectangle(ofPoint(800, 400), 200.0, 200.0), ofColor::red));
+    map->addField(new ForceField(new Ellipse(ofPoint(600, 100), 200.0, 200.0), ofVec2f(0, 100)));
+    map->addField(new ColorField(new Rectangle(ofPoint(800, 400), 200.0, 200.0), ofColor::blue));
 
     PolylineShape *poly = new PolylineShape();
 
@@ -55,12 +55,6 @@ void ofApp::update() {
         map->updateParticle(particle);
 
         particle->update(deltaTime);
-
-        // Show-off of particle force interaction.
-        // When the particle moves in the right half of the screen
-        // it should be pulled in the down-right corner by a force.
-        if (particle->getPosition().x > ofGetWidth() / 2)
-            particle->applyForce(ofPoint(100, 100));
     }
 }
 
@@ -74,6 +68,6 @@ void ofApp::draw() {
     emitter_3->draw();
     map->draw();
 
-    for (auto it = particles.begin(); it != particles.end(); it++)
-        (*it)->draw();
+    for (auto& particle : particles)
+        particle->draw();
 }
