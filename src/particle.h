@@ -47,7 +47,7 @@ class Particle {
         ofPoint velocity;
 
         /** @brief The time passed since the Particle was created. **/
-        float time;
+        float age;
         /** @brief The time at which the Particle is marked as @b dead. **/
         const float lifeTime;
 

@@ -2,7 +2,7 @@
 
 Particle::Particle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, float lifeTime, float mass)
     : size(size), color(color), position(position), velocity(velocity), lifeTime(lifeTime), mass(mass) {
-        time = 0;
+        age = 0;
 
         live = true;
 }
@@ -11,9 +11,9 @@ void Particle::update(float deltaTime) {
     if (live) {
         position += velocity * deltaTime;
 
-        time += deltaTime;
+        age += deltaTime;
 
-        if (time >= lifeTime)
+        if (age >= lifeTime)
             live = false;
     }
 }
