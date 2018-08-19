@@ -15,23 +15,23 @@ void FieldMap::draw() const {
 }
 
 void FieldMap::update() {
-    for (unsigned int height_index = 0; height_index < height; height_index++)
-        for (unsigned int width_index = 0; width_index < width; width_index++)
-            map[height_index][width_index] = 0;
+    for (unsigned int heightIndex = 0; heightIndex < height; heightIndex++)
+        for (unsigned int widthIndex = 0; widthIndex < width; widthIndex++)
+            map[heightIndex][widthIndex] = 0;
 
-    int field_index = 0;
+    int fieldIndex = 0;
 
     for (auto& it : fields) {
-        for (unsigned int height_index = 0; height_index < height; height_index++)
-            for (unsigned int width_index = 0; width_index < width; width_index++) 
-                if (it->getShape().inside(ofPoint(width_index, height_index))) { 
-                    if (map[height_index][width_index] == 0)
-                        map[height_index][width_index] = 1;
+        for (unsigned int heightIndex = 0; heightIndex < height; heightIndex++)
+            for (unsigned int widthIndex = 0; widthIndex < width; widthIndex++) 
+                if (it->getShape().inside(ofPoint(widthIndex, heightIndex))) { 
+                    if (map[heightIndex][widthIndex] == 0)
+                        map[heightIndex][widthIndex] = 1;
 
-                    map[height_index][width_index] = map[height_index][width_index] << field_index;
+                    map[heightIndex][widthIndex] = map[heightIndex][widthIndex] << fieldIndex;
                 }
 
-        field_index++;
+        fieldIndex++;
     }
 }
 
@@ -39,15 +39,15 @@ void FieldMap::updateParticle(std::unique_ptr<Particle>& particle) const {
     if (particle->getPosition().y < height && particle->getPosition().x < width) {
         unsigned char id = map.at(static_cast<int>(particle->getPosition().y)).at(static_cast<int>(particle->getPosition().x));
 
-        int field_index = fields.size() - 1;
+        unsigned int fieldIndex = 0;
 
-        while (id && field_index != -1) {
-            if (id && 1)
-                fields[field_index]->updateParticle(particle);
+        while (id && fieldIndex != static_cast<unsigned int>(fields.size())) {
+            if (id & 1) 
+                fields[fieldIndex]->updateParticle(particle);
 
             id = id >> 1;
 
-            field_index--;
+            fieldIndex++;
         }
     }
 }
