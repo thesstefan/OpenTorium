@@ -7,7 +7,7 @@ void ofApp::setup() {
 
     timePassed = ofGetElapsedTimef();
 
-    ofPoint center(ofGetWidth() / 2, ofGetHeight() / 2);
+    ofPoint center(ofGetWidth() / 4, ofGetHeight() / 2);
 
     emitter_1 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0)));
     emitter_2 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 400), 200.0, 200.0)));
@@ -51,10 +51,16 @@ void ofApp::update() {
     emitter_2->update(deltaTime, particles);
     emitter_3->update(deltaTime, particles);
 
-    for (auto it = particles.begin(); it != particles.end(); it++) {
-        map->updateParticle(*it);
+    for (auto& particle : particles) {
+        map->updateParticle(particle);
 
-        (*it)->update(deltaTime);
+        particle->update(deltaTime);
+
+        // Show-off of particle force interaction.
+        // When the particle moves in the right half of the screen
+        // it should be pulled in the down-right corner by a force.
+        if (particle->getPosition().x > ofGetWidth() / 2)
+            particle->applyForce(ofPoint(100, 100));
     }
 }
 
