@@ -9,6 +9,10 @@ Particle::Particle(int size, const ofColor& color, const ofPoint& position, cons
 
 void Particle::update(float deltaTime) {
     if (live) {
+        velocity += acceleration * deltaTime;
+
+        acceleration = ofPoint(0, 0);
+
         position += velocity * deltaTime;
 
         age += deltaTime;
@@ -48,8 +52,6 @@ void Particle::setColor(const ofColor& color) {
     this->color = color;
 }
 
-void Particle::applyForce(const ofPoint& force, float deltaTime) {
-    ofPoint addedVelocity = force * (deltaTime / mass);
-
-    velocity += addedVelocity;
+void Particle::applyForce(const ofPoint& force) {
+    acceleration += force / mass;
 }

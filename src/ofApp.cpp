@@ -44,7 +44,7 @@ void ofApp::update() {
         // When the particle moves in the right half of the screen
         // it should be pulled in the down-right corner by a force.
         if (particle->getPosition().x > ofGetWidth() / 2)
-            particle->applyForce(ofPoint(100, 100), deltaTime);
+            particle->applyForce(ofPoint(100, 100));
     }
 }
 

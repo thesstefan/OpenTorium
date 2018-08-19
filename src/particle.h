@@ -46,6 +46,9 @@ class Particle {
         /** @brief The velocity of the Particle. **/
         ofPoint velocity;
 
+        /** @brief The acceleration of the Particle. **/
+        ofPoint acceleration;
+
         /** @brief The time passed since the Particle was created. **/
         float age;
         /** @brief The time at which the Particle is marked as @b dead. **/
@@ -114,13 +117,11 @@ class Particle {
         void setColor(const ofColor& color);
 
         /**
-         * @brief Applies a force on the Particle (modifies its velocity).
+         * @brief Applies a force on the Particle (modifies its acceleration).
          *
          * @param force The force to be applied.
-         *
-         * @param deltaTime The time in which the force is applied.
          */
-        void applyForce(const ofPoint& force, float deltaTime);
+        void applyForce(const ofPoint& force);
 };
 
 /**
