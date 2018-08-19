@@ -7,7 +7,7 @@ void ofApp::setup() {
 
     timePassed = ofGetElapsedTimef();
 
-    ofPoint center(ofGetWidth() / 2, ofGetHeight() / 2);
+    ofPoint center(ofGetWidth() / 4, ofGetHeight() / 2);
 
     shape.addVertex(center);
 
@@ -37,8 +37,15 @@ void ofApp::update() {
     
     emitter->update(deltaTime, particles);
 
-    for (auto it = particles.begin(); it != particles.end(); it++)
-        (*it)->update(deltaTime);
+    for (auto& particle : particles) {
+        particle->update(deltaTime);
+
+        // Show-off of particle force interaction.
+        // When the particle moves in the right half of the screen
+        // it should be pulled in the down-right corner by a force.
+        if (particle->getPosition().x > ofGetWidth() / 2)
+            particle->applyForce(ofPoint(100, 100));
+    }
 }
 
 void ofApp::draw() {

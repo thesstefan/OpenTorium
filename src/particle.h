@@ -35,20 +35,27 @@ enum ParticleType {
  */
 class Particle {
     protected:
+        /** @brief The size of the Particle. **/
+        const int size;
+
+        /** @brief The color of the Particle. **/
+        ofColor color;
+
         /** @brief The position of the Particle. **/
         ofPoint position;
         /** @brief The velocity of the Particle. **/
-        ofPoint velocity;
+        ofVec2f velocity;
 
-        /** @brief The size of the Particle. **/
-        const int size;
-        /** @brief The color of the Particle. **/
-        const ofColor color;
+        /** @brief The acceleration of the Particle. **/
+        ofVec2f acceleration;
 
         /** @brief The time passed since the Particle was created. **/
-        float time;
+        float age;
         /** @brief The time at which the Particle is marked as @b dead. **/
         const float lifeTime;
+
+        /** @brief The mass of the Particle. **/
+        const float mass;
 
         /** @brief The alive / dead marker. **/
         bool live;
@@ -59,6 +66,8 @@ class Particle {
          *
          * @param size -> The size of the Particle.
          *
+         * @param mass -> The mass of the Particle.
+         *
          * @param color -> The color of the Particle.
          *
          * @param position -> The position of the Particle.
@@ -67,7 +76,7 @@ class Particle {
          *
          * @param lifeTime -> The maximum lifeTime of the Particle.
          */
-        Particle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, float lifeTime);
+        Particle(int size, const ofColor& color, const ofPoint& position, const ofVec2f& velocity, float lifeTime, float mass = 1.0);
 
         /** @brief Updates the Particle.
          *
@@ -89,6 +98,30 @@ class Particle {
          * @return @b true if the Paticle is @b alive, false otherwise.
          */
         bool isAlive() const;
+
+        /**
+         * @brief Returns the position of the Particle.
+         */
+        ofPoint getPosition() const;
+
+        /**
+         * @brief Returns the color of the Particle.
+         */
+        ofColor getColor() const;
+
+        /**
+         * @brief Assigns a new color to the Particle.
+         *
+         * @param color -> The new color.
+         */
+        void setColor(const ofColor& color);
+
+        /**
+         * @brief Applies a force on the Particle (modifies its acceleration).
+         *
+         * @param force The force to be applied.
+         */
+        void applyForce(const ofPoint& force);
 };
 
 /**
@@ -105,13 +138,15 @@ class CircleParticle : public Particle {
          *
          * @param color -> The color of the Particle.
          *
+         * @param mass -> The mass of the Particle.
+         *
          * @param position -> The position of the Particle.
          *
          * @param velocity -> The velocity of the Particle.
          *
          * @param lifeTime -> The maximum lifeTime of the Particle.
          */
-        CircleParticle(int size, const ofColor& color, const ofPoint& position, const ofPoint& velocity, int lifeTime);
+        CircleParticle(int size, const ofColor& color, const ofPoint& position, const ofVec2f& velocity, int lifeTime, float mass = 1.0);
 
         /**
          * @brief Draws the CircleParticle.

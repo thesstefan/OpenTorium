@@ -6,7 +6,7 @@ Emitter::Emitter(const ofPolyline& shape) : shape(shape), boundingBox(shape.getB
     direction = ofPoint(1, 0, 0);
 
     maxVelocity = 100.0;
-    lifeTime = 1.00;
+    lifeTime = 10.00;
 
     spawnCount = 0;
     spawnRate = 100;
