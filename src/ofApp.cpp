@@ -37,11 +37,11 @@ void ofApp::update() {
     
     emitter->update(deltaTime, particles);
 
-    for (auto it = particles.begin(); it != particles.end(); it++) {
-        (*it)->update(deltaTime);
+    for (auto& particle : particles) {
+        particle->update(deltaTime);
 
-        if ((*it)->getPosition().x > ofGetWidth() / 2)
-            (*it)->applyForce(ofPoint(10, 10), deltaTime);
+        if (particle->getPosition().x > ofGetWidth() / 2)
+            particle->applyForce(ofPoint(100, 100), deltaTime);
     }
 }
 
