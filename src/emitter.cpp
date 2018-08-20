@@ -1,35 +1,36 @@
 #include "emitter.h"
 
-Emitter::Emitter(Shape *shape) : shape(shape) {
-    direction = ofPoint(1, 0, 0);
-
-    maxVelocity = 100.0;
-    lifeTime = 10.00;
-
+Emitter::Emitter(Shape *shape) :
+    shape(shape),
+    direction(ofVec2f(1, 0)),
+    maxVelocity(100.0),
+    lifeTime(10.00),
+    spawnRate(100)
+{
     spawnCount = 0;
-    spawnRate = 100;
 }
 
-std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType& type) const {
-    std::unique_ptr<Particle> particle;
+std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType &type) const {
 
-    ofPoint position = shape->getRandomPoint();
-    ofPoint velocity = direction * ofRandom(1, maxVelocity);
+    const ofVec2f position = shape->getRandomPoint();
+    const ofVec2f velocity = direction * ofRandom(1, maxVelocity);
 
-    int size = ofRandom(5, 10);
-    ofColor color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
+    const int size = ofRandom(5, 10);
+    const ofColor color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
 
     if (type == ParticleType::Circle)
-        particle = std::unique_ptr<Particle>(new CircleParticle(size, color, position, velocity, lifeTime));
-
-    return particle;
+        return std::make_unique<CircleParticle>(size, color, position, velocity, lifeTime);
+    else
+        throw "Unkown particle type";
 }
 
 void Emitter::draw() const {
     shape->draw();
 }
 
-void Emitter::update(float deltaTime, std::list<std::unique_ptr<Particle>>& particles) {
+void Emitter::update(const float deltaTime,
+                     std::list<std::unique_ptr<Particle>> &particles) {
+
     spawnCount += deltaTime * spawnRate;
 
     if (spawnCount >= 1) {
@@ -40,4 +41,5 @@ void Emitter::update(float deltaTime, std::list<std::unique_ptr<Particle>>& part
         for (int index = 0; index < spawnNumber; index++)
             particles.push_back(createParticle(ParticleType::Circle));
     }
+
 }
