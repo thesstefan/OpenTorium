@@ -7,8 +7,6 @@ void ofApp::setup() {
 
     timePassed = ofGetElapsedTimef();
 
-    ofPoint center(ofGetWidth() / 4, ofGetHeight() / 2);
-
     emitter_1 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0)));
     emitter_2 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 400), 200.0, 200.0)));
     emitter_3 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 700), 200.0, 200.0)));
@@ -33,27 +31,28 @@ void ofApp::setup() {
     map->update();
 }
 
+void ofApp::clearDeadParticles() {
+    const auto removeIt = std::remove_if(particles.begin(), particles.end(),
+                          [](const std::unique_ptr<Particle> &particle)
+                            { return !particle->isAlive(); });
+
+    particles.erase(removeIt, particles.end());
+}
+
 void ofApp::update() {
-    float time = ofGetElapsedTimef();
-    float deltaTime = ofClamp(time - timePassed, 0, 0.1);
+    const float time = ofGetElapsedTimef();
+    const float deltaTime = ofClamp(time - timePassed, 0, 0.1);
 
     timePassed = time;
 
-    auto it = particles.begin();
-    while (it != particles.end()) {
-        if ((*it)->isAlive() == false)
-            it = particles.erase(it);
-        else
-            ++it;
-    }
-    
+    clearDeadParticles();
+
     emitter_1->update(deltaTime, particles);
     emitter_2->update(deltaTime, particles);
     emitter_3->update(deltaTime, particles);
 
     for (auto& particle : particles) {
         map->updateParticle(particle);
-
         particle->update(deltaTime);
     }
 }
@@ -68,6 +67,7 @@ void ofApp::draw() {
     emitter_3->draw();
     map->draw();
 
-    for (auto& particle : particles)
+    for (const auto &particle : particles)
         particle->draw();
 }
+
