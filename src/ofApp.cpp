@@ -7,18 +7,30 @@ void ofApp::setup() {
 
     timePassed = ofGetElapsedTimef();
 
-    ofPoint center(ofGetWidth() / 2, ofGetHeight() / 2);
+    ofPoint center(ofGetWidth() / 4, ofGetHeight() / 2);
 
-    shape.addVertex(center);
+    emitter_1 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0)));
+    emitter_2 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 400), 200.0, 200.0)));
+    emitter_3 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 700), 200.0, 200.0)));
 
-    shape.addVertex(center + ofPoint(100, 0));
-    shape.addVertex(center + ofPoint(100, 50));
-    shape.addVertex(center + ofPoint(200, 200));
-    shape.addVertex(center + ofPoint(0, 50));
+    map = std::unique_ptr<FieldMap>(new FieldMap(ofGetWidth(), ofGetHeight()));
 
-    shape.addVertex(center);
+    map->addField(new ForceField(new Ellipse(ofPoint(600, 100), 200.0, 200.0), ofVec2f(0, 100)));
+    map->addField(new ColorField(new Rectangle(ofPoint(800, 400), 200.0, 200.0), ofColor::blue));
 
-    emitter = std::unique_ptr<Emitter>(new Emitter(shape));
+    PolylineShape *poly = new PolylineShape();
+
+    poly->addVertex(700, 600);
+
+    poly->addVertex(750, 650);
+    poly->addVertex(800, 700);
+    poly->addVertex(750, 700);
+
+    poly->addVertex(700, 600);
+
+    map->addField(new ColorField(poly, ofColor::green));
+
+    map->update();
 }
 
 void ofApp::update() {
@@ -35,18 +47,27 @@ void ofApp::update() {
             ++it;
     }
     
-    emitter->update(deltaTime, particles);
+    emitter_1->update(deltaTime, particles);
+    emitter_2->update(deltaTime, particles);
+    emitter_3->update(deltaTime, particles);
 
-    for (auto it = particles.begin(); it != particles.end(); it++)
-        (*it)->update(deltaTime);
+    for (auto& particle : particles) {
+        map->updateParticle(particle);
+
+        particle->update(deltaTime);
+    }
 }
 
 void ofApp::draw() {
     ofBackground(0, 0, 0);
 
     ofSetColor(0, 0, 255);
-    shape.draw();
 
-    for (auto it = particles.begin(); it != particles.end(); it++)
-        (*it)->draw();
+    emitter_1->draw();
+    emitter_2->draw();
+    emitter_3->draw();
+    map->draw();
+
+    for (auto& particle : particles)
+        particle->draw();
 }
