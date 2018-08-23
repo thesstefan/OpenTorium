@@ -36,8 +36,9 @@ void Emitter::draw() const {
     ofPopStyle();
 }
 
+template <typename Container>
 void Emitter::update(const float deltaTime,
-                     std::list<std::unique_ptr<Particle>> &particles) {
+                     std::insert_iterator<Container> &inserter) {
 
     spawnCount += deltaTime * spawnRate;
 
@@ -47,7 +48,6 @@ void Emitter::update(const float deltaTime,
         spawnCount -= spawnNumber;
 
         for (int index = 0; index < spawnNumber; index++)
-            particles.push_back(createParticle(ParticleType::Circle));
+            inserter = createParticle(ParticleType::Circle);
     }
-
 }

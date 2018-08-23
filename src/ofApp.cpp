@@ -1,5 +1,7 @@
 #include "ofApp.h"
 
+#include <iterator>
+
 ofApp::ofApp() :
     map(ofGetWidth(), ofGetHeight()),
 
@@ -49,9 +51,12 @@ void ofApp::update() {
 
     clearDeadParticles();
 
-    emitter_1.update(deltaTime, particles);
-    emitter_2.update(deltaTime, particles);
-    emitter_3.update(deltaTime, particles);
+    std::insert_iterator<std::list<std::unique_ptr<Particle>>> 
+        inserter(particles, particles.end());
+
+    emitter_1.update(deltaTime, inserter);
+    emitter_2.update(deltaTime, inserter);
+    emitter_3.update(deltaTime, inserter);
 
     for (auto& particle : particles) {
         map.updateParticle(particle);

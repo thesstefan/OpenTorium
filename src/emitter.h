@@ -74,7 +74,8 @@ class Emitter {
          *
          * @param particles -> The container of Particles used in the app.
          */
+        template <typename Container>
         void update(const float deltaTime, 
-                    std::list<std::unique_ptr<Particle>> &particles);
+                    std::insert_iterator<Container> &inserter);
 };
 
