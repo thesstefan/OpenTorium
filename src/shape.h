@@ -15,10 +15,10 @@ class Shape {
 class Rectangle : public Shape {
     private:
         // The top left point of the Rectangle.
-        ofPoint origin;
+        const ofPoint origin;
 
-        float width;
-        float height;
+        const float width;
+        const float height;
 
     public:
         Rectangle(const ofPoint& origin, float width, float height);
@@ -31,10 +31,10 @@ class Rectangle : public Shape {
 
 class Ellipse : public Shape {
     private:
-        ofPoint center;
+        const ofPoint center;
 
-        float width;
-        float height;
+        const float width;
+        const float height;
 
     public:
         Ellipse(const ofPoint& center, float width, float height);
