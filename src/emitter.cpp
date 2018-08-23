@@ -26,7 +26,14 @@ std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType &type)
 }
 
 void Emitter::draw() const {
+    ofPushStyle();
+
+    ofNoFill();
+    ofSetColor(ofColor::white);
+
     shape->draw();
+
+    ofPopStyle();
 }
 
 void Emitter::update(const float deltaTime,
