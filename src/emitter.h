@@ -51,9 +51,11 @@ class Emitter {
 
     public:
         /** @brief Constructs the Emitter. */
-        Emitter(Shape *shape);
+        Emitter(Shape *shape, const ofVec2f &direction, float maxVelocity, float lifeTime, 
+                float spawnRate);
 
-        /** @brief Creates a Particle.
+        /** 
+         * @brief Creates a Particle.
          *
          * @return std::unique_ptr to the created Particle. 
          */
@@ -72,7 +74,7 @@ class Emitter {
          *
          * @param particles -> The container of Particles used in the app.
          */
-        void update(const float deltaTime,
+        void update(const float deltaTime, 
                     std::list<std::unique_ptr<Particle>> &particles);
 };
 

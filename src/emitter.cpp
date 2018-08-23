@@ -1,12 +1,13 @@
 #include "emitter.h"
 
-Emitter::Emitter(Shape *shape) :
-    shape(shape),
-    direction(ofVec2f(1, 0)),
-    maxVelocity(100.0),
-    lifeTime(10.00),
-    spawnRate(100)
-{
+Emitter::Emitter(Shape *shape, const ofVec2f &direction, float maxVelocity,
+                 float lifeTime, float spawnRate) :
+    shape(shape), 
+    direction(direction), 
+    maxVelocity(maxVelocity), 
+    lifeTime(lifeTime),
+    spawnRate(spawnRate) {
+
     spawnCount = 0;
 }
 

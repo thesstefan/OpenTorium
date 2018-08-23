@@ -7,9 +7,12 @@ void ofApp::setup() {
 
     timePassed = ofGetElapsedTimef();
 
-    emitter_1 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0)));
-    emitter_2 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 400), 200.0, 200.0)));
-    emitter_3 = std::unique_ptr<Emitter>(new Emitter(new Ellipse(ofPoint(300, 700), 200.0, 200.0)));
+    emitter_1 = std::unique_ptr<Emitter>(
+            new Emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100));
+    emitter_2 = std::unique_ptr<Emitter>(
+            new Emitter(new Ellipse(ofPoint(300, 400), 200.0, 200.0), ofVec2f(1, 1), 200, 10, 50));;
+    emitter_3 = std::unique_ptr<Emitter>(
+            new Emitter(new Ellipse(ofPoint(300, 700), 200.0, 200.0), ofVec2f(1, 0), 300, 2, 300));
 
     map = std::unique_ptr<FieldMap>(new FieldMap(ofGetWidth(), ofGetHeight()));
 
