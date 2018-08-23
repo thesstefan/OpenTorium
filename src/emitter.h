@@ -30,7 +30,7 @@
 class Emitter {
     private:
         /** @brief The shape of the Emitter. **/
-        const std::unique_ptr<Shape> shape;
+        const std::unique_ptr<const Shape> shape;
 
         /** @brief The direction of the Particle motion. **/
         const ofVec2f direction;
@@ -57,8 +57,9 @@ class Emitter {
 
     public:
         /** @brief Constructs the Emitter. */
-        Emitter(Shape *shape, const ofVec2f &direction, float maxVelocity, float lifeTime, 
-                float spawnRate, const ofColor &color);
+        Emitter(const Shape *shape, const ofVec2f &direction,
+                float maxVelocity, float lifeTime, float spawnRate,
+                const ofColor &color);
 
         /** 
          * @brief Creates a Particle.
@@ -87,7 +88,7 @@ class Emitter {
 
 template <class Container>
 void Emitter::update(const float deltaTime,
-            std::insert_iterator<Container> &inserter) {
+                     std::insert_iterator<Container> &inserter) {
 
     spawnCount += deltaTime * spawnRate;
 
@@ -100,3 +101,4 @@ void Emitter::update(const float deltaTime,
             inserter = createParticle(ParticleType::Circle);
     }
 }
+

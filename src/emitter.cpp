@@ -1,6 +1,6 @@
 #include "emitter.h"
 
-Emitter::Emitter(Shape *shape, const ofVec2f &direction, float maxVelocity,
+Emitter::Emitter(const Shape *shape, const ofVec2f &direction, float maxVelocity,
                  float lifeTime, float spawnRate, const ofColor &color) :
     shape(shape), 
     direction(direction), 
