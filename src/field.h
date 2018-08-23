@@ -44,7 +44,7 @@ class Field {
          *
          * @param particle -> The Particle to be updated.
          */
-        virtual void updateParticle(std::unique_ptr<Particle> &particle) const = 0;
+        virtual void updateParticle(Particle &particle) const = 0;
 
         /** @brief Draws the Field. **/
         void draw() const;
@@ -78,7 +78,7 @@ class ColorField : public Field {
          *
          * @param particle -> The Particle to be updated.
          */
-        void updateParticle(std::unique_ptr<Particle> &particle) const;
+        virtual void updateParticle(Particle &particle) const override;
 };
 
 /**
@@ -109,5 +109,5 @@ class ForceField : public Field {
          *
          * @param particle -> The Particle to be updated.
          */
-        void updateParticle(std::unique_ptr<Particle> &particle) const;
+        virtual void updateParticle(Particle &particle) const override;
 };

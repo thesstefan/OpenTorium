@@ -18,13 +18,14 @@ bool Field::inside(const ofPoint &point) const {
 ColorField::ColorField(Shape *shape, const ofColor &color) : 
     Field(shape), color(color) {}
 
-void ColorField::updateParticle(std::unique_ptr<Particle> &particle) const {
-    particle->setColor(color);
+void ColorField::updateParticle(Particle &particle) const {
+    particle.setColor(color);
 }
 
 ForceField::ForceField(Shape *shape, const ofVec2f &force) : 
-    Field(shape), force(force) {}
+    Field(shape), force(force)
+{ }
 
-void ForceField::updateParticle(std::unique_ptr<Particle> &particle) const {
-    particle->applyForce(force);
+void ForceField::updateParticle(Particle &particle) const {
+    particle.applyForce(force);
 }

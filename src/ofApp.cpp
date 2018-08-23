@@ -59,7 +59,7 @@ void ofApp::update() {
     emitter_3.update(deltaTime, inserter);
 
     for (auto& particle : particles) {
-        map.updateParticle(particle);
+        map.updateParticle(*particle);
 
         particle->update(deltaTime);
     }

@@ -73,5 +73,5 @@ class FieldMap {
          *
          * @param particle -> The Particle to be updated.
          */
-        void updateParticle(std::unique_ptr<Particle> &particle) const;
+        void updateParticle(Particle &particle) const;
 };
