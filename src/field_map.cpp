@@ -24,7 +24,7 @@ void FieldMap::update() {
     for (auto& it : fields) {
         for (unsigned int heightIndex = 0; heightIndex < height; heightIndex++)
             for (unsigned int widthIndex = 0; widthIndex < width; widthIndex++) 
-                if (it->getShape().inside(ofPoint(widthIndex, heightIndex))) { 
+                if (it->inside(ofPoint(widthIndex, heightIndex))) { 
                     if (map[heightIndex][widthIndex] == 0)
                         map[heightIndex][widthIndex] = 1;
 
@@ -37,7 +37,8 @@ void FieldMap::update() {
 
 void FieldMap::updateParticle(std::unique_ptr<Particle>& particle) const {
     if (particle->getPosition().y < height && particle->getPosition().x < width) {
-        unsigned char id = map.at(static_cast<int>(particle->getPosition().y)).at(static_cast<int>(particle->getPosition().x));
+        unsigned char id = map.at(static_cast<int>(particle->getPosition().y))
+                              .at(static_cast<int>(particle->getPosition().x));
 
         unsigned int fieldIndex = 0;
 

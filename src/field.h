@@ -12,7 +12,7 @@ class Field {
     public:
         Field(Shape *shape);
 
-        const Shape& getShape() const;
+        bool inside(const ofPoint &point) const;
 
         virtual void updateParticle(std::unique_ptr<Particle>& particle) const = 0;
 

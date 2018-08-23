@@ -11,8 +11,8 @@ void Field::draw() const {
     ofPopStyle();
 }
 
-const Shape& Field::getShape() const {
-    return *shape;
+bool Field::inside(const ofPoint &point) const {
+    return shape->inside(point);
 }
 
 ColorField::ColorField(Shape* shape, const ofColor& color) : 
