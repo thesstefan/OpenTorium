@@ -1,5 +1,13 @@
 #include "ofApp.h"
 
+ofApp::ofApp() :
+    map(ofGetWidth(), ofGetHeight()),
+
+    emitter_1(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100),
+    emitter_2(new Ellipse(ofPoint(300, 400), 200.0, 200.0), ofVec2f(1, 1), 200, 10, 50),
+    emitter_3(new Ellipse(ofPoint(300, 700), 200.0, 200.0), ofVec2f(1, 0), 300, 2, 300) {}
+
+
 void ofApp::setup() {
     ofSetFrameRate(60);
 
@@ -7,17 +15,8 @@ void ofApp::setup() {
 
     timePassed = ofGetElapsedTimef();
 
-    emitter_1 = std::unique_ptr<Emitter>(
-            new Emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100));
-    emitter_2 = std::unique_ptr<Emitter>(
-            new Emitter(new Ellipse(ofPoint(300, 400), 200.0, 200.0), ofVec2f(1, 1), 200, 10, 50));;
-    emitter_3 = std::unique_ptr<Emitter>(
-            new Emitter(new Ellipse(ofPoint(300, 700), 200.0, 200.0), ofVec2f(1, 0), 300, 2, 300));
-
-    map = std::unique_ptr<FieldMap>(new FieldMap(ofGetWidth(), ofGetHeight()));
-
-    map->addField(new ForceField(new Ellipse(ofPoint(600, 100), 200.0, 200.0), ofVec2f(0, 100)));
-    map->addField(new ColorField(new Rectangle(ofPoint(800, 400), 200.0, 200.0), ofColor::blue));
+    map.addField(new ForceField(new Ellipse(ofPoint(600, 100), 200.0, 200.0), ofVec2f(0, 100)));
+    map.addField(new ColorField(new Rectangle(ofPoint(800, 400), 200.0, 200.0), ofColor::blue));
 
     PolylineShape *poly = new PolylineShape();
 
@@ -29,9 +28,9 @@ void ofApp::setup() {
 
     poly->addVertex(700, 600);
 
-    map->addField(new ColorField(poly, ofColor::green));
+    map.addField(new ColorField(poly, ofColor::green));
 
-    map->update();
+    map.update();
 }
 
 void ofApp::clearDeadParticles() {
@@ -50,12 +49,13 @@ void ofApp::update() {
 
     clearDeadParticles();
 
-    emitter_1->update(deltaTime, particles);
-    emitter_2->update(deltaTime, particles);
-    emitter_3->update(deltaTime, particles);
+    emitter_1.update(deltaTime, particles);
+    emitter_2.update(deltaTime, particles);
+    emitter_3.update(deltaTime, particles);
 
     for (auto& particle : particles) {
-        map->updateParticle(particle);
+        map.updateParticle(particle);
+
         particle->update(deltaTime);
     }
 }
@@ -65,10 +65,11 @@ void ofApp::draw() {
 
     ofSetColor(0, 0, 255);
 
-    emitter_1->draw();
-    emitter_2->draw();
-    emitter_3->draw();
-    map->draw();
+    emitter_1.draw();
+    emitter_2.draw();
+    emitter_3.draw();
+
+    map.draw();
 
     for (const auto &particle : particles)
         particle->draw();

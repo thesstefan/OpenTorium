@@ -26,12 +26,13 @@
  */
 class ofApp : public ofBaseApp {
     private:
-        std::unique_ptr<FieldMap> map;
+        /** @brief The FieldMap used to track the Particles. **/
+        FieldMap map;
 
         /** @brief The Emitter used to create Particle instances. **/
-        std::unique_ptr<Emitter> emitter_1;
-        std::unique_ptr<Emitter> emitter_2;
-        std::unique_ptr<Emitter> emitter_3;
+        Emitter emitter_1;
+        Emitter emitter_2;
+        Emitter emitter_3;
 
         /** @brief The std::list used to store the Particle instances used. **/
         std::list<std::unique_ptr<Particle>> particles;
@@ -40,6 +41,10 @@ class ofApp : public ofBaseApp {
         float timePassed;
 
     public:
+        /**
+         * @brief Construts ofApp.
+         */
+        ofApp();
 
         /**
          * @brief Sets initial properties of the program
