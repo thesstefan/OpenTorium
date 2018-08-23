@@ -22,5 +22,5 @@ class FieldMap {
 
         void update();
 
-        void updateParticle(std::unique_ptr<Particle>& particle) const;
+        void updateParticle(std::unique_ptr<Particle> &particle) const;
 };

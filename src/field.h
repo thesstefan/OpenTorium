@@ -14,7 +14,7 @@ class Field {
 
         bool inside(const ofPoint &point) const;
 
-        virtual void updateParticle(std::unique_ptr<Particle>& particle) const = 0;
+        virtual void updateParticle(std::unique_ptr<Particle> &particle) const = 0;
 
         void draw() const;
 };
@@ -24,9 +24,9 @@ class ColorField : public Field {
         ofColor color;
 
     public:
-        ColorField(Shape *shape, const ofColor& color);
+        ColorField(Shape *shape, const ofColor &color);
 
-        void updateParticle(std::unique_ptr<Particle>& particle) const;
+        void updateParticle(std::unique_ptr<Particle> &particle) const;
 };
 
 class ForceField : public Field {
@@ -34,7 +34,7 @@ class ForceField : public Field {
         ofVec2f force;
 
     public:
-        ForceField(Shape *shape, const ofVec2f& force);
+        ForceField(Shape *shape, const ofVec2f &force);
 
-        void updateParticle(std::unique_ptr<Particle>& particle) const;
+        void updateParticle(std::unique_ptr<Particle> &particle) const;
 };

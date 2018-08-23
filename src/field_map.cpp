@@ -35,7 +35,7 @@ void FieldMap::update() {
     }
 }
 
-void FieldMap::updateParticle(std::unique_ptr<Particle>& particle) const {
+void FieldMap::updateParticle(std::unique_ptr<Particle> &particle) const {
     if (particle->getPosition().y < height && particle->getPosition().x < width) {
         unsigned char id = map.at(static_cast<int>(particle->getPosition().y))
                               .at(static_cast<int>(particle->getPosition().x));
