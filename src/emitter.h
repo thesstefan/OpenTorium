@@ -16,13 +16,14 @@
 /**
  * @class Emitter
  *
- * This objects creates Particle objects with some common properties at a specified rate.
+ * This objects creates Particle objects with some common properties at a 
+ * specified rate.
  *
- * For now, the common properties passed to the Particle instances are the @b direction and 
- * the @b lifeTime.
+ * For now, the common properties passed to the Particle instances are 
+ * the @b direction, the @b color and the @b lifeTime.
  *
- * The Emitter is shaped as a square and every Particle object created has the initial
- * @b position inside the square.
+ * The Emitter has a shape and every Particle object 
+ * created has the initial @b position inside the shape.
  *
  * The Emitter can be updated every frame, creating new Particle instances.
  */
