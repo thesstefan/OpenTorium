@@ -5,9 +5,9 @@
 ofApp::ofApp() :
     map(ofGetWidth(), ofGetHeight()),
 
-    emitter_1(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100),
-    emitter_2(new Ellipse(ofPoint(300, 400), 200.0, 200.0), ofVec2f(1, 1), 200, 10, 50),
-    emitter_3(new Ellipse(ofPoint(300, 700), 200.0, 200.0), ofVec2f(1, 0), 300, 2, 300) {}
+    emitter_1(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100, ofColor::white),
+    emitter_2(new Ellipse(ofPoint(300, 400), 200.0, 200.0), ofVec2f(1, 1), 200, 10, 50, ofColor::green),
+    emitter_3(new Ellipse(ofPoint(300, 700), 200.0, 200.0), ofVec2f(1, 0), 300, 2, 300, ofColor::red) {}
 
 
 void ofApp::setup() {

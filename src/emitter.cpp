@@ -1,12 +1,13 @@
 #include "emitter.h"
 
 Emitter::Emitter(Shape *shape, const ofVec2f &direction, float maxVelocity,
-                 float lifeTime, float spawnRate) :
+                 float lifeTime, float spawnRate, const ofColor &color) :
     shape(shape), 
     direction(direction), 
     maxVelocity(maxVelocity), 
     lifeTime(lifeTime),
-    spawnRate(spawnRate) {
+    spawnRate(spawnRate),
+    color(color) {
 
     spawnCount = 0;
 }
@@ -17,7 +18,6 @@ std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType &type)
     const ofVec2f velocity = direction * ofRandom(1, maxVelocity);
 
     const int size = ofRandom(5, 10);
-    const ofColor color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
 
     if (type == ParticleType::Circle)
         return std::make_unique<CircleParticle>(size, color, position, velocity, lifeTime);
