@@ -62,3 +62,15 @@ void Particle::setColor(const ofColor &color) {
 void Particle::applyForce(const ofPoint &force) {
     acceleration += force / mass;
 }
+
+std::unique_ptr<Particle> getParticle(const enum ParticleType &type,
+                                      int size, 
+                                      const ofColor &color,
+                                      const ofPoint &position,
+                                      const ofVec2f &velocity,
+                                      float lifeTime) {
+    if (type == ParticleType::Circle)
+        return std::make_unique<CircleParticle>(size, color, position, velocity, lifeTime);
+    else
+        throw "Unknown particle type";
+}

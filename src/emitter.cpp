@@ -19,10 +19,7 @@ std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType &type)
 
     const int size = ofRandom(5, 10);
 
-    if (type == ParticleType::Circle)
-        return std::make_unique<CircleParticle>(size, color, position, velocity, lifeTime);
-    else
-        throw "Unkown particle type";
+    return getParticle(type, size, color, position, velocity, lifeTime);
 }
 
 void Emitter::draw() const {

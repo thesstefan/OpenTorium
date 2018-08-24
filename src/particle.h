@@ -158,3 +158,11 @@ class CircleParticle : public Particle {
          */
         void draw() const;
 };
+
+/** @brief Creates a Particle and returns a std::unique_ptr to it. */
+std::unique_ptr<Particle> getParticle(const enum ParticleType &type,
+                                      int size, 
+                                      const ofColor &color,
+                                      const ofPoint &position,
+                                      const ofVec2f &velocity,
+                                      float lifeTime);
