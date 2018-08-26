@@ -48,8 +48,6 @@ class FieldMap {
 
         /**
          * @brief Adds a Field to the FieldMap.
-         *
-         * @param field -> The Field to be added.
          */
         void addField(const Field *field);
 
@@ -59,7 +57,8 @@ class FieldMap {
         void draw() const;
 
         /**
-         * @brief Updates the FieldMap pixel ids.
+         * @brief Recalculates the static field map, based on the currently
+         *        available fields.
          */
         void update();
 
