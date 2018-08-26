@@ -159,7 +159,26 @@ class CircleParticle : public Particle {
         void draw() const;
 };
 
-/** @brief Creates a Particle and returns a std::unique_ptr to it. */
+/** 
+ * @brief Creates a Particle and returns a std::unique_ptr to it.
+ *
+ * If a new type of Particle is used, a new entry must be added in 
+ * the ParticleType enum.
+ *
+ * @param type -> The type of the Particle.
+ *
+ * @param size -> The size of the Particle.
+ *
+ * @param color -> The color of the Particle.
+ *
+ * @param mass -> The mass of the Particle.
+ *
+ * @param position -> The position of the Particle.
+ *
+ * @param velocity -> The velocity of the Particle.
+ *
+ * @param lifeTime -> The maximum lifeTime of the Particle.
+*/
 std::unique_ptr<Particle> getParticle(const enum ParticleType &type,
                                       int size, 
                                       const ofColor &color,
