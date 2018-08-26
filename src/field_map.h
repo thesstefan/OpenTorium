@@ -14,9 +14,9 @@
  * @class FieldMap
  *
  * The class is used to create a map of static fields to avoid
- * too many calls to Field::inside() which can be expensive.
+ * checking multiple times if a position is in a field.
  *
- * The map also works as a Field container-manager, being able
+ * The map also works as a Field manager, being able
  * to draw the fields and using them to update a Particle.
  */
 class FieldMap {
@@ -35,14 +35,13 @@ class FieldMap {
          * It consists of various ids for each pixel based of
          * in which Fields is inside.
          */
-        std::vector<std::vector<char>> map;
+        std::vector<std::vector<uint8_t>> map;
 
     public:
         /** 
          * @brief Constructs the FieldMap.
          *
          * @param width -> The width of the FieldMap.
-         *
          * @param height -> The height of the FieldMap.
          */
         FieldMap(unsigned int width, unsigned int height);
@@ -55,8 +54,7 @@ class FieldMap {
         void addField(Field *field);
 
         /** 
-         * @brief Draws the Field instances contained 
-         *        by the FieldMap.
+         * @brief Draws the Field instances contained by the FieldMap.
          */
         void draw() const;
 
@@ -66,10 +64,10 @@ class FieldMap {
         void update();
 
         /**
-         * @brief Updates a Particle.
+         * @brief Applies the effects of the fields on a particle.
          *
-         * Calls Field::update() on the Particle for each Field
-         * which is inside of.
+         * Checks if the particle is in a field, then applies its effect on
+         * the particle.
          *
          * @param particle -> The Particle to be updated.
          */
