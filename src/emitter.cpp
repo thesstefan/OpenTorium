@@ -1,46 +1,34 @@
 #include "emitter.h"
 
-Emitter::Emitter() {
-    center = ofPoint(ofGetWidth() / 2, ofGetHeight() / 2);
-
-    direction = ofPoint(1, 0, 0);
-
-    maxVelocity = 100.0;
-    lifeTime = 1.00;
-
-    size = 200;
+Emitter::Emitter(const Shape *shape, const ofVec2f &direction, float maxVelocity,
+                 float lifeTime, float spawnRate, const ofColor &color) :
+    shape(shape), 
+    direction(direction), 
+    maxVelocity(maxVelocity), 
+    lifeTime(lifeTime),
+    spawnRate(spawnRate),
+    color(color) {
 
     spawnCount = 0;
-    spawnRate = 100;
 }
 
-// Get a random point in a square by returning relative coordinates to its
-// center.
-ofPoint randomPointInSquare(const int squareSize) {
-    int x = ofRandom(-(squareSize / 2), squareSize / 2);
-    int y = ofRandom(-(squareSize / 2), squareSize / 2);
+std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType &type) const {
 
-    return ofPoint(x, y);
+    const ofVec2f position = shape->getRandomPoint();
+    const ofVec2f velocity = direction * ofRandom(1, maxVelocity);
+
+    const int size = ofRandom(5, 10);
+
+    return getParticle(type, size, color, position, velocity, lifeTime);
 }
 
-std::unique_ptr<Particle> Emitter::createParticle() const {
-    ofPoint position = center + randomPointInSquare(size);
-    ofPoint velocity = direction * ofRandom(1, maxVelocity);
+void Emitter::draw() const {
+    ofPushStyle();
 
-    std::unique_ptr<Particle> particle(new Particle(position, velocity, lifeTime));
+    ofNoFill();
+    ofSetColor(ofColor::white);
 
-    return particle;
-}
+    shape->draw();
 
-void Emitter::update(float deltaTime, std::list<std::unique_ptr<Particle>>& particles) {
-    spawnCount += deltaTime * spawnRate;
-
-    if (spawnCount >= 1) {
-        int spawnNumber = static_cast<int>(spawnCount);
-
-        spawnCount -= spawnNumber;
-
-        for (int index = 0; index < spawnNumber; index++)
-            particles.push_back(createParticle());
-    }
+    ofPopStyle();
 }

@@ -9,39 +9,47 @@
 #include "ofMain.h"
 
 #include "particle.h"
+#include "shape.h"
+
+#include <iterator>
 
 /**
  * @class Emitter
  *
- * This objects creates Particle objects with some common properties at a specified rate.
+ * This objects creates Particle objects with some common properties at a 
+ * specified rate.
  *
- * For now, the common properties passed to the Particle instances are the @b direction and 
- * the @b lifeTime.
+ * For now, the common properties passed to the Particle instances are 
+ * the @b direction, the @b color and the @b lifeTime.
  *
- * The Emitter is shaped as a square and every Particle object created has the initial
- * @b position inside the square.
+ * The Emitter has a shape and every Particle object 
+ * created has the initial @b position inside the shape.
  *
  * The Emitter can be updated every frame, creating new Particle instances.
  */
 class Emitter {
     private:
-        /** @brief The center of the square-shaped Emitter. **/
-        ofPoint center;
+        /** @brief The shape of the Emitter. **/
+        const std::unique_ptr<const Shape> shape;
+
         /** @brief The direction of the Particle motion. **/
-        ofPoint direction;
+        const ofVec2f direction;
 
         /** @brief The maximum value of the @b velocity possesed by a Particle. **/
-        float maxVelocity;
+        const float maxVelocity;
+
         /** @brief The maximum @b lifeTime of a Particle. **/
-        float lifeTime;
+        const float lifeTime;
 
-        /** @brief The size of the square-shaped Emitter. **/
-        float size;
+        /** @brief The rate of Particle spawning. (Particles / second) **/
+        const float spawnRate;
 
-        /** @brief The rate of Particle spawning. (Particle / second) **/
-        float spawnRate;
-        /** @brief The remaining part of the number of Particles to create in many
-         * update calls.
+        /** @brief The color of the created Particles. **/
+        const ofColor color;
+
+        /**
+         * @brief The remaining part of the number of Particles to create in
+         *        many update calls.
          *
          * When it reaches 1, a new Particle is born. 
          */
@@ -49,23 +57,48 @@ class Emitter {
 
     public:
         /** @brief Constructs the Emitter. */
-        Emitter();
+        Emitter(const Shape *shape, const ofVec2f &direction,
+                float maxVelocity, float lifeTime, float spawnRate,
+                const ofColor &color);
 
-        /** @brief Creates a Particle.
+        /** 
+         * @brief Creates a Particle.
          *
          * @return std::unique_ptr to the created Particle. 
          */
-        std::unique_ptr<Particle> createParticle() const;
+        std::unique_ptr<Particle> createParticle(const enum ParticleType &type) const;
+
+        void draw() const;
 
         /**
          * @brief Updates the Emitter.
          *
-         * The Emitter creates more Particles based on how much time has been since 
-         * the last update call.
+         * The Emitter creates more Particles based on how much time has been
+         * since the last update call.
          *
-         * @param deltaTime -> The time that has passed since the last update call.
+         * @param deltaTime -> The time that has passed since the last update
+         *                     call.
          *
          * @param particles -> The container of Particles used in the app.
          */
-        void update(float deltaTime, std::list<std::unique_ptr<Particle>>& particles);
+        template <class Container>
+        void update(const float deltaTime, 
+                    std::insert_iterator<Container> &inserter);
 };
+
+template <class Container>
+void Emitter::update(const float deltaTime,
+                     std::insert_iterator<Container> &inserter) {
+
+    spawnCount += deltaTime * spawnRate;
+
+    if (spawnCount >= 1) {
+        int spawnNumber = static_cast<int>(spawnCount);
+
+        spawnCount -= spawnNumber;
+
+        for (int index = 0; index < spawnNumber; index++)
+            inserter = createParticle(ParticleType::Circle);
+    }
+}
+
