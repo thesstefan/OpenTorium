@@ -21,13 +21,13 @@
  */
 class FieldMap {
     private:
-        /** @brief The width of the FieldMap. **/
-        const unsigned int width;
-        /** @brief The height of the FieldMap. **/
-        const unsigned int height;
+        /**
+         * @brief The bounds of the field map
+         */
+        const ofRectangle bounds;
 
         /** @brief The Field instances used. **/
-        std::vector<std::unique_ptr<Field>> fields;
+        std::vector<std::unique_ptr<const Field>> fields;
 
         /** 
          * @brief The pseudo-map used.
@@ -51,7 +51,7 @@ class FieldMap {
          *
          * @param field -> The Field to be added.
          */
-        void addField(Field *field);
+        void addField(const Field *field);
 
         /** 
          * @brief Draws the Field instances contained by the FieldMap.
