@@ -3,51 +3,46 @@
 #include <iostream>
 
 FieldMap::FieldMap(unsigned int width, unsigned int height) 
-    : width(width), height(height), map(height, std::vector<char>(width)) {}
+    : bounds(0, 0, width, height), map(height, std::vector<uint8_t>(width)) {}
 
-void FieldMap::addField(Field *field) {
-    fields.push_back(std::unique_ptr<Field>(field));
+void FieldMap::addField(const Field *field) {
+    fields.push_back(std::unique_ptr<const Field>(field));
 }
 
 void FieldMap::draw() const {
-    for (auto& field : fields)
+    for (const auto &field : fields)
         field->draw();
 }
 
 void FieldMap::update() {
-    for (unsigned int heightIndex = 0; heightIndex < height; heightIndex++)
-        for (unsigned int widthIndex = 0; widthIndex < width; widthIndex++)
-            map[heightIndex][widthIndex] = 0;
+    for (auto &row : map)
+        std::fill(row.begin(), row.end(), 0);
 
-    int fieldIndex = 0;
-
-    for (auto& it : fields) {
-        for (unsigned int heightIndex = 0; heightIndex < height; heightIndex++)
-            for (unsigned int widthIndex = 0; widthIndex < width; widthIndex++) 
-                if (it->getShape().inside(ofPoint(widthIndex, heightIndex))) { 
+    for (size_t fieldIndex = 0; fieldIndex < fields.size(); fieldIndex++)
+        for (unsigned int heightIndex = 0; heightIndex < bounds.getHeight(); heightIndex++)
+            for (unsigned int widthIndex = 0; widthIndex < bounds.getWidth(); widthIndex++) 
+                if (fields[fieldIndex]->inside(ofPoint(widthIndex, heightIndex))) { 
                     if (map[heightIndex][widthIndex] == 0)
                         map[heightIndex][widthIndex] = 1;
 
                     map[heightIndex][widthIndex] = map[heightIndex][widthIndex] << fieldIndex;
                 }
-
-        fieldIndex++;
-    }
 }
 
-void FieldMap::updateParticle(std::unique_ptr<Particle>& particle) const {
-    if (particle->getPosition().y < height && particle->getPosition().x < width) {
-        unsigned char id = map.at(static_cast<int>(particle->getPosition().y)).at(static_cast<int>(particle->getPosition().x));
+void FieldMap::updateParticle(Particle &particle) const {
 
-        unsigned int fieldIndex = 0;
+    const ofPoint &position = particle.getPosition();
 
-        while (id && fieldIndex != static_cast<unsigned int>(fields.size())) {
-            if (id & 1) 
-                fields[fieldIndex]->updateParticle(particle);
+    // Skip update if the particle is not inside the field
+    if (!bounds.inside(position))
+        return;
 
-            id = id >> 1;
+    auto id = map.at(position.y).at(position.x);
 
-            fieldIndex++;
-        }
+    for (size_t fieldIndex = 0; fieldIndex < fields.size(); fieldIndex++) {
+        if (id & 1) 
+            fields[fieldIndex]->updateParticle(particle);
+
+        id = id >> 1;
     }
 }

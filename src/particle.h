@@ -51,6 +51,7 @@ class Particle {
 
         /** @brief The time passed since the Particle was created. **/
         float age;
+
         /** @brief The time at which the Particle is marked as @b dead. **/
         const float lifeTime;
 
@@ -76,7 +77,8 @@ class Particle {
          *
          * @param lifeTime -> The maximum lifeTime of the Particle.
          */
-        Particle(int size, const ofColor& color, const ofPoint& position, const ofVec2f& velocity, float lifeTime, float mass = 1.0);
+        Particle(int size, const ofColor &color, const ofPoint &position, 
+                 const ofVec2f &velocity, float lifeTime, float mass = 1.0);
 
         /** @brief Updates the Particle.
          *
@@ -114,14 +116,14 @@ class Particle {
          *
          * @param color -> The new color.
          */
-        void setColor(const ofColor& color);
+        void setColor(const ofColor &color);
 
         /**
          * @brief Applies a force on the Particle (modifies its acceleration).
          *
          * @param force The force to be applied.
          */
-        void applyForce(const ofPoint& force);
+        void applyForce(const ofPoint &force);
 };
 
 /**
@@ -146,7 +148,8 @@ class CircleParticle : public Particle {
          *
          * @param lifeTime -> The maximum lifeTime of the Particle.
          */
-        CircleParticle(int size, const ofColor& color, const ofPoint& position, const ofVec2f& velocity, int lifeTime, float mass = 1.0);
+        CircleParticle(int size, const ofColor& color, const ofPoint &position, 
+                       const ofVec2f &velocity, int lifeTime, float mass = 1.0);
 
         /**
          * @brief Draws the CircleParticle.
@@ -155,3 +158,30 @@ class CircleParticle : public Particle {
          */
         void draw() const;
 };
+
+/** 
+ * @brief Creates a Particle and returns a std::unique_ptr to it.
+ *
+ * If a new type of Particle is used, a new entry must be added in 
+ * the ParticleType enum.
+ *
+ * @param type -> The type of the Particle.
+ *
+ * @param size -> The size of the Particle.
+ *
+ * @param color -> The color of the Particle.
+ *
+ * @param mass -> The mass of the Particle.
+ *
+ * @param position -> The position of the Particle.
+ *
+ * @param velocity -> The velocity of the Particle.
+ *
+ * @param lifeTime -> The maximum lifeTime of the Particle.
+*/
+std::unique_ptr<Particle> getParticle(const enum ParticleType &type,
+                                      int size, 
+                                      const ofColor &color,
+                                      const ofPoint &position,
+                                      const ofVec2f &velocity,
+                                      float lifeTime);
