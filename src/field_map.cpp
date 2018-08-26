@@ -10,7 +10,7 @@ void FieldMap::addField(const Field *field) {
 }
 
 void FieldMap::draw() const {
-    for (auto& field : fields)
+    for (const auto &field : fields)
         field->draw();
 }
 
