@@ -74,3 +74,7 @@ std::unique_ptr<Particle> getParticle(const enum ParticleType &type,
     else
         throw "Unknown particle type";
 }
+
+void Particle::kill() {
+    live = false;
+}
