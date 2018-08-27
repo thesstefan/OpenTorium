@@ -26,7 +26,7 @@
  */
 class Target {
     private:
-        /** @brief The area of the Target. **/
+        /** @brief The zone of the Target. **/
         const ofRectangle targetZone;
 
         /** 
