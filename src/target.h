@@ -26,10 +26,8 @@
  */
 class Target {
     private:
-        /** @brief The shape of the Target. **/
-        const ofRectangle shape;
-        /** @brief The shape of the progress shape. **/
-        ofRectangle slidingShape;
+        /** @brief The area of the Target. **/
+        const ofRectangle targetZone;
 
         /** 
          * @brief The needed flow rate for the progress to not
@@ -47,9 +45,9 @@ class Target {
         /**
          * @brief Constructs the Target.
          *
-         * @param shape -> The shape of the Target.
+         * @param zone -> The zone of the Target.
          */
-        Target(const ofRectangle& shape);
+        Target(const ofRectangle& zone);
 
         /**
          * @brief Checks if a point is inside the Target.

@@ -1,14 +1,14 @@
 #include "target.h"
 
-Target::Target(const ofRectangle& shape) :
-    shape(shape), neededFlowRate(0.1)  {
+Target::Target(const ofRectangle& zone) :
+    targetZone(zone), neededFlowRate(0.1)  {
         lastParticleTime = ofGetElapsedTimef();
 
         progress = 0;
     }
 
 bool Target::inside(const ofPoint& point) const {
-    return shape.inside(point);
+    return targetZone.inside(point);
 }
 
 void Target::update() {
@@ -23,12 +23,7 @@ void Target::update() {
             progress += 0.1;
     }
 
-    slidingShape = ofRectangle(shape.x, shape.y, shape.width, 1);
-
-    if (progress < 0)
-        progress = 0;
-
-    slidingShape.scaleHeight(ofMap(progress, 0, 100, 1, shape.height));
+    progress = ofClamp(progress, 0, 100);
 }
 
 void Target::updateParticle(Particle &particle) {
@@ -42,11 +37,14 @@ void Target::draw() const {
 
     ofNoFill();
 
-    ofDrawRectangle(shape);
+    ofDrawRectangle(targetZone);
 
     ofFill();
 
-    ofDrawRectangle(slidingShape);
+    ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y, targetZone.width, 1);
+    progressRender.scaleHeight(ofMap(progress, 0, 100, 1, targetZone.height));
+
+    ofDrawRectangle(progressRender);
 
     ofPopStyle();
 }
