@@ -5,7 +5,7 @@ Target::Target(const ofRectangle& zone) :
         lastParticleTime = ofGetElapsedTimef();
 
         progress = 0;
-    }
+}
 
 bool Target::inside(const ofPoint& point) const {
     return targetZone.inside(point);
