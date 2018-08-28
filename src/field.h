@@ -40,6 +40,11 @@ class Field {
         bool inside(const ofPoint &point) const;
 
         /**
+         * @brief Updates the Field.
+         */
+        void update();
+
+        /**
          * @brief Updates a Particle. (If it's inside the Field, it's affected by it).
          *
          * @param particle -> The Particle to be updated.
