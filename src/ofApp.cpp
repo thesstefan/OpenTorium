@@ -1,9 +1,7 @@
 #include "ofApp.h"
 
-#include <iterator>
-
 ofApp::ofApp() :
-    target(ofRectangle(600, 0, 300, 200)),
+    targetMap(ofGetWidth(), ofGetHeight()),
     emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100, ofColor::white) {}
 
 
@@ -13,6 +11,8 @@ void ofApp::setup() {
     ofBackground(0, 0, 0);
 
     timePassed = ofGetElapsedTimef();
+
+    targetMap.addZone(new Target(ofRectangle(600, 0, 300, 200)));
 }
 
 void ofApp::clearDeadParticles() {
@@ -29,8 +29,6 @@ void ofApp::update() {
 
     timePassed = time;
 
-    target.update();
-
     clearDeadParticles();
 
     std::insert_iterator<std::list<std::unique_ptr<Particle>>> 
@@ -39,11 +37,12 @@ void ofApp::update() {
     if (STOP == false)
         emitter.update(deltaTime, inserter);
 
+    targetMap.update();
+
     for (auto& particle : particles) {
         particle->update(deltaTime);
 
-        if (target.inside(particle->getPosition()))
-            target.updateParticle(*particle);
+        targetMap.updateParticle(*particle);
     }
 }
 
@@ -52,7 +51,7 @@ void ofApp::draw() {
 
     emitter.draw();
 
-    target.draw();
+    targetMap.draw();
 
     for (const auto &particle : particles)
         particle->draw();

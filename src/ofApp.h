@@ -14,7 +14,7 @@
 
 #include "emitter.h"
 #include "field.h"
-#include "field_map.h"
+#include "zone_map.h"
 #include "target.h"
 
 /**
@@ -28,7 +28,10 @@
 class ofApp : public ofBaseApp {
     private:
         bool STOP = false;
-        Target target;
+
+        /** @brief The Target instances. **/
+        ZoneMap<Target> targetMap;
+
         /** @brief The Emitter used to create Particle instances. **/
         Emitter emitter;
 
