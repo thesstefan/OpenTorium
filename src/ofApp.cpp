@@ -2,7 +2,7 @@
 
 ofApp::ofApp() :
     targetMap(ofGetWidth(), ofGetHeight()),
-    emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100, ofColor::white) {}
+    emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 10, ofColor::white) {}
 
 
 void ofApp::setup() {
