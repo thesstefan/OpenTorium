@@ -30,6 +30,18 @@ class Target {
         const ofRectangle targetZone;
 
         /** 
+         * @brief The number of Particles needed
+         *        for completing the progress.
+         */        
+        const int neededParticles;
+
+        /**
+         * @brief The current number of Particles in the Target.
+         *        (considering variatons based on time delays.
+         */
+        int currentParticles;
+
+        /** 
          * @brief The needed flow rate for the progress to not
          *        decrease
          */
@@ -37,9 +49,6 @@ class Target {
 
         /** @brief The time when the last Particle reached the Target. **/
         float lastParticleTime;
-
-        /** @brief The completion rate. **/
-        float progress;
 
     public:
         /**
