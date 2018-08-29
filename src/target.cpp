@@ -1,7 +1,7 @@
 #include "target.h"
 
-Target::Target(const ofRectangle& zone) :
-    targetZone(zone), neededParticles(50), neededFlowRate(1)  {
+Target::Target(const ofRectangle& zone, int neededParticles, float neededFlowRate) :
+    targetZone(zone), neededParticles(neededParticles), neededFlowRate(neededFlowRate)  {
         lastParticleTime = ofGetElapsedTimef();
 
         currentParticles = 0;

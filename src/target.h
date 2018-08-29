@@ -55,8 +55,15 @@ class Target {
          * @brief Constructs the Target.
          *
          * @param zone -> The zone of the Target.
+         *
+         * @param neededParticles -> The number of Particles which need to
+         *                           be cought by the Target.
+         *
+         * @param neededFlowRate -> The period of time between Particle arrivals
+         *                          in the Target zone needed to keep the progress
+         *                          raising.
          */
-        Target(const ofRectangle& zone);
+        Target(const ofRectangle& zone, int neededParticles, float neededFlowrate);
 
         /**
          * @brief Checks if a point is inside the Target.
