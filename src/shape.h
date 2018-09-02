@@ -13,9 +13,11 @@
  *
  * This object encapsulates necessary capabilities for every concrete Shape :
  *
- * - Drawing the shape;
+ * - Drawing the Shape.
  * - Getting a random ofPoint inside the Shape.
  * - Seeing if a ofPoint is inside the Shape.
+ * - Scaling the Shape.
+ * - Moving the Shape.
  */
 class Shape {
     public:
@@ -25,11 +27,20 @@ class Shape {
         /** @brief Draws the Shape. **/
         virtual void draw() const = 0;
 
+        /** @brief Returns the center of the Shape. **/
+        virtual ofPoint getCenter() const = 0;
+
         /** @brief Returns a random ofPoint inside the Shape. **/
         virtual ofPoint getRandomPoint() const = 0;
 
         /** @brief Returns if an ofPoint is inside the Shape. **/
         virtual bool inside(const ofPoint& point) const = 0;
+
+        /** @brief Scales the Shape by an amount. **/
+        virtual void scale(float amount) = 0;
+
+        /** @brief Moves the Shape. **/
+        virtual void move(const ofPoint &newPosition) = 0;
 };
 
 /** 
@@ -41,12 +52,12 @@ class Shape {
 class Rectangle : public Shape {
     private:
         /** @brief The top left corner of the Rectangle. **/
-        const ofPoint origin;
+        ofPoint origin;
 
         /** @brief The width of the Rectangle. **/
-        const float width;
+        float width;
         /** @brief The height of the Rectangle. **/
-        const float height;
+        float height;
 
     public:
         /** 
@@ -63,6 +74,9 @@ class Rectangle : public Shape {
         /** @brief Draws the Rectangle. **/
         void draw() const;
 
+        /** @brief Returns the center of the Rectangle. **/
+        ofPoint getCenter() const;
+
         /** @brief Returns a random point inside the Rectangle. **/
         ofPoint getRandomPoint() const;
 
@@ -72,6 +86,12 @@ class Rectangle : public Shape {
          * @param point -> The point to be checked.
          */
         bool inside(const ofPoint& point) const;
+
+        /** @brief Scales the Rectangle by an amount. **/
+        void scale(float amount);
+
+        /** @brief Moves the Rectangle to a new position. **/
+        void move(const ofPoint &newPosition);
 };
 
 /** 
@@ -83,12 +103,12 @@ class Rectangle : public Shape {
 class Ellipse : public Shape {
     private:
         /** @brief The center of the Ellipse. **/
-        const ofPoint center;
+        ofPoint center;
 
         /** @brief The width of the Ellipse. **/
-        const float width;
+        float width;
         /** @brief The height of the Ellipse. **/
-        const float height;
+        float height;
 
     public:
         /**
@@ -105,6 +125,9 @@ class Ellipse : public Shape {
         /** @brief Draws the Ellipse. **/
         void draw() const;
 
+        /** @brief Returns the center of the Ellipse. **/
+        ofPoint getCenter() const;
+
         /** @brief Returns a random point inside the Ellipse. **/
         ofPoint getRandomPoint() const;
 
@@ -114,6 +137,12 @@ class Ellipse : public Shape {
          * @param point -> The point to be checked.
          */
         bool inside(const ofPoint& point) const;
+
+        /** @brief Scales the Ellipse by an amount. **/
+        void scale(float amount);
+
+        /** @brief Moves the Ellipse to a new position. **/
+        void move(const ofPoint &newPosition);
 };
 
 /**
@@ -130,6 +159,9 @@ class PolylineShape : public ofPolyline, public Shape {
         /** @brief Draws the PolylineShape. */
         void draw() const;
 
+        /** @brief Returns the center of the PolylineShape. **/
+        ofPoint getCenter() const;
+
         /** @brief Returns a random point inside the PolylineShape. **/
         ofPoint getRandomPoint() const;
 
@@ -139,4 +171,10 @@ class PolylineShape : public ofPolyline, public Shape {
          * @param point -> The point to be checked.
          */
         bool inside(const ofPoint& point) const;
+
+        /** @brief Scales the PolylineShape by an amount. **/
+        void scale(float amount);
+
+        /** @brief Moves the PolylineShape to a new position. **/
+        void move(const ofPoint &newPosition);
 };

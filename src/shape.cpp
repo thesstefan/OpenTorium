@@ -9,6 +9,10 @@ void Rectangle::draw() const {
     ofDrawRectangle(origin, width, height);
 }
 
+ofPoint Rectangle::getCenter() const {
+    return ofPoint(origin.x + width / 2, origin.y + height / 2);
+}
+
 ofPoint Rectangle::getRandomPoint() const {
     return ofPoint(ofRandom(origin.x, origin.x + width), ofRandom(origin.y, origin.y + height));
 }
@@ -18,11 +22,24 @@ bool Rectangle::inside(const ofPoint& point) const {
            point.y >= origin.y && point.y <= origin.y + height;
 }
 
+void Rectangle::scale(float amount) {
+    width *= amount;
+    height *= amount;
+}
+
+void Rectangle::move(const ofPoint &newPosition) {
+    origin = newPosition;
+}
+
 Ellipse::Ellipse(const ofPoint& center, float width, float height) :
     center(center), width(width), height(height) {}
 
 void Ellipse::draw() const {
     ofDrawEllipse(center, width, height);
+}
+
+ofPoint Ellipse::getCenter() const {
+    return center;
 }
 
 ofPoint Ellipse::getRandomPoint() const {
@@ -42,10 +59,23 @@ bool Ellipse::inside(const ofPoint& point) const {
 
 }
 
+void Ellipse::scale(float amount) {
+    width *= amount;
+    height *= amount;
+}
+
+void Ellipse::move(const ofPoint &newPosition) {
+    center = newPosition;
+}
+
 PolylineShape::PolylineShape() {}
 
 void PolylineShape::draw() const {
     ofPolyline::draw();
+}
+
+ofPoint PolylineShape::getCenter() const {
+    return getCentroid2D();
 }
 
 ofPoint PolylineShape::getRandomPoint() const {
@@ -62,4 +92,12 @@ ofPoint PolylineShape::getRandomPoint() const {
 
 bool PolylineShape::inside(const ofPoint& point) const {
     return ofPolyline::inside(point);
+}
+
+void PolylineShape::scale(float amount) {
+    ofPolyline::scale(amount, amount);
+}
+
+void PolylineShape::move(const ofPoint &newPosition) {
+    ofPolyline::translate(newPosition);
 }
