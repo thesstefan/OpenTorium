@@ -8,11 +8,21 @@ void Field::draw() const {
     ofNoFill();
     shape->draw();
 
+    
+
     ofPopStyle();
 }
 
 bool Field::inside(const ofPoint &point) const {
     return shape->inside(point);
+}
+
+void Field::scale(float amount) {
+    shape->scale(amount);
+}
+
+void Field::move(const ofPoint &newPosition) {
+    shape->move(newPosition);
 }
 
 ColorField::ColorField(Shape *shape, const ofColor &color) : 
@@ -23,8 +33,7 @@ void ColorField::updateParticle(Particle &particle) const {
 }
 
 ForceField::ForceField(Shape *shape, const ofVec2f &force) : 
-    Field(shape), force(force)
-{ }
+    Field(shape), force(force) {}
 
 void ForceField::updateParticle(Particle &particle) const {
     particle.applyForce(force);

@@ -22,7 +22,7 @@
 class Field {
     private:
         /** @brief The Shape of the Field. **/
-        const std::unique_ptr<Shape> shape;
+        std::unique_ptr<Shape> shape;
 
     public:
         /** 
@@ -48,6 +48,12 @@ class Field {
 
         /** @brief Draws the Field. **/
         void draw() const;
+
+        /** @brief Scales the Shape. **/
+        void scale(float amount);
+
+        /** @brief Moves the Shape. **/
+        void move(const ofPoint &newPosition);
 };
 
 /**
