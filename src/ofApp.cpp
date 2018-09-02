@@ -3,11 +3,7 @@
 #include <iterator>
 
 ofApp::ofApp() :
-    map(ofGetWidth(), ofGetHeight()),
-
-    emitter_1(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100, ofColor::white),
-    emitter_2(new Ellipse(ofPoint(300, 400), 200.0, 200.0), ofVec2f(1, 1), 200, 10, 50, ofColor::green),
-    emitter_3(new Ellipse(ofPoint(300, 700), 200.0, 200.0), ofVec2f(1, 0), 300, 2, 300, ofColor::red) {}
+    emitter_1(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100, ofColor::white) {}
 
 
 void ofApp::setup() {
@@ -17,22 +13,7 @@ void ofApp::setup() {
 
     timePassed = ofGetElapsedTimef();
 
-    map.addField(new ForceField(new Ellipse(ofPoint(600, 100), 200.0, 200.0), ofVec2f(0, 100)));
-    map.addField(new ColorField(new Rectangle(ofPoint(800, 400), 200.0, 200.0), ofColor::blue));
-
-    PolylineShape *poly = new PolylineShape();
-
-    poly->addVertex(700, 600);
-
-    poly->addVertex(750, 650);
-    poly->addVertex(800, 700);
-    poly->addVertex(750, 700);
-
-    poly->addVertex(700, 600);
-
-    map.addField(new ColorField(poly, ofColor::green));
-
-    map.update();
+    userFields.push_back(std::make_unique<ForceField>(new Ellipse(ofPoint(600, 100), 200.0, 200.0), ofVec2f(0, 100)));
 }
 
 void ofApp::clearDeadParticles() {
@@ -55,11 +36,11 @@ void ofApp::update() {
         inserter(particles, particles.end());
 
     emitter_1.update(deltaTime, inserter);
-    emitter_2.update(deltaTime, inserter);
-    emitter_3.update(deltaTime, inserter);
 
     for (auto& particle : particles) {
-        map.updateParticle(*particle);
+        for (auto& field : userFields)
+            if (field->inside(particle->getPosition()))
+                field->updateParticle(*particle);
 
         particle->update(deltaTime);
     }
@@ -71,12 +52,27 @@ void ofApp::draw() {
     ofSetColor(0, 0, 255);
 
     emitter_1.draw();
-    emitter_2.draw();
-    emitter_3.draw();
 
-    map.draw();
+    for (auto& field : userFields)
+        field->draw();
 
     for (const auto &particle : particles)
         particle->draw();
 }
 
+void ofApp::mouseDragged(int x, int y, int button) {
+    if (button == 0)
+        for (auto& field : userFields)
+            if (field->inside(ofPoint(x, y)))
+                field->move(ofPoint(x, y));
+}
+
+void ofApp::mouseScrolled(int x, int y, float scrollX, float scrollY) {
+    for (auto& field : userFields)
+        if (field->inside(ofPoint(x, y))) {
+            if (scrollY == 1)
+                field->scale(1.1);
+            else if (scrollY == -1)
+                field->scale(0.9);
+        }
+}

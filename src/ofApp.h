@@ -26,13 +26,10 @@
  */
 class ofApp : public ofBaseApp {
     private:
-        /** @brief The FieldMap used to track the Particles. **/
-        FieldMap map;
-
         /** @brief The Emitter used to create Particle instances. **/
         Emitter emitter_1;
-        Emitter emitter_2;
-        Emitter emitter_3;
+
+        std::vector<std::unique_ptr<Field>> userFields;
 
         /** @brief The std::list used to store the Particle instances used. **/
         std::list<std::unique_ptr<Particle>> particles;
@@ -73,4 +70,7 @@ class ofApp : public ofBaseApp {
          */
         void clearDeadParticles();
 
+        void mouseDragged(int x, int y, int button);
+
+        void mouseScrolled(int x, int y, float scrollX, float scrollY);
 };
