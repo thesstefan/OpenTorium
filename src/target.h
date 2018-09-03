@@ -85,7 +85,7 @@ class Target {
         void updateParticle(Particle &particle);
 
         /** @brief Updates the progress and its render. */
-        void update();
+        bool update();
 
         /** 
          * @brief Draws the contour of the rectangle shaped Target

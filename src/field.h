@@ -42,7 +42,7 @@ class Field {
         /**
          * @brief Updates the Field.
          */
-        void update();
+        bool update();
 
         /**
          * @brief Updates a Particle. (If it's inside the Field, it's affected by it).

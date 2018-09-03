@@ -63,7 +63,7 @@ class ZoneMap {
          * @brief Recalculates the static map, based on the currently
          *        available zones.
          */
-        void update();
+        bool update();
 
         /**
          * @brief Applies the effects of the zones on a Particle.
@@ -92,7 +92,9 @@ void ZoneMap<Zone>::draw() const {
 }
 
 template <class Zone>
-void ZoneMap<Zone>::update() {
+bool ZoneMap<Zone>::update() {
+    bool status = true;
+
     for (auto &row : map)
         std::fill(row.begin(), row.end(), 0);
 
@@ -106,8 +108,11 @@ void ZoneMap<Zone>::update() {
                     map[heightIndex][widthIndex] = map[heightIndex][widthIndex] << zoneIndex;
                 }
         
-        zones[zoneIndex]->update();
+        if (zones[zoneIndex]->update() == false)
+            status = false;
     }
+
+    return status;
 }
 
 template <class Zone>
