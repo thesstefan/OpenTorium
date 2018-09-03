@@ -27,13 +27,15 @@
  */
 class ofApp : public ofBaseApp {
     private:
+        bool END = false;
         bool STOP = false;
 
         /** @brief The Target instances. **/
         ZoneMap<Target> targetMap;
 
         /** @brief The Emitter used to create Particle instances. **/
-        Emitter emitter;
+        Emitter emitter_1;
+        Emitter emitter_2;
 
         /** @brief The std::list used to store the Particle instances used. **/
         std::list<std::unique_ptr<Particle>> particles;

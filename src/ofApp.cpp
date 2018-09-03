@@ -1,8 +1,11 @@
 #include "ofApp.h"
 
+#include <iostream>
+
 ofApp::ofApp() :
     targetMap(ofGetWidth(), ofGetHeight()),
-    emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 10, ofColor::blue) {}
+    emitter_1(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 10, ofColor::white),
+    emitter_2(new Ellipse(ofPoint(300, 600), 200.0, 200.0), ofVec2f(1, 0), 300, 15, 50, ofColor::blue) {}
 
 
 void ofApp::setup() {
@@ -12,7 +15,8 @@ void ofApp::setup() {
 
     timePassed = ofGetElapsedTimef();
 
-    targetMap.addZone(new Target(ofRectangle(600, 0, 300, 200), 200, 1, ofColor::blue));
+    targetMap.addZone(new Target(ofRectangle(600, 0, 300, 200), 100, 1.5, ofColor::white));
+    targetMap.addZone(new Target(ofRectangle(600, 450, 300, 200), 200, 0.5, ofColor::blue));
 }
 
 void ofApp::clearDeadParticles() {
@@ -24,37 +28,45 @@ void ofApp::clearDeadParticles() {
 }
 
 void ofApp::update() {
-    const float time = ofGetElapsedTimef();
-    const float deltaTime = ofClamp(time - timePassed, 0, 0.1);
+    if (END == false) {
+        const float time = ofGetElapsedTimef();
+        const float deltaTime = ofClamp(time - timePassed, 0, 0.1);
 
-    timePassed = time;
+        timePassed = time;
 
-    clearDeadParticles();
+        clearDeadParticles();
 
-    std::insert_iterator<std::list<std::unique_ptr<Particle>>> 
-        inserter(particles, particles.end());
+        std::insert_iterator<std::list<std::unique_ptr<Particle>>> 
+            inserter(particles, particles.end());
 
-    if (STOP == false)
-        emitter.update(deltaTime, inserter);
+        if (STOP == false) {
+            emitter_1.update(deltaTime, inserter);
+            emitter_2.update(deltaTime, inserter);
+        }
 
-    targetMap.update();
+        END = targetMap.update();
 
-    for (auto& particle : particles) {
-        particle->update(deltaTime);
+        for (auto& particle : particles) {
+            particle->update(deltaTime);
 
-        targetMap.updateParticle(*particle);
+            targetMap.updateParticle(*particle);
+        }
     }
 }
 
 void ofApp::draw() {
     ofBackground(0, 0, 0);
 
-    emitter.draw();
+    if (END == false) { 
+        emitter_1.draw();
+        emitter_2.draw();
 
-    targetMap.draw();
+        targetMap.draw();
 
-    for (const auto &particle : particles)
-        particle->draw();
+        for (const auto &particle : particles)
+            particle->draw();
+    } else
+        ofDrawBitmapString("Game Over", 300, 300);
 }
 
 void ofApp::keyPressed(int key) {
