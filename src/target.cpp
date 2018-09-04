@@ -1,7 +1,11 @@
 #include "target.h"
 
-Target::Target(const ofRectangle& zone, int neededParticles, float neededFlowRate) :
-    targetZone(zone), neededParticles(neededParticles), neededFlowRate(neededFlowRate)  {
+Target::Target(const ofRectangle &zone, int neededParticles, float neededFlowRate,
+               const ofColor &color) :
+    targetZone(zone), 
+    neededParticles(neededParticles), 
+    neededFlowRate(neededFlowRate), 
+    color(color) {
         lastParticleTime = ofGetElapsedTimef();
 
         currentParticles = 0;
@@ -25,6 +29,9 @@ void Target::update() {
 }
 
 void Target::updateParticle(Particle &particle) {
+    if (particle.getColor() != color)
+        return;
+
     particle.kill();
 
     currentParticles++;
@@ -34,6 +41,8 @@ void Target::updateParticle(Particle &particle) {
 
 void Target::draw() const {
     ofPushStyle();
+
+    ofSetColor(color);
 
     ofNoFill();
 

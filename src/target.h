@@ -47,6 +47,8 @@ class Target {
          */
         const float neededFlowRate;
 
+        const ofColor color;
+
         /** @brief The time when the last Particle reached the Target. **/
         float lastParticleTime;
 
@@ -62,8 +64,11 @@ class Target {
          * @param neededFlowRate -> The period of time between Particle arrivals
          *                          in the Target zone needed to keep the progress
          *                          raising.
+         *
+         * @param color -> The color of the needed Particles.
          */
-        Target(const ofRectangle& zone, int neededParticles, float neededFlowrate);
+        Target(const ofRectangle &zone, int neededParticles, float neededFlowrate,
+               const ofColor &color);
 
         /**
          * @brief Checks if a point is inside the Target.
