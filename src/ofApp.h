@@ -27,8 +27,13 @@
  */
 class ofApp : public ofBaseApp {
     private:
+        /** 
+         * @brief If END is true, the game ends (the end message is the only 
+         * one rendered).
+         *
+         * That happens when all the Target objectives are achieved.
+         */
         bool END = false;
-        bool STOP = false;
 
         /** @brief The Target instances. **/
         ZoneMap<Target> targetMap;
@@ -75,6 +80,4 @@ class ofApp : public ofBaseApp {
          * The container might be resized. Iterators are invalidated.
          */
         void clearDeadParticles();
-
-        void keyPressed(int key);
 };
