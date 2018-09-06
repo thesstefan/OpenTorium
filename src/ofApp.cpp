@@ -1,7 +1,5 @@
 #include "ofApp.h"
 
-#include <iostream>
-
 ofApp::ofApp() :
     targetMap(ofGetWidth(), ofGetHeight()),
     emitter_1(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 10, ofColor::white),
@@ -65,8 +63,11 @@ void ofApp::draw() {
 
         for (const auto &particle : particles)
             particle->draw();
-    } else
-        ofDrawBitmapString("Game Over", 300, 300);
-}
+    } else {
+        ofTrueTypeFont font;
 
-void ofApp::keyPressed(int key) {}
+        font.load("arial.ttf", 80, true, true);
+
+        font.drawString(std::string("Game Over"), 150, 400);
+    }
+}
