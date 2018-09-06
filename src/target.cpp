@@ -15,14 +15,16 @@ bool Target::inside(const ofPoint& point) const {
     return targetZone.inside(point);
 }
 
-bool Target::update() {
+void Target::update() {
     const float timeSinceLastParticle = ofGetElapsedTimef() - lastParticleTime;
 
     if (timeSinceLastParticle > neededFlowRate)
         currentParticles--;
 
     currentParticles = ofClamp(currentParticles, 0, neededParticles);
+}
 
+bool Target::ready() const {
     return currentParticles >= neededParticles;
 }
 

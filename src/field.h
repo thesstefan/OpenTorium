@@ -39,10 +39,8 @@ class Field {
          */
         bool inside(const ofPoint &point) const;
 
-        /**
-         * @brief Updates the Field.
-         */
-        bool update();
+        /** @brief Updates the Field. (empty) **/
+        void update();
 
         /**
          * @brief Updates a Particle. (If it's inside the Field, it's affected by it).
@@ -53,6 +51,13 @@ class Field {
 
         /** @brief Draws the Field. **/
         void draw() const;
+
+        /** 
+         * @brief Checks if the Field is ready. (empty)
+         *
+         * Returns true.
+         */
+        bool ready() const;
 };
 
 /**

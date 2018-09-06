@@ -39,12 +39,12 @@ void ofApp::update() {
         std::insert_iterator<std::list<std::unique_ptr<Particle>>> 
             inserter(particles, particles.end());
 
-        if (STOP == false) {
-            emitter_1.update(deltaTime, inserter);
-            emitter_2.update(deltaTime, inserter);
-        }
+        targetMap.update();
 
-        END = targetMap.update();
+        END = targetMap.ready();
+
+        emitter_1.update(deltaTime, inserter);
+        emitter_2.update(deltaTime, inserter);
 
         for (auto& particle : particles) {
             particle->update(deltaTime);
@@ -69,10 +69,4 @@ void ofApp::draw() {
         ofDrawBitmapString("Game Over", 300, 300);
 }
 
-void ofApp::keyPressed(int key) {
-    if (key == 'p')
-        STOP = true;
-
-    if (key == 's')
-        STOP = false;
-}
+void ofApp::keyPressed(int key) {}

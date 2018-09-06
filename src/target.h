@@ -85,7 +85,10 @@ class Target {
         void updateParticle(Particle &particle);
 
         /** @brief Updates the progress and its render. */
-        bool update();
+        void update();
+
+        /** @brief Checks if the Target objective was achieved. */
+        bool ready() const;
 
         /** 
          * @brief Draws the contour of the rectangle shaped Target

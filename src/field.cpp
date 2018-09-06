@@ -15,7 +15,9 @@ bool Field::inside(const ofPoint &point) const {
     return shape->inside(point);
 }
 
-bool Field::update() {
+void Field::update() {}
+
+bool Field::ready() const {
     return true;
 }
 
