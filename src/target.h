@@ -1,7 +1,5 @@
 /**
  * @file target.h
- *
- * This module provides the implementation of Target.
  */
 
 #pragma once
@@ -14,11 +12,11 @@
  * @class Target
  *
  * Each Target needs a number of Particles to arrive in its area
- * for the "objective" to be achieved.
+ * for the objective to be achieved.
  *
  * The time of the last arrival of a Particle in the Target
- * must be less than the Target's needed flow rate for the
- * progress towards the objective to increase, otherwise decreasing.
+ * must be less than the Target's required time between Particle arrivals
+ * for the progress towards the objective to increase, otherwise decreasing.
  *
  * The Target object is shaped as an Rectangle and it's filling 
  * according to the progress towards the objective.
@@ -28,7 +26,10 @@
  */
 class Target {
     private:
-        /** @brief The zone of the Target. **/
+        /** 
+         * @brief The area of the Target in which the Particles
+         *        must arrive.
+         */
         const ofRectangle targetZone;
 
         /** 
@@ -40,6 +41,9 @@ class Target {
         /**
          * @brief The current number of Particles in the Target.
          *        (considering variatons based on time delays).
+         *
+         * The number of Particles decreases if the time of
+         * the last Particle arrival exceeds the Target's limit.
          */
         int currentParticles;
 
