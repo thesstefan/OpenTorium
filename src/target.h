@@ -32,20 +32,8 @@ class Target {
          */
         const ofRectangle targetZone;
 
-        /** 
-         * @brief The number of Particles needed for
-         *        achieving the objective.
-         */        
-        const int neededParticles;
-
-        /**
-         * @brief The current number of Particles in the Target.
-         *        (considering variatons based on time delays).
-         *
-         * The number of Particles decreases if the time of
-         * the last Particle arrival exceeds the Target's limit.
-         */
-        int currentParticles;
+        /** @brief Current progress towards the objective. **/
+        float progress;
 
         /** 
          * @brief The needed flow rate for the progress to not
@@ -65,17 +53,13 @@ class Target {
          *
          * @param zone -> The zone of the Target.
          *
-         * @param neededParticles -> The number of Particles which need to
-         *                           be caught by the Target.
-         *
          * @param neededFlowRate -> The period of time between Particle arrivals
          *                          in the Target zone needed to keep the progress
          *                          raising.
          *
          * @param color -> The color of the needed Particles.
          */
-        Target(const ofRectangle &zone, int neededParticles, float neededFlowrate,
-               const ofColor &color);
+        Target(const ofRectangle &zone, float neededFlowrate, const ofColor &color);
 
         /**
          * @brief Checks if a point is inside the Target.

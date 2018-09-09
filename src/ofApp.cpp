@@ -13,8 +13,8 @@ void ofApp::setup() {
 
     timePassed = ofGetElapsedTimef();
 
-    targetMap.addZone(new Target(ofRectangle(600, 0, 300, 200), 100, 1.5, ofColor::white));
-    targetMap.addZone(new Target(ofRectangle(600, 450, 300, 200), 200, 0.5, ofColor::blue));
+    targetMap.addZone(new Target(ofRectangle(600, 0, 300, 200), 1.5, ofColor::white));
+    targetMap.addZone(new Target(ofRectangle(600, 450, 300, 200), 0.5, ofColor::blue));
 }
 
 void ofApp::clearDeadParticles() {
