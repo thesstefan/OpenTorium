@@ -32,7 +32,14 @@ class Target {
          */
         const ofRectangle targetZone;
 
-        /** @brief Current progress towards the objective. **/
+        /** 
+         * @brief Current progress towards the objective.
+         *
+         * The progress lies between 0 and 100.
+         *
+         * The progress is increased / decreased according to the Particle
+         * flow received by the Target.
+         */
         float progress;
 
         /** 
