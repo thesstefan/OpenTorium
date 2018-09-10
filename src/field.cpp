@@ -19,8 +19,12 @@ void Field::scale(float amount) {
     shape->scale(amount);
 }
 
-void Field::translate(const ofPoint &amount) {
-    shape->translate(amount);
+void Field::move(const ofPoint &newPosition) {
+    shape->translate(newPosition - shape->getCenter());
+}
+
+float Field::area() const {
+    return shape->area();
 }
 
 ColorField::ColorField(Shape *shape, const ofColor &color) : 

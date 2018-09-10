@@ -29,6 +29,7 @@ class ofApp : public ofBaseApp {
         /** @brief The Emitter used to create Particle instances. **/
         Emitter emitter_1;
 
+        /** @brief The Field instances which can be modified by the user. **/
         std::vector<std::unique_ptr<Field>> userFields;
 
         /** @brief The std::list used to store the Particle instances used. **/
@@ -38,6 +39,25 @@ class ofApp : public ofBaseApp {
         float timePassed;
 
     public:
+        /** 
+         * @brief The minimum area of a Field. It can't be shrinked if 
+         *        it's already smaller.
+         *
+         * The field can actually have its area smaller than the limit.
+         *
+         * Actual limit => (MIN_FIELD_AREA + 1) * 0.9.
+         */
+        constexpr static float MIN_FIELD_AREA = 2500;
+
+        /** @brief The maximum area of a Feild. It can't be enlarged 
+         *         if it's already larger.
+         *
+         * The field can actually have its area bigger than the limit.
+         *
+         * Actual limit => (MAX_FIELD_AREA - 1) * 1.1;
+         */
+        constexpr static float MAX_FIELD_AREA = 125000;
+
         /**
          * @brief Construts ofApp.
          */

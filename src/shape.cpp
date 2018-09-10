@@ -23,12 +23,20 @@ bool Rectangle::inside(const ofPoint& point) const {
 }
 
 void Rectangle::scale(float amount) {
+    ofPoint center = getCenter();
+
     width *= amount;
     height *= amount;
+
+    translate(center - getCenter());
 }
 
 void Rectangle::translate(const ofPoint &amount) {
-    origin = amount;
+    origin += amount;
+}
+
+float Rectangle::area() const {
+    return width * height;
 }
 
 Ellipse::Ellipse(const ofPoint& center, float width, float height) :
@@ -53,6 +61,10 @@ ofPoint Ellipse::getRandomPoint() const {
     }
 }
 
+float Ellipse::area() const {
+    return (height / 2) * (width / 2) * PI;
+}
+
 bool Ellipse::inside(const ofPoint& point) const {
     return (((point.x - center.x) * (point.x - center.x)) / ((width * width) / 4)) +
            (((point.y - center.y) * (point.y - center.y)) / ((height * height) / 4)) <= 1;
@@ -65,7 +77,7 @@ void Ellipse::scale(float amount) {
 }
 
 void Ellipse::translate(const ofPoint &amount) {
-    center = amount;
+    center += amount;
 }
 
 PolylineShape::PolylineShape() {}
@@ -103,5 +115,9 @@ void PolylineShape::scale(float amount) {
 }
 
 void PolylineShape::translate(const ofPoint &amount) {
-    ofPolyline::translate(amount - getCenter());
+    ofPolyline::translate(amount);
+}
+
+float PolylineShape::area() const {
+    return ofPolyline::getArea();
 }

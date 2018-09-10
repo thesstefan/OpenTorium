@@ -49,11 +49,14 @@ class Field {
         /** @brief Draws the Field. **/
         void draw() const;
 
-        /** @brief Scales the Shape. **/
+        /** @brief Scales the Field. **/
         void scale(float amount);
 
-        /** @brief Moves the Shape. **/
-        void translate(const ofPoint &amount);
+        /** @brief Moves the Field. **/
+        void move(const ofPoint &newPosition);
+
+        /** @brief Returns the area of the Field. **/
+        float area() const;
 };
 
 /**

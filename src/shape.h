@@ -41,6 +41,9 @@ class Shape {
 
         /** @brief Translates the Shape. **/
         virtual void translate(const ofPoint &amount) = 0;
+
+        /** @brief Returns the area of the Shape. **/
+        virtual float area() const = 0;
 };
 
 /** 
@@ -92,6 +95,9 @@ class Rectangle : public Shape {
 
         /** @brief Translates the Rectangle to a new position. **/
         void translate(const ofPoint &amount);
+
+        /** @brief Returns the area of the Rectangle. **/
+        float area() const;
 };
 
 /** 
@@ -143,6 +149,9 @@ class Ellipse : public Shape {
 
         /** @brief Moves the Ellipse to a new position. **/
         void translate(const ofPoint &amount);
+
+        /** @brief Returns the area of the Rectangle. **/
+        float area() const;
 };
 
 /**
@@ -177,4 +186,7 @@ class PolylineShape : public ofPolyline, public Shape {
 
         /** @brief Translates the PolylineShape to a new position. **/
         void translate(const ofPoint &amount);
+
+        /** @brief Returns the area of the PolylineShape. **/
+        float area() const;
 };
