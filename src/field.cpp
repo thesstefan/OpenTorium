@@ -27,6 +27,10 @@ float Field::area() const {
     return shape->area();
 }
 
+ofPoint Field::getCenter() const {
+    return shape->getCenter();
+}
+
 ColorField::ColorField(Shape *shape, const ofColor &color) : 
     Field(shape), color(color) {}
 

@@ -3,7 +3,10 @@
 #include <iterator>
 
 ofApp::ofApp() :
-    emitter_1(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100, ofColor::white) {}
+    emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100, ofColor::white) {
+    
+    lastDragPosition = ofPoint(0, 0);
+}
 
 
 void ofApp::setup() {
@@ -35,7 +38,7 @@ void ofApp::update() {
     std::insert_iterator<std::list<std::unique_ptr<Particle>>> 
         inserter(particles, particles.end());
 
-    emitter_1.update(deltaTime, inserter);
+    emitter.update(deltaTime, inserter);
 
     for (auto& particle : particles) {
         for (auto& field : userFields)
@@ -51,7 +54,7 @@ void ofApp::draw() {
 
     ofSetColor(0, 0, 255);
 
-    emitter_1.draw();
+    emitter.draw();
 
     for (auto& field : userFields)
         field->draw();
@@ -60,11 +63,27 @@ void ofApp::draw() {
         particle->draw();
 }
 
-void ofApp::mouseDragged(int x, int y, int button) {
+void ofApp::mousePressed(int x, int y, int button) {
     if (button == 0)
         for (auto& field : userFields)
             if (field->inside(ofPoint(x, y)))
-                field->move(ofPoint(x, y));
+                lastDragPosition = ofPoint(x, y);
+}
+
+void ofApp::mouseReleased(int x, int y, int button) {
+    lastDragPosition = ofPoint(0, 0);
+}
+
+void ofApp::mouseDragged(int x, int y, int button) {
+    if (button == 0)
+        for (auto& field : userFields)
+            if (field->inside(ofPoint(x, y)) && lastDragPosition != ofPoint(0, 0)) {
+                ofPoint center = field->getCenter();
+
+                field->move(center + ofPoint(x,y) - lastDragPosition);
+
+                lastDragPosition = ofPoint(x, y);
+            }
 }
 
 void ofApp::mouseScrolled(int x, int y, float scrollX, float scrollY) {

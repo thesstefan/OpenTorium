@@ -57,6 +57,9 @@ class Field {
 
         /** @brief Returns the area of the Field. **/
         float area() const;
+
+        /** @brief Returns the center of the Field. **/
+        ofPoint getCenter() const;
 };
 
 /**

@@ -27,7 +27,7 @@
 class ofApp : public ofBaseApp {
     private:
         /** @brief The Emitter used to create Particle instances. **/
-        Emitter emitter_1;
+        Emitter emitter;
 
         /** @brief The Field instances which can be modified by the user. **/
         std::vector<std::unique_ptr<Field>> userFields;
@@ -37,6 +37,9 @@ class ofApp : public ofBaseApp {
 
         /** @brief The time that has passed since the beginning of the program. **/
         float timePassed;
+
+        /** @brief The position of the cursor at the last mouseDragged call. **/
+        ofPoint lastDragPosition;
 
     public:
         /** 
@@ -90,7 +93,15 @@ class ofApp : public ofBaseApp {
          */
         void clearDeadParticles();
 
+        /** @brief Called when the mouse is pressed. **/
+        void mousePressed(int x, int y, int button);
+
+        /** @brief Called when the mouse is releasde. **/
+        void mouseReleased(int x, int y, int button);
+
+        /** @brief Called when the mouse is dragged. **/
         void mouseDragged(int x, int y, int button);
 
+        /** @brief Called when the mouse is scrolled. **/
         void mouseScrolled(int x, int y, float scrollX, float scrollY);
 };
