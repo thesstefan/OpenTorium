@@ -27,8 +27,8 @@ void Rectangle::scale(float amount) {
     height *= amount;
 }
 
-void Rectangle::move(const ofPoint &newPosition) {
-    origin = newPosition;
+void Rectangle::translate(const ofPoint &amount) {
+    origin = amount;
 }
 
 Ellipse::Ellipse(const ofPoint& center, float width, float height) :
@@ -64,8 +64,8 @@ void Ellipse::scale(float amount) {
     height *= amount;
 }
 
-void Ellipse::move(const ofPoint &newPosition) {
-    center = newPosition;
+void Ellipse::translate(const ofPoint &amount) {
+    center = amount;
 }
 
 PolylineShape::PolylineShape() {}
@@ -95,9 +95,13 @@ bool PolylineShape::inside(const ofPoint& point) const {
 }
 
 void PolylineShape::scale(float amount) {
+    ofPoint center = getCenter();
+
     ofPolyline::scale(amount, amount);
+
+    ofPolyline::translate(center - getCenter());
 }
 
-void PolylineShape::move(const ofPoint &newPosition) {
-    ofPolyline::translate(newPosition);
+void PolylineShape::translate(const ofPoint &amount) {
+    ofPolyline::translate(amount - getCenter());
 }

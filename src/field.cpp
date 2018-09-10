@@ -8,8 +8,6 @@ void Field::draw() const {
     ofNoFill();
     shape->draw();
 
-    
-
     ofPopStyle();
 }
 
@@ -21,8 +19,8 @@ void Field::scale(float amount) {
     shape->scale(amount);
 }
 
-void Field::move(const ofPoint &newPosition) {
-    shape->move(newPosition);
+void Field::translate(const ofPoint &amount) {
+    shape->translate(amount);
 }
 
 ColorField::ColorField(Shape *shape, const ofColor &color) : 

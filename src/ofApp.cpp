@@ -13,7 +13,7 @@ void ofApp::setup() {
 
     timePassed = ofGetElapsedTimef();
 
-    userFields.push_back(std::make_unique<ForceField>(new Ellipse(ofPoint(600, 100), 200.0, 200.0), ofVec2f(0, 100)));
+    userFields.push_back(std::make_unique<ForceField>(new Ellipse(ofPoint(300, 300), 200, 200), ofVec2f(0, 100)));
 }
 
 void ofApp::clearDeadParticles() {
@@ -64,7 +64,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
     if (button == 0)
         for (auto& field : userFields)
             if (field->inside(ofPoint(x, y)))
-                field->move(ofPoint(x, y));
+                field->translate(ofPoint(x, y));
 }
 
 void ofApp::mouseScrolled(int x, int y, float scrollX, float scrollY) {

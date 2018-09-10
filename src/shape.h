@@ -34,13 +34,13 @@ class Shape {
         virtual ofPoint getRandomPoint() const = 0;
 
         /** @brief Returns if an ofPoint is inside the Shape. **/
-        virtual bool inside(const ofPoint& point) const = 0;
+        virtual bool inside(const ofPoint &point) const = 0;
 
         /** @brief Scales the Shape by an amount. **/
         virtual void scale(float amount) = 0;
 
-        /** @brief Moves the Shape. **/
-        virtual void move(const ofPoint &newPosition) = 0;
+        /** @brief Translates the Shape. **/
+        virtual void translate(const ofPoint &amount) = 0;
 };
 
 /** 
@@ -90,8 +90,8 @@ class Rectangle : public Shape {
         /** @brief Scales the Rectangle by an amount. **/
         void scale(float amount);
 
-        /** @brief Moves the Rectangle to a new position. **/
-        void move(const ofPoint &newPosition);
+        /** @brief Translates the Rectangle to a new position. **/
+        void translate(const ofPoint &amount);
 };
 
 /** 
@@ -142,7 +142,7 @@ class Ellipse : public Shape {
         void scale(float amount);
 
         /** @brief Moves the Ellipse to a new position. **/
-        void move(const ofPoint &newPosition);
+        void translate(const ofPoint &amount);
 };
 
 /**
@@ -175,6 +175,6 @@ class PolylineShape : public ofPolyline, public Shape {
         /** @brief Scales the PolylineShape by an amount. **/
         void scale(float amount);
 
-        /** @brief Moves the PolylineShape to a new position. **/
-        void move(const ofPoint &newPosition);
+        /** @brief Translates the PolylineShape to a new position. **/
+        void translate(const ofPoint &amount);
 };

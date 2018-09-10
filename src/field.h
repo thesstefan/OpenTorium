@@ -53,7 +53,7 @@ class Field {
         void scale(float amount);
 
         /** @brief Moves the Shape. **/
-        void move(const ofPoint &newPosition);
+        void translate(const ofPoint &amount);
 };
 
 /**
