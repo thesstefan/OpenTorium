@@ -39,9 +39,7 @@ class Field {
          */
         bool inside(const ofPoint &point) const;
 
-        /**
-         * @brief Updates the Field.
-         */
+        /** @brief Updates the Field. (empty) **/
         void update();
 
         /**
@@ -53,6 +51,13 @@ class Field {
 
         /** @brief Draws the Field. **/
         void draw() const;
+
+        /** 
+         * @brief Checks if the Field is ready. (empty)
+         *
+         * Returns true.
+         */
+        bool ready() const;
 };
 
 /**

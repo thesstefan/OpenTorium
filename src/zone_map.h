@@ -74,6 +74,9 @@ class ZoneMap {
          * @param particle -> The Particle to be updated.
          */
         void updateParticle(Particle &particle);
+
+        /** @brief Calls ready on each zone. Usually used for Target zones. **/
+        bool ready() const;
 };
 
 template <class Zone>
@@ -96,7 +99,7 @@ void ZoneMap<Zone>::update() {
     for (auto &row : map)
         std::fill(row.begin(), row.end(), 0);
 
-    for (size_t zoneIndex = 0; zoneIndex < zones.size(); zoneIndex++) {
+    for (size_t zoneIndex = 0; zoneIndex < zones.size(); zoneIndex++)
         for (unsigned int heightIndex = 0; heightIndex < bounds.getHeight(); heightIndex++)
             for (unsigned int widthIndex = 0; widthIndex < bounds.getWidth(); widthIndex++) 
                 if (zones[zoneIndex]->inside(ofPoint(widthIndex, heightIndex))) { 
@@ -105,9 +108,6 @@ void ZoneMap<Zone>::update() {
 
                     map[heightIndex][widthIndex] = map[heightIndex][widthIndex] << zoneIndex;
                 }
-        
-        zones[zoneIndex]->update();
-    }
 }
 
 template <class Zone>
@@ -127,4 +127,13 @@ void ZoneMap<Zone>::updateParticle(Particle &particle) {
 
         id = id >> 1;
     }
+}
+
+template <class Zone>
+bool ZoneMap<Zone>::ready() const {
+    for (const auto &zone : zones)
+        if (zone->ready() == false)
+            return false;
+
+    return true;
 }

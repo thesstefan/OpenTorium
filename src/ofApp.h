@@ -27,13 +27,20 @@
  */
 class ofApp : public ofBaseApp {
     private:
-        bool STOP = false;
+        /** 
+         * @brief If END is true, the game ends (the end message is the only 
+         * one rendered).
+         *
+         * That happens when all the Target objectives are achieved.
+         */
+        bool END = false;
 
         /** @brief The Target instances. **/
         ZoneMap<Target> targetMap;
 
         /** @brief The Emitter used to create Particle instances. **/
-        Emitter emitter;
+        Emitter emitter_1;
+        Emitter emitter_2;
 
         /** @brief The std::list used to store the Particle instances used. **/
         std::list<std::unique_ptr<Particle>> particles;
@@ -73,6 +80,4 @@ class ofApp : public ofBaseApp {
          * The container might be resized. Iterators are invalidated.
          */
         void clearDeadParticles();
-
-        void keyPressed(int key);
 };

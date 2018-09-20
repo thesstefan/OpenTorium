@@ -17,6 +17,10 @@ bool Field::inside(const ofPoint &point) const {
 
 void Field::update() {}
 
+bool Field::ready() const {
+    return true;
+}
+
 ColorField::ColorField(Shape *shape, const ofColor &color) : 
     Field(shape), color(color) {}
 

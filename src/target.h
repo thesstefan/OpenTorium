@@ -1,7 +1,5 @@
 /**
  * @file target.h
- *
- * This module provides the inteface of Target.
  */
 
 #pragma once
@@ -13,33 +11,36 @@
 /**
  * @class Target
  *
- * This class encapsulates the object in which the Particle
- * instances must be for the game objective to be achieved.
+ * Each Target needs a number of Particles to arrive in its area
+ * for the objective to be achieved.
  *
- * The Particles must get to the Target in a constant time 
- * period, or its progress decreases.
+ * The time of the last arrival of a Particle in the Target
+ * must be less than the Target's required time between Particle arrivals
+ * for the progress towards the objective to increase, otherwise decreasing.
  *
- * The Target object is shaped as an Rectangle and it's using
- * progress render.
+ * The Target object is shaped as an Rectangle and it's filling 
+ * according to the progress towards the objective.
  *
- * When the progress is maximized, the game is won.
+ * Each Target requires the Particles which arrive in it to have a certain
+ * color.
  */
 class Target {
     private:
-        /** @brief The zone of the Target. **/
+        /** 
+         * @brief The area of the Target in which the Particles
+         *        must arrive.
+         */
         const ofRectangle targetZone;
 
         /** 
-         * @brief The number of Particles needed
-         *        for completing the progress.
-         */        
-        const int neededParticles;
-
-        /**
-         * @brief The current number of Particles in the Target.
-         *        (considering variatons based on time delays.
+         * @brief Current progress towards the objective.
+         *
+         * The progress lies between 0 and 100.
+         *
+         * The progress is increased / decreased according to the Particle
+         * flow received by the Target.
          */
-        int currentParticles;
+        float progress;
 
         /** 
          * @brief The needed flow rate for the progress to not
@@ -47,6 +48,7 @@ class Target {
          */
         const float neededFlowRate;
 
+        /** @brief The needed color of the Particles needed by the Target. **/
         const ofColor color;
 
         /** @brief The time when the last Particle reached the Target. **/
@@ -58,17 +60,13 @@ class Target {
          *
          * @param zone -> The zone of the Target.
          *
-         * @param neededParticles -> The number of Particles which need to
-         *                           be cought by the Target.
-         *
          * @param neededFlowRate -> The period of time between Particle arrivals
          *                          in the Target zone needed to keep the progress
          *                          raising.
          *
          * @param color -> The color of the needed Particles.
          */
-        Target(const ofRectangle &zone, int neededParticles, float neededFlowrate,
-               const ofColor &color);
+        Target(const ofRectangle &zone, float neededFlowrate, const ofColor &color);
 
         /**
          * @brief Checks if a point is inside the Target.
@@ -84,12 +82,15 @@ class Target {
          */
         void updateParticle(Particle &particle);
 
-        /** @brief Updates the progress and its render. */
+        /** @brief Updates the progress towards the objective. */
         void update();
+
+        /** @brief Checks if the Target objective was achieved. */
+        bool ready() const;
 
         /** 
          * @brief Draws the contour of the rectangle shaped Target
-         *        and the progress render.
+         *        and the progress filling.
          */
         void draw() const;
 };
