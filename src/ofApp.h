@@ -39,8 +39,10 @@ class ofApp : public ofBaseApp {
         ZoneMap<Target> targetMap;
 
         /** @brief The Emitter used to create Particle instances. **/
-        Emitter emitter_1;
-        Emitter emitter_2;
+        Emitter emitter;
+
+        /** @brief The Field instances which can be modified by the user. **/
+        std::vector<std::unique_ptr<Field>> userFields;
 
         /** @brief The std::list used to store the Particle instances used. **/
         std::list<std::unique_ptr<Particle>> particles;
@@ -48,7 +50,29 @@ class ofApp : public ofBaseApp {
         /** @brief The time that has passed since the beginning of the program. **/
         float timePassed;
 
+        /** @brief The position of the cursor at the last mouseDragged call. **/
+        ofPoint lastDragPosition;
+
     public:
+        /** 
+         * @brief The minimum area of a Field. It can't be shrinked if 
+         *        it's already smaller.
+         *
+         * The field can actually have its area smaller than the limit.
+         *
+         * Actual limit => (MIN_FIELD_AREA + 1) * 0.9.
+         */
+        constexpr static float MIN_FIELD_AREA = 2500;
+
+        /** @brief The maximum area of a Feild. It can't be enlarged 
+         *         if it's already larger.
+         *
+         * The field can actually have its area bigger than the limit.
+         *
+         * Actual limit => (MAX_FIELD_AREA - 1) * 1.1;
+         */
+        constexpr static float MAX_FIELD_AREA = 125000;
+
         /**
          * @brief Construts ofApp.
          */
@@ -80,4 +104,16 @@ class ofApp : public ofBaseApp {
          * The container might be resized. Iterators are invalidated.
          */
         void clearDeadParticles();
+
+        /** @brief Called when the mouse is pressed. **/
+        void mousePressed(int x, int y, int button);
+
+        /** @brief Called when the mouse is releasde. **/
+        void mouseReleased(int x, int y, int button);
+
+        /** @brief Called when the mouse is dragged. **/
+        void mouseDragged(int x, int y, int button);
+
+        /** @brief Called when the mouse is scrolled. **/
+        void mouseScrolled(int x, int y, float scrollX, float scrollY);
 };

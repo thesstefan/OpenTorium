@@ -22,7 +22,7 @@
 class Field {
     private:
         /** @brief The Shape of the Field. **/
-        const std::unique_ptr<Shape> shape;
+        std::unique_ptr<Shape> shape;
 
     public:
         /** 
@@ -58,6 +58,18 @@ class Field {
          * Returns true.
          */
         bool ready() const;
+
+        /** @brief Scales the Field. **/
+        void scale(float amount);
+
+        /** @brief Moves the Field. **/
+        void move(const ofPoint &newPosition);
+
+        /** @brief Returns the area of the Field. **/
+        float area() const;
+
+        /** @brief Returns the center of the Field. **/
+        ofPoint getCenter() const;
 };
 
 /**

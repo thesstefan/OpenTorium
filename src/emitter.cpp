@@ -17,7 +17,7 @@ std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType &type)
     const ofVec2f position = shape->getRandomPoint();
     const ofVec2f velocity = direction * ofRandom(1, maxVelocity);
 
-    const int size = ofRandom(5, 10);
+    const int size = 3;
 
     return getParticle(type, size, color, position, velocity, lifeTime);
 }

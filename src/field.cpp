@@ -21,6 +21,22 @@ bool Field::ready() const {
     return true;
 }
 
+void Field::scale(float amount) {
+    shape->scale(amount);
+}
+
+void Field::move(const ofPoint &newPosition) {
+    shape->translate(newPosition - shape->getCenter());
+}
+
+float Field::area() const {
+    return shape->area();
+}
+
+ofPoint Field::getCenter() const {
+    return shape->getCenter();
+}
+
 ColorField::ColorField(Shape *shape, const ofColor &color) : 
     Field(shape), color(color) {}
 
@@ -29,8 +45,7 @@ void ColorField::updateParticle(Particle &particle) const {
 }
 
 ForceField::ForceField(Shape *shape, const ofVec2f &force) : 
-    Field(shape), force(force)
-{ }
+    Field(shape), force(force) {}
 
 void ForceField::updateParticle(Particle &particle) const {
     particle.applyForce(force);
