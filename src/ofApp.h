@@ -14,7 +14,8 @@
 
 #include "emitter.h"
 #include "field.h"
-#include "field_map.h"
+#include "zone_map.h"
+#include "target.h"
 
 /**
  * @class ofApp
@@ -26,13 +27,13 @@
  */
 class ofApp : public ofBaseApp {
     private:
-        /** @brief The FieldMap used to track the Particles. **/
-        FieldMap map;
+        bool STOP = false;
+
+        /** @brief The Target instances. **/
+        ZoneMap<Target> targetMap;
 
         /** @brief The Emitter used to create Particle instances. **/
-        Emitter emitter_1;
-        Emitter emitter_2;
-        Emitter emitter_3;
+        Emitter emitter;
 
         /** @brief The std::list used to store the Particle instances used. **/
         std::list<std::unique_ptr<Particle>> particles;
@@ -73,4 +74,5 @@ class ofApp : public ofBaseApp {
          */
         void clearDeadParticles();
 
+        void keyPressed(int key);
 };
