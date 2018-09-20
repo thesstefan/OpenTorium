@@ -1,14 +1,12 @@
 #include "target.h"
 
-Target::Target(const ofRectangle &zone, int neededParticles, float neededFlowRate,
-               const ofColor &color) :
+Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &color) :
     targetZone(zone), 
-    neededParticles(neededParticles), 
     neededFlowRate(neededFlowRate), 
     color(color) {
         lastParticleTime = ofGetElapsedTimef();
 
-        currentParticles = 0;
+        progress = 0;
 }
 
 bool Target::inside(const ofPoint& point) const {
@@ -18,14 +16,14 @@ bool Target::inside(const ofPoint& point) const {
 void Target::update() {
     const float timeSinceLastParticle = ofGetElapsedTimef() - lastParticleTime;
 
-    if (currentParticles >= neededParticles)
-        std::cout << "Done" << std::endl;
-    else {
-        if (timeSinceLastParticle > neededFlowRate)
-            currentParticles--;
-    }
+    if (timeSinceLastParticle > neededFlowRate)
+        progress--;
 
-    currentParticles = ofClamp(currentParticles, 0, neededParticles);
+    progress = ofClamp(progress, 0, 100);
+}
+
+bool Target::ready() const {
+    return progress == 100;
 }
 
 void Target::updateParticle(Particle &particle) {
@@ -34,7 +32,8 @@ void Target::updateParticle(Particle &particle) {
 
     particle.kill();
 
-    currentParticles++;
+    if (progress < 100)
+        progress++;
 
     lastParticleTime = ofGetElapsedTimef();
 }
@@ -51,7 +50,7 @@ void Target::draw() const {
     ofFill();
 
     ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y, targetZone.width, 1);
-    progressRender.scaleHeight(ofMap(currentParticles, 0, neededParticles, 1, targetZone.height));
+    progressRender.scaleHeight(ofMap(progress, 0, 100, 1, targetZone.height));
 
     ofDrawRectangle(progressRender);
 
