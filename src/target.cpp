@@ -1,10 +1,21 @@
 #include "target.h"
 
-Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &color) :
+Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &color,
+               const std::string &trackPath = "") :
     targetZone(zone), 
     neededFlowRate(neededFlowRate), 
     color(color) {
         lastParticleTime = ofGetElapsedTimef();
+
+        track.load(trackPath);
+
+        if (track.isLoaded() == false)
+            throw "Could not load sound : " + trackPath;
+
+        track.setLoop(true);
+
+        track.play();
+        track.setPaused(true);
 
         progress = 0;
 }
@@ -20,6 +31,13 @@ void Target::update() {
         progress--;
 
     progress = ofClamp(progress, 0, 100);
+
+    float volume = ofMap(progress, 0, 100, 0.1, 1);
+
+    track.setVolume(volume);
+
+    if (progress == 0)
+        track.setPaused(true);
 }
 
 bool Target::ready() const {
@@ -34,6 +52,9 @@ void Target::updateParticle(Particle &particle) {
 
     if (progress < 100)
         progress++;
+
+    if (track.isPlaying() == false && progress >= 5)
+        track.setPaused(false);
 
     lastParticleTime = ofGetElapsedTimef();
 }

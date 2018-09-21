@@ -54,6 +54,8 @@ class Target {
         /** @brief The time when the last Particle reached the Target. **/
         float lastParticleTime;
 
+        ofSoundPlayer track;
+
     public:
         /**
          * @brief Constructs the Target.
@@ -66,7 +68,8 @@ class Target {
          *
          * @param color -> The color of the needed Particles.
          */
-        Target(const ofRectangle &zone, float neededFlowrate, const ofColor &color);
+        Target(const ofRectangle &zone, float neededFlowrate, const ofColor &color,
+               const std::string &trackPath);
 
         /**
          * @brief Checks if a point is inside the Target.
