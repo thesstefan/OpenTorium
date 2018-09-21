@@ -2,7 +2,8 @@
 
 ofApp::ofApp() :
     targetMap(ofGetWidth(), ofGetHeight()),
-    emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100, ofColor::blue) {
+    emitter_1(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 50, ofColor::blue),
+    emitter_2(new Ellipse(ofPoint(300, 600), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 150, ofColor::green) {
 
     lastDragPosition = ofPoint(0, 0);
 }
@@ -15,10 +16,14 @@ void ofApp::setup() {
         
     timePassed = ofGetElapsedTimef();
 
-    targetMap.addZone(new Target(ofRectangle(600, 450, 300, 200), 0.5, ofColor::blue, "track.mp3"));
+    targetMap.addZone(new Target(ofRectangle(600, 250, 100, 200), 0.5, ofColor::blue, "track_1.mp3"));
+    targetMap.addZone(new Target(ofRectangle(700, 600, 100, 100), 0.5, ofColor::red, "track_2.mp3"));
 
     userFields.push_back(std::make_unique<ForceField>
-            (new Rectangle(ofPoint(300, 300), 200, 200), ofVec2f(0, 100)));
+            (new Rectangle(ofPoint(500, 100), 200, 200), ofVec2f(0, 100)));
+
+    userFields.push_back(std::make_unique<ColorField>
+            (new Ellipse(ofPoint(450, 600), 200, 200), ofColor::red));
 }
 
 void ofApp::clearDeadParticles() {
@@ -45,7 +50,8 @@ void ofApp::update() {
 
         END = targetMap.ready();
 
-        emitter.update(deltaTime, inserter);
+        emitter_1.update(deltaTime, inserter);
+        emitter_2.update(deltaTime, inserter);
 
         for (auto& particle : particles) {
             for (auto& field : userFields)
@@ -64,7 +70,8 @@ void ofApp::draw() {
     if (END == false) { 
         targetMap.draw();
 
-        emitter.draw();
+        emitter_1.draw();
+        emitter_2.draw();
 
         for (auto& field : userFields)
             field->draw();
