@@ -3,19 +3,19 @@
 ofApp::ofApp() :
     targetMap(ofGetWidth(), ofGetHeight()),
     emitter(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100, ofColor::blue) {
-    
+
     lastDragPosition = ofPoint(0, 0);
 }
 
-
 void ofApp::setup() {
     ofSetFrameRate(60);
-
     ofBackground(0, 0, 0);
 
+    ofSetDataPathRoot("data/");
+        
     timePassed = ofGetElapsedTimef();
 
-    targetMap.addZone(new Target(ofRectangle(600, 450, 300, 200), 0.5, ofColor::blue));
+    targetMap.addZone(new Target(ofRectangle(600, 450, 300, 200), 0.5, ofColor::blue, "track.mp3"));
 
     userFields.push_back(std::make_unique<ForceField>
             (new Rectangle(ofPoint(300, 300), 200, 200), ofVec2f(0, 100)));
