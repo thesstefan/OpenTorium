@@ -108,6 +108,9 @@ void ZoneMap<Zone>::update() {
 
                     map[heightIndex][widthIndex] = map[heightIndex][widthIndex] << zoneIndex;
                 }
+
+    for (auto &zone : zones)
+        zone->update();
 }
 
 template <class Zone>
