@@ -1,7 +1,7 @@
 #include "target.h"
 
 const ofColor Target::BACKGROUND(60, 60, 60);
-const ofColor Target::GRID_LINE_COLOR(30, 30, 30);
+const ofColor Target::GRID_LINE_COLOR(25, 25, 25);
 
 Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &color,
                const std::string &trackPath = "") :
@@ -96,7 +96,7 @@ void Target::draw() const {
 
     ofNoFill();
     ofSetLineWidth(GRID_MARGIN_LINE_WIDTH);
-    ofDrawRectRounded(targetZone, GRID_RECT_RADIUS);
+    ofDrawRectangle(targetZone);
 
     ofPopStyle();
 }

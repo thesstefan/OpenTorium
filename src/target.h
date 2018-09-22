@@ -71,9 +71,6 @@ class Target {
         /** @brief The number of horizontal lines in the grid. **/
         constexpr static int GRID_HORIZONTAL_LINES = 10;
 
-        /** @brief The radius of the rounded grid rectangle. **/
-        constexpr static float GRID_RECT_RADIUS = 5;
-
         /**
          * @brief Constructs the Target.
          *
