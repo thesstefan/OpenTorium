@@ -1,5 +1,9 @@
 #include "target.h"
 
+#include "constants.h"
+
+#include <iostream>
+
 Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &color,
                const std::string &trackPath = "") :
     targetZone(zone), 
@@ -62,18 +66,48 @@ void Target::updateParticle(Particle &particle) {
 void Target::draw() const {
     ofPushStyle();
 
-    ofSetColor(color);
+    ofFill();
 
-    ofNoFill();
-
+    // Draw the background of the Target.
+    ofSetColor(TARGET_CONSTANTS::BACKGROUND);
     ofDrawRectangle(targetZone);
 
-    ofFill();
+    // Draw the progress rectangle.
+    ofSetColor(color);
 
     ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y, targetZone.width, 1);
     progressRender.scaleHeight(ofMap(progress, 0, 100, 1, targetZone.height));
 
     ofDrawRectangle(progressRender);
+
+    // Draw the grid.
+    ofSetColor(TARGET_CONSTANTS::GRID_LINE_COLOR);
+    ofSetLineWidth(TARGET_CONSTANTS::GRID_LINE_WIDTH);
+
+    // Draw the horizontal lines of the grid.
+    ofPoint currentPosition(targetZone.x, targetZone.y);
+    for (int hLineIndex = 0; 
+         hLineIndex < TARGET_CONSTANTS::GRID_HORIZONTAL_LINES
+         && currentPosition.y < targetZone.y + targetZone.height; 
+
+         hLineIndex++, currentPosition.y += targetZone.height / TARGET_CONSTANTS::GRID_HORIZONTAL_LINES) {
+
+            ofDrawLine(currentPosition, currentPosition + ofPoint(targetZone.width, 0));
+    }
+
+    // Draw the vertical lines of the grid.
+    currentPosition = ofPoint(targetZone.x, targetZone.y);
+    for (int vLineIndex = 0; 
+         vLineIndex < TARGET_CONSTANTS::GRID_VERTICAL_LINES 
+         && currentPosition.x < targetZone.x + targetZone.width; 
+
+         vLineIndex++, currentPosition.x += targetZone.width / TARGET_CONSTANTS::GRID_VERTICAL_LINES) {
+
+            ofDrawLine(currentPosition, currentPosition + ofPoint(0, targetZone.height));
+    }
+
+    ofNoFill();
+    ofDrawRectRounded(targetZone, TARGET_CONSTANTS::GRID_RECT_RADIUS);
 
     ofPopStyle();
 }
