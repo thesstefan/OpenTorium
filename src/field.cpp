@@ -2,15 +2,6 @@
 
 Field::Field(Shape* shape) : shape(shape) {}
 
-void Field::draw() const {
-    ofPushStyle();
-
-    ofNoFill();
-    shape->draw();
-
-    ofPopStyle();
-}
-
 bool Field::inside(const ofPoint &point) const {
     return shape->inside(point);
 }
@@ -37,11 +28,47 @@ ofPoint Field::getCenter() const {
     return shape->getCenter();
 }
 
+void Field::draw() const {
+    ofPushStyle();
+
+    ofFill();
+
+    ofSetColor(15, 15, 15);
+    shape->draw();
+
+    ofNoFill();
+    ofSetColor(ofColor::white);
+
+    ofSetCircleResolution(80);
+
+    shape->draw();
+
+    ofPopStyle();
+}
+
 ColorField::ColorField(Shape *shape, const ofColor &color) : 
     Field(shape), color(color) {}
 
 void ColorField::updateParticle(Particle &particle) const {
     particle.setColor(color);
+}
+
+void ColorField::draw() const {
+    ofPushStyle();
+
+    ofFill();
+
+    ofSetColor(15, 15, 15);
+    shape->draw();
+
+    ofNoFill();
+    ofSetColor(color);
+    
+    ofSetCircleResolution(80);
+
+    shape->draw();
+
+    ofPopStyle();
 }
 
 ForceField::ForceField(Shape *shape, const ofVec2f &force) : 
@@ -50,3 +77,4 @@ ForceField::ForceField(Shape *shape, const ofVec2f &force) :
 void ForceField::updateParticle(Particle &particle) const {
     particle.applyForce(force);
 }
+
