@@ -57,6 +57,16 @@ class Target {
         ofSoundPlayer track;
 
     public:
+        static const ofColor BACKGROUND;
+        static const ofColor GRID_LINE_COLOR;
+    
+        constexpr static float GRID_LINE_WIDTH = 5;
+
+        constexpr static int GRID_HORIZONTAL_LINES = 10;
+        constexpr static int GRID_VERTICAL_LINES = 3;
+
+        constexpr static float GRID_RECT_RADIUS = 5;
+
         /**
          * @brief Constructs the Target.
          *

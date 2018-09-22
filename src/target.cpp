@@ -1,8 +1,7 @@
 #include "target.h"
 
-#include "constants.h"
-
-#include <iostream>
+const ofColor Target::BACKGROUND(60, 60, 60);
+const ofColor Target::GRID_LINE_COLOR(0, 0, 0);
 
 Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &color,
                const std::string &trackPath = "") :
@@ -69,7 +68,7 @@ void Target::draw() const {
     ofFill();
 
     // Draw the background of the Target.
-    ofSetColor(TARGET_CONSTANTS::BACKGROUND);
+    ofSetColor(BACKGROUND);
     ofDrawRectangle(targetZone);
 
     // Draw the progress rectangle.
@@ -81,16 +80,16 @@ void Target::draw() const {
     ofDrawRectangle(progressRender);
 
     // Draw the grid.
-    ofSetColor(TARGET_CONSTANTS::GRID_LINE_COLOR);
-    ofSetLineWidth(TARGET_CONSTANTS::GRID_LINE_WIDTH);
+    ofSetColor(GRID_LINE_COLOR);
+    ofSetLineWidth(GRID_LINE_WIDTH);
 
     // Draw the horizontal lines of the grid.
     ofPoint currentPosition(targetZone.x, targetZone.y);
     for (int hLineIndex = 0; 
-         hLineIndex < TARGET_CONSTANTS::GRID_HORIZONTAL_LINES
+         hLineIndex < GRID_HORIZONTAL_LINES
          && currentPosition.y < targetZone.y + targetZone.height; 
 
-         hLineIndex++, currentPosition.y += targetZone.height / TARGET_CONSTANTS::GRID_HORIZONTAL_LINES) {
+         hLineIndex++, currentPosition.y += targetZone.height / GRID_HORIZONTAL_LINES) {
 
             ofDrawLine(currentPosition, currentPosition + ofPoint(targetZone.width, 0));
     }
@@ -98,16 +97,16 @@ void Target::draw() const {
     // Draw the vertical lines of the grid.
     currentPosition = ofPoint(targetZone.x, targetZone.y);
     for (int vLineIndex = 0; 
-         vLineIndex < TARGET_CONSTANTS::GRID_VERTICAL_LINES 
+         vLineIndex < GRID_VERTICAL_LINES 
          && currentPosition.x < targetZone.x + targetZone.width; 
 
-         vLineIndex++, currentPosition.x += targetZone.width / TARGET_CONSTANTS::GRID_VERTICAL_LINES) {
+         vLineIndex++, currentPosition.x += targetZone.width / GRID_VERTICAL_LINES) {
 
             ofDrawLine(currentPosition, currentPosition + ofPoint(0, targetZone.height));
     }
 
     ofNoFill();
-    ofDrawRectRounded(targetZone, TARGET_CONSTANTS::GRID_RECT_RADIUS);
+    ofDrawRectRounded(targetZone, GRID_RECT_RADIUS);
 
     ofPopStyle();
 }
