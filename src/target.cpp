@@ -1,7 +1,7 @@
 #include "target.h"
 
 const ofColor Target::BACKGROUND(60, 60, 60);
-const ofColor Target::GRID_LINE_COLOR(0, 0, 0);
+const ofColor Target::GRID_LINE_COLOR(30, 30, 30);
 
 Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &color,
                const std::string &trackPath = "") :
@@ -94,18 +94,8 @@ void Target::draw() const {
             ofDrawLine(currentPosition, currentPosition + ofPoint(targetZone.width, 0));
     }
 
-    // Draw the vertical lines of the grid.
-    currentPosition = ofPoint(targetZone.x, targetZone.y);
-    for (int vLineIndex = 0; 
-         vLineIndex < GRID_VERTICAL_LINES 
-         && currentPosition.x < targetZone.x + targetZone.width; 
-
-         vLineIndex++, currentPosition.x += targetZone.width / GRID_VERTICAL_LINES) {
-
-            ofDrawLine(currentPosition, currentPosition + ofPoint(0, targetZone.height));
-    }
-
     ofNoFill();
+    ofSetLineWidth(GRID_MARGIN_LINE_WIDTH);
     ofDrawRectRounded(targetZone, GRID_RECT_RADIUS);
 
     ofPopStyle();

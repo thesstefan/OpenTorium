@@ -54,17 +54,24 @@ class Target {
         /** @brief The time when the last Particle reached the Target. **/
         float lastParticleTime;
 
+        /** @brief The track to be played while the Target is filled. **/
         ofSoundPlayer track;
 
     public:
+        /** @brief The background color of the Target. **/
         static const ofColor BACKGROUND;
+        /** @brief The color of the Target's grid. **/
         static const ofColor GRID_LINE_COLOR;
     
-        constexpr static float GRID_LINE_WIDTH = 5;
+        /** @brief The width of the lines of the grid. **/
+        constexpr static float GRID_LINE_WIDTH = 4;
+        /** @brief The width of the grid's margin line. **/
+        constexpr static float GRID_MARGIN_LINE_WIDTH = 5;
 
+        /** @brief The number of horizontal lines in the grid. **/
         constexpr static int GRID_HORIZONTAL_LINES = 10;
-        constexpr static int GRID_VERTICAL_LINES = 3;
 
+        /** @brief The radius of the rounded grid rectangle. **/
         constexpr static float GRID_RECT_RADIUS = 5;
 
         /**
