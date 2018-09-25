@@ -20,7 +20,7 @@
  * The area has a defined Shape.
  */
 class Field {
-    private:
+    protected:
         /** @brief The Shape of the Field. **/
         std::unique_ptr<Shape> shape;
 
@@ -50,7 +50,7 @@ class Field {
         virtual void updateParticle(Particle &particle) const = 0;
 
         /** @brief Draws the Field. **/
-        void draw() const;
+        virtual void draw() const;
 
         /** 
          * @brief Checks if the Field is ready. (empty)
@@ -101,6 +101,9 @@ class ColorField : public Field {
          * @param particle -> The Particle to be updated.
          */
         virtual void updateParticle(Particle &particle) const override;
+
+        /** @brief Draws the ColorField. **/
+        void draw() const override;
 };
 
 /**

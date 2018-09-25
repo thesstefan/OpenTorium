@@ -1,5 +1,8 @@
 #include "target.h"
 
+const ofColor Target::BACKGROUND(60, 60, 60);
+const ofColor Target::GRID_LINE_COLOR(25, 25, 25);
+
 Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &color,
                const std::string &trackPath = "") :
     targetZone(zone), 
@@ -62,18 +65,40 @@ void Target::updateParticle(Particle &particle) {
 void Target::draw() const {
     ofPushStyle();
 
-    ofSetColor(color);
-
-    ofNoFill();
-
-    ofDrawRectangle(targetZone);
-
     ofFill();
 
-    ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y, targetZone.width, 1);
-    progressRender.scaleHeight(ofMap(progress, 0, 100, 1, targetZone.height));
+    // Draw the background of the Target.
+    ofSetColor(BACKGROUND);
+    ofDrawRectangle(targetZone);
+
+    // Draw the progress rectangle.
+    ofSetColor(color);
+
+    ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y + targetZone.height, 
+                                             targetZone.width, -(targetZone.height / GRID_HORIZONTAL_LINES));
+
+    progressRender.scaleHeight(ofMap(progress, 0, 100, 1, GRID_HORIZONTAL_LINES));
 
     ofDrawRectangle(progressRender);
+
+    // Draw the grid.
+    ofSetColor(GRID_LINE_COLOR);
+    ofSetLineWidth(GRID_LINE_WIDTH);
+
+    // Draw the horizontal lines of the grid.
+    ofPoint currentPosition(targetZone.x, targetZone.y);
+    for (int hLineIndex = 0; 
+         hLineIndex < GRID_HORIZONTAL_LINES
+         && currentPosition.y < targetZone.y + targetZone.height; 
+
+         hLineIndex++, currentPosition.y += targetZone.height / GRID_HORIZONTAL_LINES) {
+
+            ofDrawLine(currentPosition, currentPosition + ofPoint(targetZone.width, 0));
+    }
+
+    ofNoFill();
+    ofSetLineWidth(GRID_MARGIN_LINE_WIDTH);
+    ofDrawRectangle(targetZone);
 
     ofPopStyle();
 }
