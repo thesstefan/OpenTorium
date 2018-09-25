@@ -74,7 +74,7 @@ void Target::draw() const {
     // Draw the progress rectangle.
     ofSetColor(color);
 
-    ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y, targetZone.width, 1);
+    ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y + targetZone.height, targetZone.width, -1);
     progressRender.scaleHeight(ofMap(progress, 0, 100, 1, targetZone.height));
 
     ofDrawRectangle(progressRender);
