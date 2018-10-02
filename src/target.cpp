@@ -24,7 +24,8 @@ Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &col
 }
 
 bool Target::inside(const ofPoint& point) const {
-    return targetZone.inside(point);
+    return point.x >= targetZone.x && point.x <= targetZone.x + targetZone.width &&
+           point.y >= targetZone.y && point.y <= targetZone.y + targetZone.height;
 }
 
 void Target::update() {
@@ -50,8 +51,6 @@ bool Target::ready() const {
 void Target::updateParticle(Particle &particle) {
     if (particle.getColor() != color)
         return;
-
-    particle.kill();
 
     if (progress < 100)
         progress++;
