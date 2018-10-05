@@ -2,28 +2,48 @@
 
 ofApp::ofApp() :
     targetMap(ofGetWidth(), ofGetHeight()),
-    emitter_1(new Rectangle(ofPoint(100, 100), 75.0, 75.0), ofVec2f(1, 0), 150, 5, 50, ofColor::white),
-    emitter_2(new Rectangle(ofPoint(500, 200), 75.0, 75.0), ofVec2f(0, 1), 100, 8, 100, ofColor::blue) {
+    fieldsMap(ofGetWidth(), ofGetHeight()),
 
-    lastDragPosition = ofPoint(0, 0);
+    parser("level.txt");
+
+    lastDragPosition = ofPoint(0, 0) {}
+
+void ofApp::addObject(const std::variant<Emitter *, Target *, Field *> &object) {
+    if (std::holds_alternative<Emitter *>(object))
+        emitters.push_back(std::unique_ptr<Emitter>(std::get<Emitter *>(object)));
+    else if (std::holds_alternative<Target *>(object))
+        targetMap.addZone(std::get<Target *>(object));
+    /*
+    else if (std::holds_alternative<Field *>(object)) {
+        if (std::get<Field *>(object)->movable())
+            fields.push_back(std::unique_ptr<Field>(std::get<Field *>(object)));
+        else
+            fieldMap.addZone(std::get<Field *>(object));
+    } else
+    */
+    else
+        throw "Error";
 }
 
 void ofApp::setup() {
+    bool read = false;
+
+    while (read == false) {
+        try {
+            addObject(parser.getObject());
+        } catch (const std::exception &exception) {
+            std::cerr << exception.what() << std::endl;
+
+            read = true;
+        }
+    }
+
     ofSetFrameRate(60);
     ofBackground(20, 20, 20);
 
     ofSetDataPathRoot("data/");
         
     timePassed = ofGetElapsedTimef();
-
-    targetMap.addZone(new Target(ofRectangle(700, 300, 70, 70), 1, ofColor::white, "track_1.mp3"));
-    targetMap.addZone(new Target(ofRectangle(500, 600, 70, 70), 1, ofColor::green, "track_2.mp3"));
-
-    userFields.push_back(std::make_unique<ForceField>
-            (new Ellipse(ofPoint(500, 100), 100, 100), ofVec2f(0, 100)));
-
-    userFields.push_back(std::make_unique<ColorField>
-            (new Ellipse(ofPoint(200, 200), 100, 100), ofColor::green));
 }
 
 void ofApp::clearDeadParticles() {

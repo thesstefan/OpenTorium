@@ -8,6 +8,8 @@
 
 #include "ofMain.h"
 
+#include "particle.h"
+
 /**
  * @class ZoneMap
  *
