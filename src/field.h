@@ -29,8 +29,13 @@ class Field {
          * @brief Constructs the Field. 
          *
          * @param shape -> The Shape of the Field.
+         *
+         * @param mobile -> The ability of the field to be moved/scaled or not.
          */
-        Field(Shape *shape);
+        Field(Shape *shape, bool mobile);
+
+        /** @brief The ability of the field to be moved/scaled or not. */
+        const bool mobile;
 
         /**
          * @brief Checks if a point is inside the Field.
@@ -90,8 +95,10 @@ class ColorField : public Field {
          * @param shape -> The Shape of the ColorField.
          *
          * @parma color -> The ofColor of the ColorField.
+         *
+         * @param mobile -> The ability of the field to be moved/scaled or not.
          */
-        ColorField(Shape *shape, const ofColor &color);
+        ColorField(Shape *shape, const ofColor &color, bool mobile);
 
         /**
          * @brief Updates a Particle.
@@ -124,8 +131,10 @@ class ForceField : public Field {
          * @param shape -> The Shape of the ForceField.
          *
          * @parma force -> The force of the ForceField.
+         *
+         * @param mobile -> The ability of the field to be moved/scaled or not.
          */
-        ForceField(Shape *shape, const ofVec2f &force);
+        ForceField(Shape *shape, const ofVec2f &force, bool mobile);
 
         /** 
          * @brief Updates a Particle.

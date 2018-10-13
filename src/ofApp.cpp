@@ -2,7 +2,7 @@
 
 ofApp::ofApp() :
     targetMap(ofGetWidth(), ofGetHeight()),
-    fieldsMap(ofGetWidth(), ofGetHeight()),
+    fieldMap(ofGetWidth(), ofGetHeight()),
 
     lastDragPosition(0, 0) {
     
@@ -22,8 +22,6 @@ void ofApp::loadLevel(const std::string& path) {
         try {
             addObject(parser.getObject());
         } catch (const EOFReached &exception) {
-            std::cerr << exception.what() << std::endl;
-
             read = true;
         } catch (const std::exception &exception) {
             throw;
@@ -34,18 +32,15 @@ void ofApp::loadLevel(const std::string& path) {
 void ofApp::addObject(const std::variant<Emitter *, Target *, Field *> &object) {
     if (std::holds_alternative<Emitter *>(object)) {
         emitters.push_back(std::unique_ptr<Emitter>(std::get<Emitter *>(object)));
-    } else if (std::holds_alternative<Target *>(object))
+    } else if (std::holds_alternative<Target *>(object)) {
         targetMap.addZone(std::get<Target *>(object));
-    /*
-    else if (std::holds_alternative<Field *>(object)) {
-        if (std::get<Field *>(object)->movable())
+    } else if (std::holds_alternative<Field *>(object)) {
+        if (std::get<Field *>(object)->mobile)
             fields.push_back(std::unique_ptr<Field>(std::get<Field *>(object)));
         else
             fieldMap.addZone(std::get<Field *>(object));
     } else
-    */
-    else
-        throw "Error";
+        throw LevelLoadFail("addObject -> Unknown object received");
 }
 
 void ofApp::setup() {
@@ -82,8 +77,9 @@ void ofApp::update() {
             inserter(particles, particles.end());
 
         targetMap.update();
+        fieldMap.update();
 
-        //END = targetMap.ready();
+//        END = targetMap.ready();
 
         for (auto &emitter : emitters)
             emitter->update(deltaTime, inserter);
@@ -94,6 +90,8 @@ void ofApp::update() {
                     field->updateParticle(*particle);
             
             particle->update(deltaTime);
+
+            fieldMap.updateParticle(*particle);
             targetMap.updateParticle(*particle);
         }
     }
@@ -101,6 +99,7 @@ void ofApp::update() {
 
 void ofApp::draw() {
     if (END == false) { 
+        fieldMap.draw();
         targetMap.draw();
 
         for (auto& emitter : emitters)

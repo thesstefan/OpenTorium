@@ -1,6 +1,6 @@
 #include "field.h"
 
-Field::Field(Shape* shape) : shape(shape) {}
+Field::Field(Shape* shape, bool mobile) : shape(shape), mobile(mobile) {}
 
 bool Field::inside(const ofPoint &point) const {
     return shape->inside(point);
@@ -46,8 +46,8 @@ void Field::draw() const {
     ofPopStyle();
 }
 
-ColorField::ColorField(Shape *shape, const ofColor &color) : 
-    Field(shape), color(color) {}
+ColorField::ColorField(Shape *shape, const ofColor &color, bool mobile) : 
+    Field(shape, mobile), color(color) {}
 
 void ColorField::updateParticle(Particle &particle) const {
     particle.setColor(color);
@@ -71,10 +71,9 @@ void ColorField::draw() const {
     ofPopStyle();
 }
 
-ForceField::ForceField(Shape *shape, const ofVec2f &force) : 
-    Field(shape), force(force) {}
+ForceField::ForceField(Shape *shape, const ofVec2f &force, bool mobile) : 
+    Field(shape, mobile), force(force) {}
 
 void ForceField::updateParticle(Particle &particle) const {
     particle.applyForce(force);
 }
-

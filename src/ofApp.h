@@ -39,7 +39,7 @@ class ofApp : public ofBaseApp {
         /** @brief The Target instances. **/
         ZoneMap<Target> targetMap;
 
-        ZoneMap<Field> fieldsMap;
+        ZoneMap<Field> fieldMap;
 
         /** @brief The Emitter used to create Particle instances. **/
         std::vector<std::unique_ptr<Emitter>> emitters;

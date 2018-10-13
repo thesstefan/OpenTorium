@@ -22,6 +22,8 @@ class LevelParser {
         void identifierCheck(const std::string &identifier);
 
         Emitter *createEmitter();
+        Field *createField();
+        Target *createTarget();
 
     public:
         LevelParser();
@@ -43,7 +45,7 @@ class LevelIdentifierFail : public std::runtime_error {
     public:
         LevelIdentifierFail(const std::string& message);
 
-        const char *what() const noexcept override;
+        const char *what() const noexcept;
 };
 
 class EOFReached : public std::runtime_error {
@@ -59,4 +61,3 @@ class UnknownType : public std::runtime_error {
 
         const char *what() const noexcept override;
 };
-
