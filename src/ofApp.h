@@ -54,9 +54,13 @@ class ofApp : public ofBaseApp {
         float timePassed;
 
         /** @brief The position of the cursor at the last mouseDragged call. **/
+        LevelParser parser;
+
         ofPoint lastDragPosition;
 
-        LevelParser parser;
+        void addObject(const std::variant<Emitter *, Target *, Field *> &object);
+
+        void loadLevel(const std::string &path);
 
     public:
         /** 

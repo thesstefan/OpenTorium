@@ -4,14 +4,37 @@ ofApp::ofApp() :
     targetMap(ofGetWidth(), ofGetHeight()),
     fieldsMap(ofGetWidth(), ofGetHeight()),
 
-    parser("level.txt");
+    lastDragPosition(0, 0) {
+    
+    ofSetDataPathRoot("data/");
+}
 
-    lastDragPosition = ofPoint(0, 0) {}
+void ofApp::loadLevel(const std::string& path) {
+    try {
+        parser.load(path);
+    } catch (const LevelLoadFail& exception) {
+        std::cerr << exception.what() << std::endl;
+    }
+
+    bool read = false;
+
+    while (read == false) {
+        try {
+            addObject(parser.getObject());
+        } catch (const EOFReached &exception) {
+            std::cerr << exception.what() << std::endl;
+
+            read = true;
+        } catch (const std::exception &exception) {
+            throw;
+        }
+    }
+}
 
 void ofApp::addObject(const std::variant<Emitter *, Target *, Field *> &object) {
-    if (std::holds_alternative<Emitter *>(object))
+    if (std::holds_alternative<Emitter *>(object)) {
         emitters.push_back(std::unique_ptr<Emitter>(std::get<Emitter *>(object)));
-    else if (std::holds_alternative<Target *>(object))
+    } else if (std::holds_alternative<Target *>(object))
         targetMap.addZone(std::get<Target *>(object));
     /*
     else if (std::holds_alternative<Field *>(object)) {
@@ -26,24 +49,16 @@ void ofApp::addObject(const std::variant<Emitter *, Target *, Field *> &object) 
 }
 
 void ofApp::setup() {
-    bool read = false;
-
-    while (read == false) {
-        try {
-            addObject(parser.getObject());
-        } catch (const std::exception &exception) {
-            std::cerr << exception.what() << std::endl;
-
-            read = true;
-        }
-    }
-
     ofSetFrameRate(60);
     ofBackground(20, 20, 20);
 
-    ofSetDataPathRoot("data/");
-        
     timePassed = ofGetElapsedTimef();
+
+    try {
+        loadLevel("data/level.txt");
+    } catch (const std::exception &exception) {
+        std::cerr << exception.what() << std::endl;
+    }
 }
 
 void ofApp::clearDeadParticles() {
@@ -68,13 +83,13 @@ void ofApp::update() {
 
         targetMap.update();
 
-        END = targetMap.ready();
+        //END = targetMap.ready();
 
-        emitter_1.update(deltaTime, inserter);
-        emitter_2.update(deltaTime, inserter);
+        for (auto &emitter : emitters)
+            emitter->update(deltaTime, inserter);
 
         for (auto& particle : particles) {
-            for (auto& field : userFields)
+            for (auto& field : fields)
                 if (field->inside(particle->getPosition()))
                     field->updateParticle(*particle);
             
@@ -88,9 +103,10 @@ void ofApp::draw() {
     if (END == false) { 
         targetMap.draw();
 
-//        emitter_1.draw();
+        for (auto& emitter : emitters)
+            emitter->draw();
 
-        for (auto& field : userFields)
+        for (auto& field : fields)
             field->draw();
 
         for (const auto &particle : particles)
@@ -105,7 +121,7 @@ void ofApp::draw() {
 
 void ofApp::mousePressed(int x, int y, int button) {
     if (button == 0)
-        for (auto& field : userFields)
+        for (auto& field : fields)
             if (field->inside(ofPoint(x, y)))
                 lastDragPosition = ofPoint(x, y);
 }
@@ -116,7 +132,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
 void ofApp::mouseDragged(int x, int y, int button) {
     if (button == 0)
-        for (auto& field : userFields)
+        for (auto& field : fields)
             if (field->inside(ofPoint(x, y)) && lastDragPosition != ofPoint(0, 0)) {
                 ofPoint center = field->getCenter();
 
@@ -127,7 +143,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
 }
 
 void ofApp::mouseScrolled(int x, int y, float scrollX, float scrollY) {
-    for (auto& field : userFields)
+    for (auto& field : fields)
         if (field->inside(ofPoint(x, y))) {
             if (scrollY == 1) {
                 if (field->area() < MAX_FIELD_AREA)

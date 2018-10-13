@@ -6,8 +6,9 @@
 
 #include <fstream>
 #include <variant>
+#include <exception>
 
-enum ObjectType { Emitter, Target, Field };
+enum ObjectType { EmitterType, TargetType, FieldType };
 
 class LevelParser {
     private:
@@ -23,8 +24,39 @@ class LevelParser {
         Emitter *createEmitter();
 
     public:
-        LevelParser(const std::string &path);
+        LevelParser();
+
+        void load(const std::string &path);
 
         std::variant<Emitter *, Target *, Field *> 
             getObject();
 };
+
+class LevelLoadFail : public std::runtime_error {
+    public:
+        LevelLoadFail(const std::string& message);
+
+        const char *what() const noexcept override;
+};
+
+class LevelIdentifierFail : public std::runtime_error {
+    public:
+        LevelIdentifierFail(const std::string& message);
+
+        const char *what() const noexcept override;
+};
+
+class EOFReached : public std::runtime_error {
+    public:
+        EOFReached(const std::string& message);
+
+        const char *what() const noexcept override;
+};
+
+class UnknownType : public std::runtime_error {
+    public:
+        UnknownType(const std::string& message);
+
+        const char *what() const noexcept override;
+};
+
