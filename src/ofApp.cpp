@@ -29,16 +29,16 @@ void ofApp::loadLevel(const std::string& path) {
     }
 }
 
-void ofApp::addObject(const std::variant<Emitter *, Target *, Field *> &object) {
+void ofApp::addObject(const std::variant<Emitter *, Field *, Target *> &object) {
     if (std::holds_alternative<Emitter *>(object)) {
         emitters.push_back(std::unique_ptr<Emitter>(std::get<Emitter *>(object)));
-    } else if (std::holds_alternative<Target *>(object)) {
-        targetMap.addZone(std::get<Target *>(object));
     } else if (std::holds_alternative<Field *>(object)) {
         if (std::get<Field *>(object)->mobile)
             fields.push_back(std::unique_ptr<Field>(std::get<Field *>(object)));
         else
             fieldMap.addZone(std::get<Field *>(object));
+    } else if (std::holds_alternative<Target *>(object)) {
+        targetMap.addZone(std::get<Target *>(object));
     } else
         throw LevelLoadFail("addObject -> Unknown object received");
 }

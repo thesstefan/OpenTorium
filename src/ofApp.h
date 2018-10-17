@@ -18,6 +18,8 @@
 #include "field.h"
 #include "target.h"
 
+#include "exceptions.h"
+
 /**
  * @class ofApp
  *
@@ -58,7 +60,7 @@ class ofApp : public ofBaseApp {
 
         ofPoint lastDragPosition;
 
-        void addObject(const std::variant<Emitter *, Target *, Field *> &object);
+        void addObject(const std::variant<Emitter *, Field *, Target *> &object);
 
         void loadLevel(const std::string &path);
 
