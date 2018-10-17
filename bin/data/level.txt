@@ -9,7 +9,7 @@ EMITTER
     spawnRate           50
     color               WHITE
 
-EMITTER 
+EMITTER
     position            500 200
     shape               SQUARE
     direction           0 1
@@ -23,14 +23,14 @@ FIELD
     shape               CIRCLE
     mobile              TRUE
     type                FORCE
-    force               100 0
+    force/color         100 0
 
 FIELD
     position            800 300
     shape               SQUARE
     mobile              FALSE
     type                COLOR
-    color               RED
+    force/color         RED
 
 TARGET
     position            1000 300
