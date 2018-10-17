@@ -79,7 +79,7 @@ void ofApp::update() {
         targetMap.update();
         fieldMap.update();
 
-//        END = targetMap.ready();
+        END = targetMap.ready();
 
         for (auto &emitter : emitters)
             emitter->update(deltaTime, inserter);
