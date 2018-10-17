@@ -8,56 +8,37 @@
 #include <variant>
 #include <exception>
 
-enum ObjectType { EmitterType, TargetType, FieldType };
+enum ObjectType { EmitterType, FieldType, TargetType };
+
+class ObjectParser {
+    private:
+        std::ifstream& stream;
+        enum ObjectType type;
+
+        std::map<const std::string, std::string> data;
+
+    public:
+        ObjectParser(const std::vector<std::string>& identifiers,
+                     std::ifstream &stream,
+                     const enum ObjectType type);
+
+        void addValue(const std::string& identifier,
+                      const std::string& value);
+
+        bool ready() const;
+
+        const std::map<const std::string, std::string>& parse();
+};
 
 class LevelParser {
     private:
         std::ifstream levelStream;
-
-        enum ObjectType getObjectType();
-
-        std::variant<Emitter *, Target *, Field *> 
-            createObject(const enum ObjectType &type);
-
-        void identifierCheck(const std::string &identifier);
-
-        Emitter *createEmitter();
-        Field *createField();
-        Target *createTarget();
 
     public:
         LevelParser();
 
         void load(const std::string &path);
 
-        std::variant<Emitter *, Target *, Field *> 
+        std::variant<Emitter *, Field *, Target *> 
             getObject();
-};
-
-class LevelLoadFail : public std::runtime_error {
-    public:
-        LevelLoadFail(const std::string& message);
-
-        const char *what() const noexcept override;
-};
-
-class LevelIdentifierFail : public std::runtime_error {
-    public:
-        LevelIdentifierFail(const std::string& message);
-
-        const char *what() const noexcept;
-};
-
-class EOFReached : public std::runtime_error {
-    public:
-        EOFReached(const std::string& message);
-
-        const char *what() const noexcept override;
-};
-
-class UnknownType : public std::runtime_error {
-    public:
-        UnknownType(const std::string& message);
-
-        const char *what() const noexcept override;
 };

@@ -1,5 +1,172 @@
 #include "level_parser.h"
 #include "constants.h"
+#include "get_functions.h"
+#include "exceptions.h"
+
+#include <sstream>
+
+const std::vector<std::string> emitterIdentifiers = 
+    { "direction", "maxVelocity", "lifeTime", "spawnRate", "shape", "position", "color" };
+
+const std::vector<std::string> fieldIdentifiers = 
+    { "shape", "position", "mobile", "type", "force/color" };
+
+const std::vector<std::string> targetIdentifiers = 
+    { "position", "flowRate", "color", "trackPath" };
+
+
+const enum ObjectType getObjectType(const std::string &typeString) {
+    if (typeString == "EMITTER" || typeString == "emitter")
+        return ObjectType::EmitterType;
+    
+    if (typeString == "FIELD" || typeString == "field")
+        return ObjectType::FieldType;
+
+    if (typeString == "TARGET" || typeString == "target")
+        return ObjectType::TargetType;
+
+    throw UnknownType("Unknown object type : " + typeString);
+}
+
+const std::vector<std::string> getIdentifiers(const enum ObjectType &type) {
+    if (type == ObjectType::EmitterType)
+        return emitterIdentifiers;
+
+    if (type == ObjectType::FieldType)
+        return fieldIdentifiers;
+
+    if (type == ObjectType::TargetType)
+        return targetIdentifiers;
+
+    throw UnknownType("getIdentifiers -> UnknownType");
+}
+
+Shape *getShape(const ofPoint &position, const std::string &shape, const enum ObjectType &type) {
+    if (type == ObjectType::EmitterType) {
+        if (shape == "CIRCLE")
+            return new Ellipse(position, EMITTER_CIRCLE_SIZE, EMITTER_CIRCLE_SIZE);
+        
+        if (shape == "SQUARE")
+            return new Rectangle(position, EMITTER_SQUARE_SIZE, EMITTER_SQUARE_SIZE);
+
+        throw UnknownType("getShape -> Unknown shape type : " + shape);
+    }
+
+    if (type == ObjectType::FieldType) {
+        if (shape == "CIRCLE")
+            return new Ellipse(position, FIELD_CIRCLE_SIZE, FIELD_CIRCLE_SIZE);
+        
+        if (shape == "SQUARE")
+            return new Rectangle(position, FIELD_SQUARE_SIZE, FIELD_SQUARE_SIZE);
+
+        throw UnknownType("getShape -> Unknown shape type : " + shape);
+    }
+
+    throw UnknownType("getShape -> Can't use getShape for Target");
+}
+
+std::variant<Emitter *, Field *, Target *> 
+    createObject(const std::map<const std::string, std::string>& data, 
+                 const enum ObjectType& type) {
+
+    std::variant<Emitter *, Field *, Target *> object;
+
+    if (type == ObjectType::EmitterType) {
+        const ofPoint position = getVec2f(data.at("position"));
+        const ofVec2f direction = getVec2f(data.at("direction"));
+
+        const float maxVelocity = std::stof(data.at("maxVelocity"));
+        const float lifeTime = std::stof(data.at("lifeTime"));
+        const float spawnRate = std::stof(data.at("spawnRate"));
+
+        Shape *shape = getShape(position, data.at("shape"), type);
+        const ofColor color = getColor(data.at("color"));
+
+        object = new Emitter(shape, direction, maxVelocity, lifeTime, spawnRate, color);
+    } else if (type == ObjectType::FieldType) {
+        const ofPoint position = getVec2f(data.at("position"));
+        const bool mobile = getBool(data.at("mobile"));
+
+        Shape *shape = getShape(position, data.at("shape"), type);
+
+        if (data.at("type") == "FORCE") {
+            const ofVec2f force = getVec2f(data.at("force/color"));
+
+            object = new ForceField(shape, force, mobile);
+        } else if (data.at("type") == "COLOR") {
+            const ofColor color = getColor(data.at("force/color"));
+
+            object = new ColorField(shape, color, mobile);
+        } else
+            throw UnknownType("Unknown field type : " + data.at("type"));
+    } else if (type == ObjectType::TargetType) {
+        const ofPoint position = getVec2f(data.at("position"));
+        const ofRectangle zone(position, TARGET_SIZE, TARGET_SIZE);
+
+        const float flowRate = std::stof(data.at("flowRate"));
+        const ofColor color = getColor(data.at("color"));
+
+        const std::string trackPath = data.at("trackPath");
+
+        object = new Target(zone, flowRate, color, trackPath);
+    } else
+        throw UnknownType("Unknown object type");
+
+    return object;
+}
+
+ObjectParser::ObjectParser(const std::vector<std::string>& identifiers,
+                           std::ifstream& stream,
+                           const enum ObjectType type) : stream(stream), type(type) {
+
+    for (const auto& identifier : identifiers)
+        data.insert(std::pair<const std::string, std::string>(identifier, ""));
+}
+
+void ObjectParser::addValue(const std::string& identifier, const std::string& value) {
+    if (data.count(identifier) == 0)
+        throw UnknownType("Unknown identifier : " + identifier);
+
+    if (data.find(identifier)->second == "")
+        data[identifier] = value;
+}
+
+bool ObjectParser::ready() const {
+    for (const auto& pair : data) 
+        if (pair.second == "")
+            return false;
+
+    return true;
+}
+
+const std::map<const std::string, std::string> &ObjectParser::parse() {
+    std::string line;
+    
+    while (line.empty())
+        std::getline(stream, line);
+
+    while (ready() == false && line.empty() == false) {
+        std::stringstream stringStream(line);
+
+        std::string identifier;
+        stringStream >> identifier;
+
+        std::string value;
+        stringStream >> value;
+
+        std::string temp;
+        stringStream >> temp;
+
+        if (temp.empty() == false)
+            value = value + " " + temp;
+
+        addValue(identifier, value);
+
+        std::getline(stream, line);
+    }
+
+    return data;
+}
 
 LevelParser::LevelParser() {}
 
@@ -16,471 +183,18 @@ void LevelParser::load(const std::string &path) {
         throw LevelLoadFail("Error processing file. " + path + " is not a level file.");
 }
 
-void LevelParser::identifierCheck(const std::string &identifier) {
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    std::string identifierString;
-    levelStream >> identifierString;
-
-    if (identifierString != identifier) {
-        throw LevelIdentifierFail
-            ("Could not find '" + identifier + "' identifier. Got '" + identifierString + "' instead.");
-    }
-}
-
-Shape *getShape(const ofPoint &position, const std::string& shape, const std::string& object) {
-    if (object == "EMITTER") {
-        if (shape == "CIRCLE")
-            return new Ellipse(position, EMITTER_CIRCLE_SIZE, EMITTER_CIRCLE_SIZE);
-        
-        if (shape == "SQUARE")
-            return new Rectangle(position, EMITTER_SQUARE_SIZE, EMITTER_SQUARE_SIZE);
-
-        throw UnknownType("getShape -> Unknown shape type : " + shape);
-    }
-
-    if (object == "FIELD") {
-        if (shape == "CIRCLE")
-            return new Ellipse(position, FIELD_CIRCLE_SIZE, FIELD_CIRCLE_SIZE);
-        
-        if (shape == "SQUARE")
-            return new Rectangle(position, FIELD_SQUARE_SIZE, FIELD_SQUARE_SIZE);
-
-        throw UnknownType("getShape -> Unknown shape type : " + shape);
-    }
-
-    throw UnknownType("getShape -> Unknown object type : " + object);
-}
-
-ofColor getColor(const std::string &colorString) {
-    if (colorString == "WHITE")
-        return ofColor::white;
-
-    if (colorString == "BLUE")
-        return ofColor::blue;
-
-    if (colorString == "RED")
-        return ofColor::red;
-
-    if (colorString == "GREEN")
-        return ofColor::green;
-
-    throw UnknownType("getColor -> Unknown color : " + colorString);
-}
-
-Emitter *LevelParser::createEmitter() {
-    try {
-        identifierCheck("position");
-    } catch (const std::exception& exception) {
-        throw;
-    }
-    
-    ofPoint position;
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    levelStream >> position.x;
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    levelStream >> position.y;
-
-    try {
-        identifierCheck("shape");
-    } catch (const std::exception& exception) {
-        throw;
-    }
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    std::string shapeString;
-    levelStream >> shapeString;
-
-    Shape *shape = nullptr;
-
-    try {
-        shape = getShape(position, shapeString, "EMITTER");
-    } catch (const std::exception &exception) {
-        throw;
-    }
-
-    try {
-        identifierCheck("direction");
-    } catch (const std::runtime_error &exception) {
-        throw;
-    }
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    ofVec2f direction;
-    levelStream >> direction.x;
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-    
-    levelStream >> direction.y;
-
-    try {
-        identifierCheck("maxVelocity");
-    } catch (const std::exception &exception) {
-        throw;
-    }
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    float maxVelocity;
-    levelStream >> maxVelocity;
-
-    try {
-        identifierCheck("lifeTime");
-    } catch (const std::exception &exception) {
-        throw;
-    }
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    float lifeTime;
-    levelStream >> lifeTime;
-
-    try {
-        identifierCheck("spawnRate");
-    } catch (const std::exception &exception) {
-        throw;
-    }
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    float spawnRate;
-    levelStream >> spawnRate;
-
-    try {
-        identifierCheck("color");
-    } catch (const std::exception &exception) {
-        throw;
-    }
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    std::string colorString;
-    levelStream >> colorString;
-
-    ofColor color;
-    
-    try {
-        color = getColor(colorString);
-    } catch (const std::exception &exception) {
-        throw;
-    }
-
-    return new Emitter(shape, direction, maxVelocity, lifeTime, spawnRate, color);
-}
-
-Field *LevelParser::createField() {
-    try {
-        identifierCheck("position");
-    } catch (const std::exception& exception) {
-        throw;
-    }
-    
-    ofPoint position;
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    levelStream >> position.x;
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    levelStream >> position.y;
-
-    try {
-        identifierCheck("shape");
-    } catch (const std::exception& exception) {
-        throw;
-    }
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    std::string shapeString;
-    levelStream >> shapeString;
-
-    Shape *shape = nullptr;
-
-    try {
-        shape = getShape(position, shapeString, "FIELD");
-    } catch (const std::exception &exception) {
-        throw;
-    }
-
-    try {
-        identifierCheck("mobile");
-    } catch (const std::exception& exception) {
-        throw;
-    }
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    bool mobile;
-    std::string mobileString;
-
-    levelStream >> mobileString;
-
-    if (mobileString == "FALSE" || mobileString == "0")
-        mobile = false;
-    else if (mobileString == "TRUE" || mobileString == "1")
-        mobile = true;
-    else
-       throw LevelLoadFail("Expected 'FALSE' / 'TRUE'. Got '" + mobileString + "' instead."); 
-
-    try {
-        identifierCheck("type");
-    } catch (const std::exception& exception) {
-        throw;
-    }
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    std::string fieldType;
-    levelStream >> fieldType;
-
-    if (fieldType == "FORCE") {
-        try {
-            identifierCheck("force");
-        } catch (const std::exception& exception) {
-            throw;
-        }
-
-        if (levelStream.good() == false)
-            throw LevelLoadFail("Failed to read from stream.");
-
-        ofVec2f force;
-
-        levelStream >> force.x;
-
-        if (levelStream.good() == false)
-            throw LevelLoadFail("Failed to read from stream.");
-
-        levelStream >> force.y;
-
-        return new ForceField(shape, force, mobile);
-    } 
-
-    if (fieldType == "COLOR") {
-        try {
-            identifierCheck("color");
-        } catch (const std::exception& exception) {
-            throw;
-        }
-
-        if (levelStream.good() == false)
-            throw LevelLoadFail("Failed to read from stream.");
-
-        std::string colorString;
-        levelStream >> colorString;
-
-        ofColor color;
-
-        try {
-            color = getColor(colorString);
-        } catch (const std::exception& exception) {
-            throw;
-        }
-
-        return new ColorField(shape, color, mobile);
-    }
-
-    throw LevelLoadFail("Unknown field type : " + fieldType);
-}
-
-Target *LevelParser::createTarget() {
-    try {
-        identifierCheck("position");
-    } catch (const std::exception& exception) {
-        throw;
-    }
-    
-    ofPoint position;
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    levelStream >> position.x;
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    levelStream >> position.y;
-
-    const ofRectangle zone(position, TARGET_SIZE, TARGET_SIZE);
-
-    try {
-        identifierCheck("flowRate");
-    } catch (const std::exception& exception) {
-        throw;
-    }
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    float flowRate;
-    levelStream >> flowRate;
-
-    try {
-        identifierCheck("color");
-    } catch (const std::exception& exception) {
-        throw;
-    }
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    std::string colorString;
-    levelStream >> colorString;
-
-    ofColor color;
-
-    try {
-        color = getColor(colorString);
-    } catch (const std::exception& exception) {
-        throw;
-    }
-
-    try {
-        identifierCheck("trackPath");
-    } catch (const std::exception& exception) {
-        throw;
-    }
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    std::string path;
-    levelStream >> path;
-
-    return new Target(zone, flowRate, color, path);
-}
-
-std::variant<Emitter *, Target *, Field *> 
-LevelParser::createObject(const enum ObjectType &type) {
-    if (type == ObjectType::EmitterType) {
-        std::variant<Emitter *, Target *, Field *> emitter;
-
-        try {
-            emitter = createEmitter();
-        } catch (const std::exception &exception) {
-            throw;
-        }
-
-        return emitter;
-    }
-
-    if (type == ObjectType::FieldType) {
-        std::variant<Emitter *, Target *, Field *> field;
-
-        try {
-            field = createField();
-        } catch (const std::exception &exception) {
-            throw;
-        }
-
-        return field;
-    }
-
-    if (type == ObjectType::TargetType) {
-        std::variant<Emitter *, Target *, Field *> target;
-
-        try {
-            target = createTarget();
-        } catch (const std::exception &exception) {
-            throw;
-        }
-
-        return target;
-    }
-
-    throw UnknownType("createObject : Unknown object type");
-}
-
-enum ObjectType LevelParser::getObjectType() {
-    std::string objectString;
-
-    if (levelStream.good() == false)
-        throw LevelLoadFail("Failed to read from stream.");
-
-    levelStream >> objectString;
+std::variant<Emitter *, Field *, Target *> LevelParser::getObject() {
+    std::string typeString;
+    levelStream >> typeString;
 
     if (levelStream.eof())
         throw EOFReached("Reached EOF");
 
-    if (objectString == "EMITTER")
-        return ObjectType::EmitterType;
+    enum ObjectType type = getObjectType(typeString);
 
-    if (objectString == "TARGET")
-        return ObjectType::TargetType;
+    ObjectParser objectParser(getIdentifiers(type), levelStream, type);
 
-    if (objectString == "FIELD")
-        return ObjectType::FieldType;
+    auto objectData = objectParser.parse();
 
-    throw UnknownType("getObjectType -> Unknown object type : " + objectString);
-}
-
-std::variant<Emitter *, Target *, Field *> LevelParser::getObject() {
-    enum ObjectType type;
-    
-    try {
-        type = getObjectType();
-    } catch (const std::exception &exception) {
-        throw;
-    }
-
-    std::variant<Emitter *, Target *, Field *> object;
-
-    try {
-        object = createObject(type);
-    } catch (const std::exception &exception) {
-        throw;
-    }
-
-    return object;
-}
-
-LevelLoadFail::LevelLoadFail(const std::string& message) :
-    std::runtime_error(message) {}
-
-const char *LevelLoadFail::what() const noexcept {
-    return std::runtime_error::what();
-}
-
-LevelIdentifierFail::LevelIdentifierFail(const std::string& message) :
-    std::runtime_error(message) {}
-
-const char *LevelIdentifierFail::what() const noexcept {
-    return std::runtime_error::what();
-}
-
-EOFReached::EOFReached(const std::string& message) :
-    std::runtime_error(message) {}
-
-const char *EOFReached::what() const noexcept {
-    return std::runtime_error::what();
-}
-
-UnknownType::UnknownType(const std::string& message) :
-    std::runtime_error(message) {}
-
-const char *UnknownType::what() const noexcept {
-    return std::runtime_error::what();
+    return createObject(objectData, type);
 }
