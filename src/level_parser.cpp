@@ -166,14 +166,15 @@ const std::map<const std::string, std::string> &ObjectParser::parse() {
         std::string identifier;
         stringStream >> identifier;
 
-        std::string value;
-        stringStream >> value;
+        int valuePosition = 0;
 
-        std::string temp;
-        stringStream >> temp;
+        for ( ; isspace(line[valuePosition]); valuePosition++);
 
-        if (temp.empty() == false)
-            value = value + " " + temp;
+        valuePosition += identifier.length();
+
+        for ( ; isspace(line[valuePosition]); valuePosition++);
+
+        std::string value(line.substr(valuePosition));
 
         addValue(identifier, value);
 
