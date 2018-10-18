@@ -65,51 +65,66 @@ Shape *getShape(const ofPoint &position, const std::string &shape, const enum Ob
     throw UnknownType("getShape -> Can't use getShape for Target");
 }
 
+Emitter *createEmitter(const std::map<const std::string, std::string>& data) {
+    const ofPoint position = getVec2f(data.at("position"));
+    const ofVec2f direction = getVec2f(data.at("direction"));
+
+    const float maxVelocity = std::stof(data.at("maxVelocity"));
+    const float lifeTime = std::stof(data.at("lifeTime"));
+    const float spawnRate = std::stof(data.at("spawnRate"));
+
+    Shape *shape = getShape(position, data.at("shape"), ObjectType::EmitterType);
+    const ofColor color = getColor(data.at("color"));
+
+    return new Emitter(shape, direction, maxVelocity, lifeTime, spawnRate, color);
+}
+
+Field *createField(const std::map<const std::string, std::string>& data) {
+    const ofPoint position = getVec2f(data.at("position"));
+    const bool mobile = getBool(data.at("mobile"));
+
+    Shape *shape = getShape(position, data.at("shape"), ObjectType::FieldType);
+
+    if (data.at("type") == "FORCE") {
+        const ofVec2f force = getVec2f(data.at("force/color"));
+
+        return new ForceField(shape, force, mobile);
+    } 
+        
+    if (data.at("type") == "COLOR") {
+        const ofColor color = getColor(data.at("force/color"));
+
+        return new ColorField(shape, color, mobile);
+    }
+
+    throw UnknownType("Unknown field type : " + data.at("type"));
+}
+
+Target *createTarget(const std::map<const std::string, std::string>& data) {
+    const ofPoint position = getVec2f(data.at("position"));
+    const ofRectangle zone(position, TARGET_SIZE, TARGET_SIZE);
+
+    const float flowRate = std::stof(data.at("flowRate"));
+    const ofColor color = getColor(data.at("color"));
+
+    const std::string trackPath = data.at("trackPath");
+
+    return new Target(zone, flowRate, color, trackPath);
+}
+
 std::variant<Emitter *, Field *, Target *> 
     createObject(const std::map<const std::string, std::string>& data, 
                  const enum ObjectType& type) {
 
     std::variant<Emitter *, Field *, Target *> object;
 
-    if (type == ObjectType::EmitterType) {
-        const ofPoint position = getVec2f(data.at("position"));
-        const ofVec2f direction = getVec2f(data.at("direction"));
-
-        const float maxVelocity = std::stof(data.at("maxVelocity"));
-        const float lifeTime = std::stof(data.at("lifeTime"));
-        const float spawnRate = std::stof(data.at("spawnRate"));
-
-        Shape *shape = getShape(position, data.at("shape"), type);
-        const ofColor color = getColor(data.at("color"));
-
-        object = new Emitter(shape, direction, maxVelocity, lifeTime, spawnRate, color);
-    } else if (type == ObjectType::FieldType) {
-        const ofPoint position = getVec2f(data.at("position"));
-        const bool mobile = getBool(data.at("mobile"));
-
-        Shape *shape = getShape(position, data.at("shape"), type);
-
-        if (data.at("type") == "FORCE") {
-            const ofVec2f force = getVec2f(data.at("force/color"));
-
-            object = new ForceField(shape, force, mobile);
-        } else if (data.at("type") == "COLOR") {
-            const ofColor color = getColor(data.at("force/color"));
-
-            object = new ColorField(shape, color, mobile);
-        } else
-            throw UnknownType("Unknown field type : " + data.at("type"));
-    } else if (type == ObjectType::TargetType) {
-        const ofPoint position = getVec2f(data.at("position"));
-        const ofRectangle zone(position, TARGET_SIZE, TARGET_SIZE);
-
-        const float flowRate = std::stof(data.at("flowRate"));
-        const ofColor color = getColor(data.at("color"));
-
-        const std::string trackPath = data.at("trackPath");
-
-        object = new Target(zone, flowRate, color, trackPath);
-    } else
+    if (type == ObjectType::EmitterType)
+        object = createEmitter(data);
+    else if (type == ObjectType::FieldType)
+        object = createField(data);
+    else if (type == ObjectType::TargetType)
+        object = createTarget(data);
+    else
         throw UnknownType("Unknown object type");
 
     return object;
