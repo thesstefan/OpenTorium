@@ -18,7 +18,7 @@
  * must be less than the Target's required time between Particle arrivals
  * for the progress towards the objective to increase, otherwise decreasing.
  *
- * The Target object is shaped as an Rectangle and it's filling 
+ * The Target object is shaped as an Rectangle and it's filling
  * according to the progress towards the objective.
  *
  * Each Target requires the Particles which arrive in it to have a certain
@@ -26,13 +26,13 @@
  */
 class Target {
     private:
-        /** 
+        /**
          * @brief The area of the Target in which the Particles
          *        must arrive.
          */
         const ofRectangle targetZone;
 
-        /** 
+        /**
          * @brief Current progress towards the objective.
          *
          * The progress lies between 0 and 100.
@@ -42,7 +42,7 @@ class Target {
          */
         float progress;
 
-        /** 
+        /**
          * @brief The needed flow rate for the progress to not
          *        decrease
          */
@@ -51,8 +51,10 @@ class Target {
         /** @brief The needed color of the Particles needed by the Target. **/
         const ofColor color;
 
-        /** @brief The time when the last Particle reached the Target. **/
-        float lastParticleTime;
+        int lastFrameParticles = 0;
+        int currentFrameParticles = 0;
+
+        float flowStatus = 0;
 
         /** @brief The track to be played while the Target is filled. **/
         ofSoundPlayer track;

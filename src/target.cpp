@@ -8,8 +8,6 @@ Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &col
     targetZone(zone), 
     neededFlowRate(neededFlowRate), 
     color(color) {
-        lastParticleTime = ofGetElapsedTimef();
-
         track.load(trackPath);
 
         if (track.isLoaded() == false)
@@ -29,12 +27,16 @@ bool Target::inside(const ofPoint& point) const {
 }
 
 void Target::update() {
-    const float timeSinceLastParticle = ofGetElapsedTimef() - lastParticleTime;
+    const int frameDifference = currentFrameParticles - lastFrameParticles;
 
-    if (timeSinceLastParticle > neededFlowRate)
-        progress--;
+    lastFrameParticles = currentFrameParticles;
+    currentFrameParticles = 0;
 
-    progress = ofClamp(progress, 0, 100);
+    flowStatus += frameDifference;
+
+    flowStatus = ofClamp(flowStatus, 0, neededFlowRate);
+
+    progress = ofMap(flowStatus, 0, neededFlowRate, 0, 100);
 
     float volume = ofMap(progress, 0, 100, 0.1, 1);
 
@@ -52,13 +54,10 @@ void Target::updateParticle(Particle &particle) {
     if (particle.getColor() != color)
         return;
 
-    if (progress < 100)
-        progress++;
+    currentFrameParticles++;
 
     if (track.isPlaying() == false && progress >= 5)
         track.setPaused(false);
-
-    lastParticleTime = ofGetElapsedTimef();
 }
 
 void Target::draw() const {
@@ -73,7 +72,7 @@ void Target::draw() const {
     // Draw the progress rectangle.
     ofSetColor(color);
 
-    ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y + targetZone.height, 
+    ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y + targetZone.height,
                                              targetZone.width, -(targetZone.height / GRID_HORIZONTAL_LINES));
 
     progressRender.scaleHeight(ofMap(progress, 0, 100, 1, GRID_HORIZONTAL_LINES));
@@ -86,7 +85,7 @@ void Target::draw() const {
 
     // Draw the horizontal lines of the grid.
     ofPoint currentPosition(targetZone.x, targetZone.y);
-    for (int hLineIndex = 0; 
+    for (int hLineIndex = 0;
          hLineIndex < GRID_HORIZONTAL_LINES
          && currentPosition.y < targetZone.y + targetZone.height; 
 

@@ -16,8 +16,8 @@ void ofApp::setup() {
         
     timePassed = ofGetElapsedTimef();
 
-    targetMap.addZone(new Target(ofRectangle(700, 300, 70, 70), 1, ofColor::white, "track_1.mp3"));
-    targetMap.addZone(new Target(ofRectangle(500, 600, 70, 70), 1, ofColor::green, "track_2.mp3"));
+    targetMap.addZone(new Target(ofRectangle(700, 300, 70, 70), 50, ofColor::white, "track_1.mp3"));
+    targetMap.addZone(new Target(ofRectangle(500, 600, 70, 70), 30, ofColor::green, "track_2.mp3"));
 
     userFields.push_back(std::make_unique<ForceField>
             (new Ellipse(ofPoint(500, 100), 100, 100), ofVec2f(0, 100)));
