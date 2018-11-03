@@ -1,5 +1,7 @@
 #include "target.h"
 
+#include <iostream>
+
 const ofColor Target::BACKGROUND(60, 60, 60);
 const ofColor Target::GRID_LINE_COLOR(25, 25, 25);
 
@@ -7,7 +9,8 @@ Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &col
                const std::string &trackPath = "") :
     targetZone(zone), 
     neededFlowRate(neededFlowRate), 
-    color(color) {
+    color(color),
+    MAX_FRAME_DIFFERENCE(SMOOTHING_STEP / 100 * neededFlowRate) {
         track.load(trackPath);
 
         if (track.isLoaded() == false)
@@ -27,12 +30,24 @@ bool Target::inside(const ofPoint& point) const {
 }
 
 void Target::update() {
-    const int frameDifference = currentFrameParticles - lastFrameParticles;
+    int frameDifference = currentFrameParticles - lastFrameParticles;
 
     lastFrameParticles = currentFrameParticles;
     currentFrameParticles = 0;
 
-    flowStatus += frameDifference;
+    if (abs(frameDifference) > MAX_FRAME_DIFFERENCE && ready() == false) {
+        frameDifference -= MAX_FRAME_DIFFERENCE;
+
+        flowStatus += MAX_FRAME_DIFFERENCE;
+        frameOverflow += frameDifference;
+    } else if (abs(frameDifference) < MAX_FRAME_DIFFERENCE && frameOverflow) {
+        const int overflowUsage = MAX_FRAME_DIFFERENCE - frameDifference;
+        std::cout << "A: " << MAX_FRAME_DIFFERENCE << " -> " << frameOverflow << " <- " << overflowUsage << std::endl;
+
+        frameOverflow -= overflowUsage;
+        flowStatus += frameDifference + overflowUsage;
+    } else
+        flowStatus += frameDifference;
 
     flowStatus = ofClamp(flowStatus, 0, neededFlowRate);
 

@@ -53,6 +53,7 @@ class Target {
 
         int lastFrameParticles = 0;
         int currentFrameParticles = 0;
+        int frameOverflow = 0;
 
         float flowStatus = 0;
 
@@ -72,6 +73,9 @@ class Target {
 
         /** @brief The number of horizontal lines in the grid. **/
         constexpr static int GRID_HORIZONTAL_LINES = 10;
+
+        constexpr static float SMOOTHING_STEP = 15;
+        const float MAX_FRAME_DIFFERENCE;
 
         /**
          * @brief Constructs the Target.
