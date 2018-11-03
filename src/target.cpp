@@ -1,7 +1,5 @@
 #include "target.h"
 
-#include <iostream>
-
 const ofColor Target::BACKGROUND(60, 60, 60);
 const ofColor Target::GRID_LINE_COLOR(25, 25, 25);
 
@@ -42,7 +40,6 @@ void Target::update() {
         frameOverflow += frameDifference;
     } else if (abs(frameDifference) < MAX_FRAME_DIFFERENCE && frameOverflow) {
         const int overflowUsage = MAX_FRAME_DIFFERENCE - frameDifference;
-        std::cout << "A: " << MAX_FRAME_DIFFERENCE << " -> " << frameOverflow << " <- " << overflowUsage << std::endl;
 
         frameOverflow -= overflowUsage;
         flowStatus += frameDifference + overflowUsage;

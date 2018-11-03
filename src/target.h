@@ -51,10 +51,18 @@ class Target {
         /** @brief The needed color of the Particles needed by the Target. **/
         const ofColor color;
 
+        /** @brief The number of Particles received by the Target the last frame. **/
         int lastFrameParticles = 0;
+        /** @brief The number of Particles received by the Target the current frame. **/
         int currentFrameParticles = 0;
+
+        /** 
+         * @brief The number of Particles received by the Target across frames which exceeded
+         *        MAX_FRAME_DIFFERENCE.
+         */
         int frameOverflow = 0;
 
+        /** @brief The current status of the frame. The sum of differences across the frames. **/
         float flowStatus = 0;
 
         /** @brief The track to be played while the Target is filled. **/
@@ -74,7 +82,17 @@ class Target {
         /** @brief The number of horizontal lines in the grid. **/
         constexpr static int GRID_HORIZONTAL_LINES = 10;
 
+        /** 
+         * @brief The percent of the needed flow rate which can't be exceeded by the difference 
+         *        between two frames. If the percent is exceeded, the excess is used later for a more
+         *        balanced distribution in progress changes across frames.
+         */
         constexpr static float SMOOTHING_STEP = 15;
+        
+        /**
+         * @brief The maximum number of particles between frames which can be used for the progress
+         *        change in an update call. The excess is stored as overflow.
+         */
         const float MAX_FRAME_DIFFERENCE;
 
         /**
