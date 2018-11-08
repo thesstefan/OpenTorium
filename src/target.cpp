@@ -1,5 +1,7 @@
 #include "target.h"
 
+#include <iostream>
+
 const ofColor Target::BACKGROUND(60, 60, 60);
 const ofColor Target::GRID_LINE_COLOR(25, 25, 25);
 
@@ -46,7 +48,7 @@ void Target::update() {
     } else
         flowStatus += frameDifference;
 
-    frameOverflow = ofClamp(frameOverflow, 0, MAX_FRAME_DIFFERENCE * 2);
+    frameOverflow = ofClamp(frameOverflow, 0, MAX_FRAME_DIFFERENCE * 5);
 
     flowStatus = ofClamp(flowStatus, 0, neededFlowRate);
 
@@ -84,24 +86,33 @@ void Target::draw() const {
     ofDrawRectangle(targetZone);
 
     // Draw the progress rectangle.
-    ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+    ofSetColor(color);
 
-    float alpha = ofMap(progress, 0, 100, 0, 300);
-    alpha = ofClamp(alpha, 0, 255);
+    ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y + targetZone.height,
+                                             targetZone.width, -(targetZone.height / GRID_HORIZONTAL_LINES));
 
-    ofSetColor(color.r, color.g, color.b, alpha);
+    const float heightScale = ofMap(progress, 0, 100, 1, GRID_HORIZONTAL_LINES);
 
-    ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y,
-                                             targetZone.width, targetZone.height);
+    progressRender.scaleHeight(floor(heightScale));
 
     ofDrawRectangle(progressRender);
 
+    const float nextBarProgress = heightScale - floor(heightScale);;
+
+    ofRectangle nextBar = ofRectangle(targetZone.x, 
+                                      targetZone.y + (targetZone.height / GRID_HORIZONTAL_LINES) * 
+                                                     (GRID_HORIZONTAL_LINES - floor(heightScale) + 1),
+                                      targetZone.width, -(targetZone.height / GRID_HORIZONTAL_LINES));
+
+    ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+
+    const float barAlpha = ofMap(nextBarProgress, 0, 1, 0, 255);
+
+    ofSetColor(color.g, color.g, color.b, barAlpha);
+
+    ofDrawRectangle(nextBar);
+
     ofDisableBlendMode();
-
-    ofRectangle colorIndicator = ofRectangle(targetZone.x, targetZone.y + targetZone.height,
-                                             targetZone.width, -targetZone.height / GRID_HORIZONTAL_LINES);
-
-    ofDrawRectangle(colorIndicator);
 
     // Draw the grid.
     ofSetColor(GRID_LINE_COLOR);
