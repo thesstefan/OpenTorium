@@ -46,6 +46,8 @@ void Target::update() {
     } else
         flowStatus += frameDifference;
 
+    frameOverflow = ofClamp(frameOverflow, 0, MAX_FRAME_DIFFERENCE * 2);
+
     flowStatus = ofClamp(flowStatus, 0, neededFlowRate);
 
     progress = ofMap(flowStatus, 0, neededFlowRate, 0, 100);
@@ -82,14 +84,24 @@ void Target::draw() const {
     ofDrawRectangle(targetZone);
 
     // Draw the progress rectangle.
-    ofSetColor(color);
+    ofEnableBlendMode(OF_BLENDMODE_ALPHA);
 
-    ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y + targetZone.height,
-                                             targetZone.width, -(targetZone.height / GRID_HORIZONTAL_LINES));
+    float alpha = ofMap(progress, 0, 100, 0, 300);
+    alpha = ofClamp(alpha, 0, 255);
 
-    progressRender.scaleHeight(ofMap(progress, 0, 100, 1, GRID_HORIZONTAL_LINES));
+    ofSetColor(color.r, color.g, color.b, alpha);
+
+    ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y,
+                                             targetZone.width, targetZone.height);
 
     ofDrawRectangle(progressRender);
+
+    ofDisableBlendMode();
+
+    ofRectangle colorIndicator = ofRectangle(targetZone.x, targetZone.y + targetZone.height,
+                                             targetZone.width, -targetZone.height / GRID_HORIZONTAL_LINES);
+
+    ofDrawRectangle(colorIndicator);
 
     // Draw the grid.
     ofSetColor(GRID_LINE_COLOR);
