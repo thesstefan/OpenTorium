@@ -108,7 +108,7 @@ void Target::draw() const {
 
     const float barAlpha = ofMap(nextBarProgress, 0, 1, 0, 255);
 
-    ofSetColor(color.g, color.g, color.b, barAlpha);
+    ofSetColor(color.r, color.g, color.b, barAlpha);
 
     ofDrawRectangle(nextBar);
 
