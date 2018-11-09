@@ -2,28 +2,58 @@
 
 ofApp::ofApp() :
     targetMap(ofGetWidth(), ofGetHeight()),
-    emitter_1(new Rectangle(ofPoint(100, 100), 75.0, 75.0), ofVec2f(1, 0), 150, 5, 50, ofColor::white),
-    emitter_2(new Rectangle(ofPoint(500, 200), 75.0, 75.0), ofVec2f(0, 1), 100, 8, 100, ofColor::blue) {
+    fieldMap(ofGetWidth(), ofGetHeight()),
 
-    lastDragPosition = ofPoint(0, 0);
+    lastDragPosition(0, 0) {
+    
+    ofSetDataPathRoot("data/");
+}
+
+void ofApp::loadLevel(const std::string& path) {
+    try {
+        parser.load(path);
+    } catch (const LevelLoadFail& exception) {
+        std::cerr << exception.what() << std::endl;
+    }
+
+    bool read = false;
+
+    while (read == false) {
+        try {
+            addObject(parser.getObject());
+        } catch (const EOFReached &exception) {
+            read = true;
+        } catch (const std::exception &exception) {
+            throw;
+        }
+    }
+}
+
+void ofApp::addObject(const std::variant<Emitter *, Field *, Target *> &object) {
+    if (std::holds_alternative<Emitter *>(object)) {
+        emitters.push_back(std::unique_ptr<Emitter>(std::get<Emitter *>(object)));
+    } else if (std::holds_alternative<Field *>(object)) {
+        if (std::get<Field *>(object)->mobile)
+            fields.push_back(std::unique_ptr<Field>(std::get<Field *>(object)));
+        else
+            fieldMap.addZone(std::get<Field *>(object));
+    } else if (std::holds_alternative<Target *>(object)) {
+        targetMap.addZone(std::get<Target *>(object));
+    } else
+        throw LevelLoadFail("addObject -> Unknown object received");
 }
 
 void ofApp::setup() {
     ofSetFrameRate(60);
     ofBackground(20, 20, 20);
 
-    ofSetDataPathRoot("data/");
-        
     timePassed = ofGetElapsedTimef();
 
-    targetMap.addZone(new Target(ofRectangle(700, 300, 70, 70), 50, ofColor::white, "track_1.mp3"));
-    targetMap.addZone(new Target(ofRectangle(500, 600, 70, 70), 70, ofColor::green, "track_2.mp3"));
-
-    userFields.push_back(std::make_unique<ForceField>
-            (new Ellipse(ofPoint(500, 100), 100, 100), ofVec2f(0, 100)));
-
-    userFields.push_back(std::make_unique<ColorField>
-            (new Ellipse(ofPoint(200, 200), 100, 100), ofColor::green));
+    try {
+        loadLevel("data/level.txt");
+    } catch (const std::exception &exception) {
+        std::cerr << exception.what() << std::endl;
+    }
 }
 
 void ofApp::clearDeadParticles() {
@@ -47,18 +77,21 @@ void ofApp::update() {
             inserter(particles, particles.end());
 
         targetMap.update();
+        fieldMap.update();
 
         END = targetMap.ready();
 
-        emitter_1.update(deltaTime, inserter);
-        emitter_2.update(deltaTime, inserter);
+        for (auto &emitter : emitters)
+            emitter->update(deltaTime, inserter);
 
         for (auto& particle : particles) {
-            for (auto& field : userFields)
+            for (auto& field : fields)
                 if (field->inside(particle->getPosition()))
                     field->updateParticle(*particle);
             
             particle->update(deltaTime);
+
+            fieldMap.updateParticle(*particle);
             targetMap.updateParticle(*particle);
         }
     }
@@ -66,11 +99,13 @@ void ofApp::update() {
 
 void ofApp::draw() {
     if (END == false) { 
+        fieldMap.draw();
         targetMap.draw();
 
-//        emitter_1.draw();
+        for (auto& emitter : emitters)
+            emitter->draw();
 
-        for (auto& field : userFields)
+        for (auto& field : fields)
             field->draw();
 
         for (const auto &particle : particles)
@@ -85,7 +120,7 @@ void ofApp::draw() {
 
 void ofApp::mousePressed(int x, int y, int button) {
     if (button == 0)
-        for (auto& field : userFields)
+        for (auto& field : fields)
             if (field->inside(ofPoint(x, y)))
                 lastDragPosition = ofPoint(x, y);
 }
@@ -96,7 +131,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
 void ofApp::mouseDragged(int x, int y, int button) {
     if (button == 0)
-        for (auto& field : userFields)
+        for (auto& field : fields)
             if (field->inside(ofPoint(x, y)) && lastDragPosition != ofPoint(0, 0)) {
                 ofPoint center = field->getCenter();
 
@@ -107,7 +142,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
 }
 
 void ofApp::mouseScrolled(int x, int y, float scrollX, float scrollY) {
-    for (auto& field : userFields)
+    for (auto& field : fields)
         if (field->inside(ofPoint(x, y))) {
             if (scrollY == 1) {
                 if (field->area() < MAX_FIELD_AREA)

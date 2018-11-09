@@ -14,7 +14,7 @@ Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &col
         track.load(trackPath);
 
         if (track.isLoaded() == false)
-            throw "Could not load sound : " + trackPath;
+            throw "Could not load track : " + trackPath;
 
         track.setLoop(true);
 
@@ -25,8 +25,8 @@ Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &col
 }
 
 bool Target::inside(const ofPoint& point) const {
-    return point.x >= targetZone.x && point.x <= targetZone.x + targetZone.width &&
-           point.y >= targetZone.y && point.y <= targetZone.y + targetZone.height;
+    return point.x > targetZone.x && point.x < targetZone.x + targetZone.width &&
+           point.y > targetZone.y && point.y < targetZone.y + targetZone.height;
 }
 
 void Target::update() {

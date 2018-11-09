@@ -10,12 +10,15 @@
 #include <list>
 
 #include "ofMain.h"
-#include "ofPolyline.h"
+
+#include "zone_map.h"
+#include "level_parser.h"
 
 #include "emitter.h"
 #include "field.h"
-#include "zone_map.h"
 #include "target.h"
+
+#include "exceptions.h"
 
 /**
  * @class ofApp
@@ -38,12 +41,13 @@ class ofApp : public ofBaseApp {
         /** @brief The Target instances. **/
         ZoneMap<Target> targetMap;
 
+        ZoneMap<Field> fieldMap;
+
         /** @brief The Emitter used to create Particle instances. **/
-        Emitter emitter_1;
-        Emitter emitter_2;
+        std::vector<std::unique_ptr<Emitter>> emitters;
 
         /** @brief The Field instances which can be modified by the user. **/
-        std::vector<std::unique_ptr<Field>> userFields;
+        std::vector<std::unique_ptr<Field>> fields;
 
         /** @brief The std::list used to store the Particle instances used. **/
         std::list<std::unique_ptr<Particle>> particles;
@@ -52,7 +56,13 @@ class ofApp : public ofBaseApp {
         float timePassed;
 
         /** @brief The position of the cursor at the last mouseDragged call. **/
+        LevelParser parser;
+
         ofPoint lastDragPosition;
+
+        void addObject(const std::variant<Emitter *, Field *, Target *> &object);
+
+        void loadLevel(const std::string &path);
 
     public:
         /** 
