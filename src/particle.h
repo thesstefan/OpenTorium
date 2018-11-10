@@ -124,6 +124,13 @@ class Particle {
          * @param force The force to be applied.
          */
         void applyForce(const ofPoint &force);
+
+        /**
+         * @brief Kills the Particle
+         *
+         * It won't be updated or drawn anymore and most likely be deleted.
+         */
+        void kill();
 };
 
 /**

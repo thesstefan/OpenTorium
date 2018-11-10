@@ -1,38 +1,59 @@
 #include "ofApp.h"
 
-#include <iterator>
-
 ofApp::ofApp() :
-    map(ofGetWidth(), ofGetHeight()),
+    targetMap(ofGetWidth(), ofGetHeight()),
+    fieldMap(ofGetWidth(), ofGetHeight()),
 
-    emitter_1(new Ellipse(ofPoint(300, 100), 200.0, 200.0), ofVec2f(1, 0), 100, 5, 100, ofColor::white),
-    emitter_2(new Ellipse(ofPoint(300, 400), 200.0, 200.0), ofVec2f(1, 1), 200, 10, 50, ofColor::green),
-    emitter_3(new Ellipse(ofPoint(300, 700), 200.0, 200.0), ofVec2f(1, 0), 300, 2, 300, ofColor::red) {}
+    lastDragPosition(0, 0) {
+    
+    ofSetDataPathRoot("data/");
+}
 
+void ofApp::loadLevel(const std::string& path) {
+    try {
+        parser.load(path);
+    } catch (const LevelLoadFail& exception) {
+        std::cerr << exception.what() << std::endl;
+    }
+
+    bool read = false;
+
+    while (read == false) {
+        try {
+            addObject(parser.getObject());
+        } catch (const EOFReached &exception) {
+            read = true;
+        } catch (const std::exception &exception) {
+            throw;
+        }
+    }
+}
+
+void ofApp::addObject(const std::variant<Emitter *, Field *, Target *> &object) {
+    if (std::holds_alternative<Emitter *>(object)) {
+        emitters.push_back(std::unique_ptr<Emitter>(std::get<Emitter *>(object)));
+    } else if (std::holds_alternative<Field *>(object)) {
+        if (std::get<Field *>(object)->mobile)
+            fields.push_back(std::unique_ptr<Field>(std::get<Field *>(object)));
+        else
+            fieldMap.addZone(std::get<Field *>(object));
+    } else if (std::holds_alternative<Target *>(object)) {
+        targetMap.addZone(std::get<Target *>(object));
+    } else
+        throw LevelLoadFail("addObject -> Unknown object received");
+}
 
 void ofApp::setup() {
     ofSetFrameRate(60);
-
-    ofBackground(0, 0, 0);
+    ofBackground(20, 20, 20);
 
     timePassed = ofGetElapsedTimef();
 
-    map.addField(new ForceField(new Ellipse(ofPoint(600, 100), 200.0, 200.0), ofVec2f(0, 100)));
-    map.addField(new ColorField(new Rectangle(ofPoint(800, 400), 200.0, 200.0), ofColor::blue));
-
-    PolylineShape *poly = new PolylineShape();
-
-    poly->addVertex(700, 600);
-
-    poly->addVertex(750, 650);
-    poly->addVertex(800, 700);
-    poly->addVertex(750, 700);
-
-    poly->addVertex(700, 600);
-
-    map.addField(new ColorField(poly, ofColor::green));
-
-    map.update();
+    try {
+        loadLevel("data/level.txt");
+    } catch (const std::exception &exception) {
+        std::cerr << exception.what() << std::endl;
+    }
 }
 
 void ofApp::clearDeadParticles() {
@@ -44,39 +65,91 @@ void ofApp::clearDeadParticles() {
 }
 
 void ofApp::update() {
-    const float time = ofGetElapsedTimef();
-    const float deltaTime = ofClamp(time - timePassed, 0, 0.1);
+    if (END == false) {
+        const float time = ofGetElapsedTimef();
+        const float deltaTime = ofClamp(time - timePassed, 0, 0.1);
 
-    timePassed = time;
+        timePassed = time;
 
-    clearDeadParticles();
+        clearDeadParticles();
 
-    std::insert_iterator<std::list<std::unique_ptr<Particle>>> 
-        inserter(particles, particles.end());
+        std::insert_iterator<std::list<std::unique_ptr<Particle>>> 
+            inserter(particles, particles.end());
 
-    emitter_1.update(deltaTime, inserter);
-    emitter_2.update(deltaTime, inserter);
-    emitter_3.update(deltaTime, inserter);
+        targetMap.update();
+        fieldMap.update();
 
-    for (auto& particle : particles) {
-        map.updateParticle(*particle);
+        END = targetMap.ready();
 
-        particle->update(deltaTime);
+        for (auto &emitter : emitters)
+            emitter->update(deltaTime, inserter);
+
+        for (auto& particle : particles) {
+            for (auto& field : fields)
+                if (field->inside(particle->getPosition()))
+                    field->updateParticle(*particle);
+            
+            particle->update(deltaTime);
+
+            fieldMap.updateParticle(*particle);
+            targetMap.updateParticle(*particle);
+        }
     }
 }
 
 void ofApp::draw() {
-    ofBackground(0, 0, 0);
+    if (END == false) { 
+        fieldMap.draw();
+        targetMap.draw();
 
-    ofSetColor(0, 0, 255);
+        for (auto& emitter : emitters)
+            emitter->draw();
 
-    emitter_1.draw();
-    emitter_2.draw();
-    emitter_3.draw();
+        for (auto& field : fields)
+            field->draw();
 
-    map.draw();
+        for (const auto &particle : particles)
+            particle->draw();
+    } else {
+        ofTrueTypeFont font;
 
-    for (const auto &particle : particles)
-        particle->draw();
+        font.load("arial.ttf", 80, true, true);
+        font.drawString(std::string("Game Over"), 150, 400);
+    }
 }
 
+void ofApp::mousePressed(int x, int y, int button) {
+    if (button == 0)
+        for (auto& field : fields)
+            if (field->inside(ofPoint(x, y)))
+                lastDragPosition = ofPoint(x, y);
+}
+
+void ofApp::mouseReleased(int x, int y, int button) {
+    lastDragPosition = ofPoint(0, 0);
+}
+
+void ofApp::mouseDragged(int x, int y, int button) {
+    if (button == 0)
+        for (auto& field : fields)
+            if (field->inside(ofPoint(x, y)) && lastDragPosition != ofPoint(0, 0)) {
+                ofPoint center = field->getCenter();
+
+                field->move(center + ofPoint(x,y) - lastDragPosition);
+
+                lastDragPosition = ofPoint(x, y);
+            }
+}
+
+void ofApp::mouseScrolled(int x, int y, float scrollX, float scrollY) {
+    for (auto& field : fields)
+        if (field->inside(ofPoint(x, y))) {
+            if (scrollY == 1) {
+                if (field->area() < MAX_FIELD_AREA)
+                    field->scale(1.1);
+            } else if (scrollY == -1) {
+                if (field->area() > MIN_FIELD_AREA)
+                    field->scale(0.9);
+            }
+        }
+}
