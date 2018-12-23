@@ -1,6 +1,6 @@
 #include "level_parser.h"
 #include "constants.h"
-#include "get_functions.h"
+#include "misc.h"
 #include "exceptions.h"
 
 #include <sstream>
@@ -53,14 +53,14 @@ Shape *getShape(const ofPoint &position, const std::string &shape, const float w
 }
 
 Emitter *createEmitter(const std::map<const std::string, std::string>& data) {
-    const ofPoint position = getVec2f(data.at("position"));
+    const ofPoint position = scaleToScreen(getVec2f(data.at("position")));
     const ofVec2f direction = getVec2f(data.at("direction"));
 
     const float maxVelocity = std::stof(data.at("maxVelocity"));
     const float lifeTime = std::stof(data.at("lifeTime"));
     const float spawnRate = std::stof(data.at("spawnRate"));
 
-    const ofVec2f size = getVec2f(data.at("size"));
+    const ofVec2f size = scaleToScreen(getVec2f(data.at("size")));
     Shape *shape = getShape(position, data.at("shape"), size.x, size.y);
 
     const ofColor color = getColor(data.at("color"));
@@ -69,10 +69,10 @@ Emitter *createEmitter(const std::map<const std::string, std::string>& data) {
 }
 
 Field *createField(const std::map<const std::string, std::string>& data) {
-    const ofPoint position = getVec2f(data.at("position"));
+    const ofPoint position = scaleToScreen(getVec2f(data.at("position")));
     const bool mobile = getBool(data.at("mobile"));
 
-    const ofVec2f size = getVec2f(data.at("size"));
+    const ofVec2f size = scaleToScreen(getVec2f(data.at("size")));
     Shape *shape = getShape(position, data.at("shape"), size.x, size.y);
 
     if (data.at("type") == "FORCE") {
@@ -91,9 +91,9 @@ Field *createField(const std::map<const std::string, std::string>& data) {
 }
 
 Target *createTarget(const std::map<const std::string, std::string>& data) {
-    const ofPoint position = getVec2f(data.at("position"));
+    const ofPoint position = scaleToScreen(getVec2f(data.at("position")));
 
-    const ofVec2f size = getVec2f(data.at("size"));
+    const ofVec2f size = scaleToScreen(getVec2f(data.at("size")));
 
     const ofRectangle zone(position, size.x, size.y);
 
