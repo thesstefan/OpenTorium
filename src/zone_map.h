@@ -7,6 +7,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofPixels.h"
 
 #include "particle.h"
 
@@ -26,21 +27,10 @@
 template <class Zone>
 class ZoneMap {
     private:
-        /**
-         * @brief The bounds of the ZoneMap.
-         */
-        const ofRectangle bounds;
-
         /** @brief The zones used. **/
         std::vector<std::unique_ptr<Zone>> zones;
 
-        /** 
-         * @brief The pseudo-map used.
-         *
-         * It consists of various ids for each pixel based of
-         * in which Zone is inside.
-         */
-        std::vector<std::vector<uint8_t>> map;
+        ofPixels map;
 
     public:
         /** 
@@ -61,11 +51,15 @@ class ZoneMap {
          */
         void draw() const;
 
+        void scale(const ofVec2f& screenDifferenceProportion);
+
         /**
          * @brief Recalculates the static map, based on the currently
          *        available zones.
          */
         void update();
+
+        void updateObjects();
 
         /**
          * @brief Applies the effects of the zones on a Particle.
@@ -82,8 +76,9 @@ class ZoneMap {
 };
 
 template <class Zone>
-ZoneMap<Zone>::ZoneMap(unsigned int width, unsigned int height) 
-    : bounds(0, 0, width, height), map(height, std::vector<uint8_t>(width)) {}
+ZoneMap<Zone>::ZoneMap(unsigned int width, unsigned int height) {
+    update();
+}
 
 template <class Zone>
 void ZoneMap<Zone>::addZone(Zone *zone) {
@@ -97,20 +92,35 @@ void ZoneMap<Zone>::draw() const {
 }
 
 template <class Zone>
+void ZoneMap<Zone>::scale(const ofVec2f& screenDifferenceProportion) {
+    for (auto &zone : zones)
+        zone->scale(screenDifferenceProportion);
+
+    map.resize(ofGetWidth(), ofGetHeight());
+}
+
+template <class Zone>
 void ZoneMap<Zone>::update() {
-    for (auto &row : map)
-        std::fill(row.begin(), row.end(), 0);
+    map.clear();
+
+    unsigned char *pixels = new unsigned char[ofGetWidth() * ofGetHeight()];
 
     for (size_t zoneIndex = 0; zoneIndex < zones.size(); zoneIndex++)
-        for (unsigned int heightIndex = 0; heightIndex < bounds.getHeight(); heightIndex++)
-            for (unsigned int widthIndex = 0; widthIndex < bounds.getWidth(); widthIndex++) 
+        for (unsigned int heightIndex = 0; heightIndex < ofGetHeight(); heightIndex++)
+            for (unsigned int widthIndex = 0; widthIndex < ofGetWidth(); widthIndex++) 
                 if (zones[zoneIndex]->inside(ofPoint(widthIndex, heightIndex))) { 
-                    if (map[heightIndex][widthIndex] == 0)
-                        map[heightIndex][widthIndex] = 1;
-
-                    map[heightIndex][widthIndex] = map[heightIndex][widthIndex] << zoneIndex;
+                    if (pixels[heightIndex * ofGetWidth() + widthIndex] == 0)
+                        pixels[heightIndex * ofGetWidth() + widthIndex] = 1;
+                        
+                    
+                    pixels[heightIndex * ofGetWidth() + widthIndex] = pixels[heightIndex * ofGetWidth() + widthIndex] << zoneIndex;
                 }
 
+    map.setFromPixels(pixels, ofGetWidth(), ofGetHeight(), 1);
+}
+
+template<class Zone>
+void ZoneMap<Zone>::updateObjects() {
     for (auto &zone : zones)
         zone->update();
 }
@@ -121,10 +131,10 @@ void ZoneMap<Zone>::updateParticle(Particle &particle) {
     const ofPoint &position = particle.getPosition();
 
     // Skip update if the particle is not inside the zone.
-    if (!bounds.inside(position))
+    if (!position.x || !position.y || position.x > ofGetWidth() || position.y > ofGetHeight())
         return;
 
-    auto id = map.at(position.y).at(position.x);
+    auto id = map[(int)position.y * ofGetWidth() + (int)position.x];
 
     for (size_t zoneIndex = 0; zoneIndex < zones.size(); zoneIndex++) {
         if (id & 1) 

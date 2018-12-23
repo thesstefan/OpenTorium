@@ -30,7 +30,7 @@ class Target {
          * @brief The area of the Target in which the Particles
          *        must arrive.
          */
-        const ofRectangle targetZone;
+        ofRectangle targetZone;
 
         /**
          * @brief Current progress towards the objective.
@@ -128,6 +128,8 @@ class Target {
 
         /** @brief Checks if the Target objective was achieved. */
         bool ready() const;
+
+        void scale(const ofVec2f& screenDifferenceProportion);
 
         /** 
          * @brief Draws the contour of the rectangle shaped Target

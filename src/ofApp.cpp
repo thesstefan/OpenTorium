@@ -56,6 +56,9 @@ void ofApp::setup() {
     } catch (const std::exception &exception) {
         std::cerr << exception.what() << std::endl;
     }
+        
+    targetMap.update();
+    fieldMap.update();
 }
 
 void ofApp::clearDeadParticles() {
@@ -78,8 +81,8 @@ void ofApp::update() {
         std::insert_iterator<std::list<std::unique_ptr<Particle>>> 
             inserter(particles, particles.end());
 
-        targetMap.update();
-        fieldMap.update();
+        targetMap.updateObjects();
+        fieldMap.updateObjects();
 
         END = targetMap.ready();
 
@@ -167,10 +170,8 @@ void ofApp::windowResized(int w, int h) {
     for (auto& field : fields)
         field->scale(screenChangeProportion);
 
-    screenBounds = newScreenBounds;
+    targetMap.scale(screenChangeProportion);
+    fieldMap.scale(screenChangeProportion);
 
-    /*
-        targetMap->scale();
-        fieldMap->scale();
-    */
+    screenBounds = newScreenBounds;
 }

@@ -76,6 +76,15 @@ void Target::updateParticle(Particle &particle) {
         track.setPaused(false);
 }
 
+void Target::scale(const ofVec2f& screenDifferenceProportion) {
+    targetZone.setPosition(targetZone.getPosition() * ofVec3f(screenDifferenceProportion.x,
+                                                              screenDifferenceProportion.y,
+                                                              1));
+
+    targetZone.setWidth(targetZone.width * screenDifferenceProportion.x);
+    targetZone.setHeight(targetZone.height * screenDifferenceProportion.y);
+}
+
 void Target::draw() const {
     ofPushStyle();
 
