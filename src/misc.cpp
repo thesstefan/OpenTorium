@@ -1,6 +1,6 @@
 #include <sstream>
 
-#include "get_functions.h"
+#include "misc.h"
 #include "exceptions.h"
 
 bool getBool(const std::string &boolString) {
@@ -37,4 +37,8 @@ ofVec2f getVec2f(const std::string &vecString) {
     stream >> vec2f.x >> vec2f.y;
 
     return vec2f;
+}
+
+ofPoint scaleToScreen(const ofPoint& toScale) {
+    return toScale * ofPoint(ofGetWidth(), ofGetHeight());
 }
