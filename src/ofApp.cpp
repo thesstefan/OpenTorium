@@ -1,6 +1,8 @@
 #include "ofApp.h"
 
 ofApp::ofApp() :
+    screenBounds(ofGetWidth(), ofGetHeight()),
+
     targetMap(ofGetWidth(), ofGetHeight()),
     fieldMap(ofGetWidth(), ofGetHeight()),
 
@@ -152,4 +154,23 @@ void ofApp::mouseScrolled(int x, int y, float scrollX, float scrollY) {
                     field->scale(0.9);
             }
         }
+}
+
+void ofApp::windowResized(int w, int h) {
+    const ofVec2f newScreenBounds(w, h);
+
+    const ofVec2f screenChangeProportion = newScreenBounds / screenBounds;
+
+    for (auto& emitter : emitters)
+        emitter->scale(screenChangeProportion);
+
+    for (auto& field : fields)
+        field->scale(screenChangeProportion);
+
+    screenBounds = newScreenBounds;
+
+    /*
+        targetMap->scale();
+        fieldMap->scale();
+    */
 }

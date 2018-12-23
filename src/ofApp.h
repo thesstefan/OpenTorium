@@ -30,6 +30,8 @@
  */
 class ofApp : public ofBaseApp {
     private:
+        ofVec2f screenBounds;
+
         /** 
          * @brief If END is true, the game ends (the end message is the only 
          * one rendered).
@@ -127,4 +129,6 @@ class ofApp : public ofBaseApp {
 
         /** @brief Called when the mouse is scrolled. **/
         void mouseScrolled(int x, int y, float scrollX, float scrollY);
+
+        void windowResized(int w, int h);
 };

@@ -67,6 +67,8 @@ class Field {
         /** @brief Scales the Field. **/
         void scale(float amount);
 
+        void scale(const ofVec2f& screenChangeProportion);
+
         /** @brief Moves the Field. **/
         void move(const ofPoint &newPosition);
 

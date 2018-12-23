@@ -30,7 +30,7 @@
 class Emitter {
     private:
         /** @brief The shape of the Emitter. **/
-        const std::unique_ptr<const Shape> shape;
+        std::unique_ptr<Shape> shape;
 
         /** @brief The direction of the Particle motion. **/
         const ofVec2f direction;
@@ -57,7 +57,7 @@ class Emitter {
 
     public:
         /** @brief Constructs the Emitter. */
-        Emitter(const Shape *shape, const ofVec2f &direction,
+        Emitter(Shape *shape, const ofVec2f &direction,
                 float maxVelocity, float lifeTime, float spawnRate,
                 const ofColor &color);
 
@@ -69,6 +69,8 @@ class Emitter {
         std::unique_ptr<Particle> createParticle(const enum ParticleType &type) const;
 
         void draw() const;
+
+        void scale(const ofVec2f& screenChangeProportion);
 
         /**
          * @brief Updates the Emitter.

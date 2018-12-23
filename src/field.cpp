@@ -16,6 +16,10 @@ void Field::scale(float amount) {
     shape->scale(amount);
 }
 
+void Field::scale(const ofVec2f& screenChangeProportion) {
+    shape->scale(screenChangeProportion);
+}
+
 void Field::move(const ofPoint &newPosition) {
     shape->translate(newPosition - shape->getCenter());
 }
