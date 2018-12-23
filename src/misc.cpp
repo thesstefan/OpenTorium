@@ -1,5 +1,7 @@
 #include <sstream>
 
+#include "ofAppRunner.h"
+
 #include "misc.h"
 #include "exceptions.h"
 
