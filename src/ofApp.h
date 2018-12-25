@@ -61,6 +61,7 @@ class ofApp : public ofBaseApp {
         LevelParser parser;
 
         ofPoint lastDragPosition;
+        std::vector<std::unique_ptr<Field>>::iterator lastDragField;
 
         void addObject(const std::variant<Emitter *, Field *, Target *> &object);
 

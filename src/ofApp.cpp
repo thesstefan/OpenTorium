@@ -56,6 +56,8 @@ void ofApp::setup() {
     } catch (const std::exception &exception) {
         std::cerr << exception.what() << std::endl;
     }
+
+    lastDragField = fields.end();
         
     targetMap.update();
     fieldMap.update();
@@ -125,25 +127,29 @@ void ofApp::draw() {
 
 void ofApp::mousePressed(int x, int y, int button) {
     if (button == 0)
-        for (auto& field : fields)
-            if (field->inside(ofPoint(x, y)))
+        for (auto field = fields.begin(); field != fields.end(); field++)
+            if ((*field)->inside(ofPoint(x, y))) {
                 lastDragPosition = ofPoint(x, y);
+
+                lastDragField = field;
+            }
 }
 
 void ofApp::mouseReleased(int x, int y, int button) {
     lastDragPosition = ofPoint(0, 0);
+
+    lastDragField = fields.end();
 }
 
 void ofApp::mouseDragged(int x, int y, int button) {
     if (button == 0)
-        for (auto& field : fields)
-            if (field->inside(ofPoint(x, y)) && lastDragPosition != ofPoint(0, 0)) {
-                ofPoint center = field->getCenter();
+        if (lastDragPosition != ofPoint(0, 0) && lastDragField != fields.end()) {
+            ofPoint center = (*lastDragField)->getCenter();
+            
+            (*lastDragField)->move(center + ofPoint(x,y) - lastDragPosition);
 
-                field->move(center + ofPoint(x,y) - lastDragPosition);
-
-                lastDragPosition = ofPoint(x, y);
-            }
+            lastDragPosition = ofPoint(x, y);
+        }
 }
 
 void ofApp::mouseScrolled(int x, int y, float scrollX, float scrollY) {
@@ -169,6 +175,9 @@ void ofApp::windowResized(int w, int h) {
 
     for (auto& field : fields)
         field->scale(screenChangeProportion);
+
+    for (auto& particle : particles)
+        particle->scale(screenChangeProportion);
 
     targetMap.scale(screenChangeProportion);
     fieldMap.scale(screenChangeProportion);
