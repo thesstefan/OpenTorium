@@ -33,7 +33,7 @@ class Emitter {
         std::unique_ptr<Shape> shape;
 
         /** @brief The direction of the Particle motion. **/
-        const ofVec2f direction;
+        ofVec2f direction;
 
         /** @brief The maximum value of the @b velocity possesed by a Particle. **/
         const float maxVelocity;

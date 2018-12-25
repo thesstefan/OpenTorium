@@ -35,4 +35,6 @@ void Emitter::draw() const {
 
 void Emitter::scale(const ofVec2f& screenChangeProportion) {
     shape->scale(screenChangeProportion);
+
+    direction *= screenChangeProportion;
 }

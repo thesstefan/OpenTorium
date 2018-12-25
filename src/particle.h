@@ -125,6 +125,8 @@ class Particle {
          */
         void applyForce(const ofPoint &force);
 
+        void scale(const ofVec2f &screenChangeProportion);
+
         /**
          * @brief Kills the Particle
          *

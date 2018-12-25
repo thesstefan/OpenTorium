@@ -32,21 +32,6 @@ bool Particle::isAlive() const {
     return live;
 }
 
-CircleParticle::CircleParticle(int size, const ofColor &color, const ofPoint &position, 
-                               const ofVec2f &velocity, int lifeTime, float mass) :
-    Particle(size, color, position, velocity, lifeTime, mass) {}
-
-void CircleParticle::draw() const {
-    if (live) {
-        ofPushStyle();
-
-        ofSetColor(color);
-        ofDrawCircle(position, size);
-
-        ofPopStyle();
-    }
-}
-
 ofPoint Particle::getPosition() const {
     return position;
 }
@@ -61,6 +46,28 @@ void Particle::setColor(const ofColor &color) {
 
 void Particle::applyForce(const ofPoint &force) {
     acceleration += force / mass;
+}
+
+void Particle::scale(const ofVec2f &screenChangeProportion) {
+    position *= screenChangeProportion;
+
+    velocity *= screenChangeProportion;
+    acceleration *= screenChangeProportion;
+}
+
+CircleParticle::CircleParticle(int size, const ofColor &color, const ofPoint &position, 
+                               const ofVec2f &velocity, int lifeTime, float mass) :
+    Particle(size, color, position, velocity, lifeTime, mass) {}
+
+void CircleParticle::draw() const {
+    if (live) {
+        ofPushStyle();
+
+        ofSetColor(color);
+        ofDrawCircle(position, size);
+
+        ofPopStyle();
+    }
 }
 
 std::unique_ptr<Particle> getParticle(const enum ParticleType &type,
