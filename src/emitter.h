@@ -68,8 +68,12 @@ class Emitter {
          */
         std::unique_ptr<Particle> createParticle(const enum ParticleType &type) const;
 
+        /** @brief Draws the Emitter. **/
         void draw() const;
 
+        /** @brief Adjusts the Emitter's Shape and Particle direction after 
+         *         a window resize.
+         */
         void scale(const ofVec2f& screenChangeProportion);
 
         /**

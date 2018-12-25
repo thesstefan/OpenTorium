@@ -30,6 +30,7 @@ class ZoneMap {
         /** @brief The zones used. **/
         std::vector<std::unique_ptr<Zone>> zones;
 
+        /** @brief The map used to match the Zones and the corelated game objects. **/
         ofPixels map;
 
     public:
@@ -41,16 +42,15 @@ class ZoneMap {
          */
         ZoneMap(unsigned int width, unsigned int height);
 
-        /**
-         * @brief Adds a zone to the ZoneMap.
-         */
+        /** @brief Adds a zone to the ZoneMap. */
         void addZone(Zone *zone);
 
-        /** 
-         * @brief Draws the Zone instances contained by the ZoneMap.
-         */
+        /** @brief Draws the Zone instances contained by the ZoneMap. */
         void draw() const;
 
+        /** @brief Recalculates the zones, and updates the coresponding objects after a 
+         *         window resize.
+         */
         void scale(const ofVec2f& screenDifferenceProportion);
 
         /**
@@ -59,6 +59,7 @@ class ZoneMap {
          */
         void update();
 
+        /** @brief Updates the objects corelated with the known zones. */
         void updateObjects();
 
         /**

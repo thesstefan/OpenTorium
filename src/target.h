@@ -129,6 +129,9 @@ class Target {
         /** @brief Checks if the Target objective was achieved. */
         bool ready() const;
 
+        /** @brief Adjusts the Target's shape and draw parameters
+         *         after a window resize.
+         */
         void scale(const ofVec2f& screenDifferenceProportion);
 
         /** 

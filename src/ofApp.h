@@ -30,6 +30,7 @@
  */
 class ofApp : public ofBaseApp {
     private:
+        /** @brief The dimensions of the screen. **/
         ofVec2f screenBounds;
 
         /** 
@@ -40,9 +41,10 @@ class ofApp : public ofBaseApp {
          */
         bool END = false;
 
-        /** @brief The Target instances. **/
+        /** @brief The Target instances, encapsulated by a ZoneMap. **/
         ZoneMap<Target> targetMap;
 
+        /** @brief The static Field instances, encapsulated by a ZoneMap. **/
         ZoneMap<Field> fieldMap;
 
         /** @brief The Emitter used to create Particle instances. **/
@@ -60,11 +62,15 @@ class ofApp : public ofBaseApp {
         /** @brief The position of the cursor at the last mouseDragged call. **/
         LevelParser parser;
 
+        /** @brief The position of the last drag event. */
         ofPoint lastDragPosition;
+        /** @brief The iterator of the last dragged Field. */
         std::vector<std::unique_ptr<Field>>::iterator lastDragField;
 
+        /** @brief Adds an object to the game environment. **/
         void addObject(const std::variant<Emitter *, Field *, Target *> &object);
 
+        /** @brief Loads a level file, given the path. */
         void loadLevel(const std::string &path);
 
     public:
@@ -131,5 +137,6 @@ class ofApp : public ofBaseApp {
         /** @brief Called when the mouse is scrolled. **/
         void mouseScrolled(int x, int y, float scrollX, float scrollY);
 
+        /** @brief Called when the window is resized. **/
         void windowResized(int w, int h);
 };
