@@ -18,6 +18,7 @@
 #include "field.h"
 #include "target.h"
 
+#include "constants.h"
 #include "exceptions.h"
 
 /**
@@ -40,6 +41,8 @@ class ofApp : public ofBaseApp {
          * That happens when all the Target objectives are achieved.
          */
         bool END = false;
+
+        bool UNSUPPORTED_RES = false;
 
         /** @brief The Target instances, encapsulated by a ZoneMap. **/
         ZoneMap<Target> targetMap;
@@ -72,6 +75,9 @@ class ofApp : public ofBaseApp {
 
         /** @brief Loads a level file, given the path. */
         void loadLevel(const std::string &path);
+
+        /** @brief Draws an overlay when the resolution is to small. */
+        void drawLowResOverlay();
 
     public:
         /** 

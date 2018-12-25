@@ -105,7 +105,9 @@ void ofApp::update() {
 }
 
 void ofApp::draw() {
-    if (END == false) { 
+    if (UNSUPPORTED_RES)
+        drawLowResOverlay();
+    else if (END == false) { 
         fieldMap.draw();
         targetMap.draw();
 
@@ -165,7 +167,18 @@ void ofApp::mouseScrolled(int x, int y, float scrollX, float scrollY) {
         }
 }
 
+void ofApp::drawLowResOverlay() {
+    ofDrawBitmapString(std::string("Unsupported \n Resolution. \n Resize."), 20, 20);
+}
+
 void ofApp::windowResized(int w, int h) {
+    if (w < MIN_RESOLUTION_WIDTH || h < MIN_RESOLUTION_HEIGHT) {
+        UNSUPPORTED_RES = true;
+
+        return;
+    } else
+        UNSUPPORTED_RES = false;
+
     const ofVec2f newScreenBounds(w, h);
 
     const ofVec2f screenChangeProportion = newScreenBounds / screenBounds;
