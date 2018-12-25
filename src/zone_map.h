@@ -106,8 +106,8 @@ void ZoneMap<Zone>::update() {
     unsigned char *pixels = new unsigned char[ofGetWidth() * ofGetHeight()];
 
     for (size_t zoneIndex = 0; zoneIndex < zones.size(); zoneIndex++)
-        for (unsigned int heightIndex = 0; heightIndex < ofGetHeight(); heightIndex++)
-            for (unsigned int widthIndex = 0; widthIndex < ofGetWidth(); widthIndex++) 
+        for (int heightIndex = 0; heightIndex < ofGetHeight(); heightIndex++)
+            for (int widthIndex = 0; widthIndex < ofGetWidth(); widthIndex++) 
                 if (zones[zoneIndex]->inside(ofPoint(widthIndex, heightIndex))) { 
                     if (pixels[heightIndex * ofGetWidth() + widthIndex] == 0)
                         pixels[heightIndex * ofGetWidth() + widthIndex] = 1;

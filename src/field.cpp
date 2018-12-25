@@ -35,11 +35,6 @@ ofPoint Field::getCenter() const {
 void Field::draw() const {
     ofPushStyle();
 
-    ofFill();
-
-    ofSetColor(15, 15, 15);
-    shape->draw();
-
     ofNoFill();
     ofSetColor(ofColor::white);
 
@@ -59,11 +54,6 @@ void ColorField::updateParticle(Particle &particle) const {
 
 void ColorField::draw() const {
     ofPushStyle();
-
-    ofFill();
-
-    ofSetColor(15, 15, 15);
-    shape->draw();
 
     ofNoFill();
     ofSetColor(color);
