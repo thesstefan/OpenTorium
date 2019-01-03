@@ -1,18 +1,18 @@
 #include "level_parser.h"
 #include "constants.h"
-#include "get_functions.h"
+#include "misc.h"
 #include "exceptions.h"
 
 #include <sstream>
 
 const std::vector<std::string> emitterIdentifiers = 
-    { "direction", "maxVelocity", "lifeTime", "spawnRate", "shape", "position", "color" };
+    { "direction", "maxVelocity", "lifeTime", "spawnRate", "shape", "position", "color", "size" };
 
 const std::vector<std::string> fieldIdentifiers = 
-    { "shape", "position", "mobile", "type", "force/color" };
+    { "shape", "position", "mobile", "type", "force/color", "size" };
 
 const std::vector<std::string> targetIdentifiers = 
-    { "position", "flowRate", "color", "trackPath" };
+    { "position", "flowRate", "color", "trackPath", "size" };
 
 
 const enum ObjectType getObjectType(const std::string &typeString) {
@@ -41,49 +41,53 @@ const std::vector<std::string> getIdentifiers(const enum ObjectType &type) {
     throw UnknownType("getIdentifiers -> UnknownType");
 }
 
-Shape *getShape(const ofPoint &position, const std::string &shape, const enum ObjectType &type) {
-    if (type == ObjectType::EmitterType) {
-        if (shape == "CIRCLE")
-            return new Ellipse(position, EMITTER_CIRCLE_SIZE, EMITTER_CIRCLE_SIZE);
+Shape *getShape(const ofPoint &position, const std::string &shape, const float width, 
+                                                                   const float height) {
+    if (shape == "ELLIPSE")
+        return new Ellipse(position, width, height);
         
-        if (shape == "SQUARE")
-            return new Rectangle(position, EMITTER_SQUARE_SIZE, EMITTER_SQUARE_SIZE);
+    if (shape == "RECTANGLE")
+        return new Rectangle(position, width, height);
 
-        throw UnknownType("getShape -> Unknown shape type : " + shape);
-    }
-
-    if (type == ObjectType::FieldType) {
-        if (shape == "CIRCLE")
-            return new Ellipse(position, FIELD_CIRCLE_SIZE, FIELD_CIRCLE_SIZE);
-        
-        if (shape == "SQUARE")
-            return new Rectangle(position, FIELD_SQUARE_SIZE, FIELD_SQUARE_SIZE);
-
-        throw UnknownType("getShape -> Unknown shape type : " + shape);
-    }
-
-    throw UnknownType("getShape -> Can't use getShape for Target");
+    throw UnknownType("getShape -> UnknownType");
 }
 
 Emitter *createEmitter(const std::map<const std::string, std::string>& data) {
-    const ofPoint position = getVec2f(data.at("position"));
+    const ofPoint position = scaleToScreen(getVec2f(data.at("position")));
     const ofVec2f direction = getVec2f(data.at("direction"));
 
     const float maxVelocity = std::stof(data.at("maxVelocity"));
     const float lifeTime = std::stof(data.at("lifeTime"));
     const float spawnRate = std::stof(data.at("spawnRate"));
 
-    Shape *shape = getShape(position, data.at("shape"), ObjectType::EmitterType);
+    Shape *shape = nullptr;
+
+    if (data.at("shape") == "POLYLINE")
+        shape = getPolyline(data.at("size"));
+    else {
+        const ofVec2f size = scaleToScreen(getVec2f(data.at("size")));
+        
+        shape = getShape(position, data.at("shape"), size.x, size.y);
+    }
+
     const ofColor color = getColor(data.at("color"));
 
     return new Emitter(shape, direction, maxVelocity, lifeTime, spawnRate, color);
 }
 
 Field *createField(const std::map<const std::string, std::string>& data) {
-    const ofPoint position = getVec2f(data.at("position"));
+    const ofPoint position = scaleToScreen(getVec2f(data.at("position")));
     const bool mobile = getBool(data.at("mobile"));
 
-    Shape *shape = getShape(position, data.at("shape"), ObjectType::FieldType);
+    Shape *shape = nullptr;
+
+    if (data.at("shape") == "POLYLINE")
+        shape = getPolyline(data.at("size"));
+    else {
+        const ofVec2f size = scaleToScreen(getVec2f(data.at("size")));
+        
+        shape = getShape(position, data.at("shape"), size.x, size.y);
+    }
 
     if (data.at("type") == "FORCE") {
         const ofVec2f force = getVec2f(data.at("force/color"));
@@ -101,8 +105,11 @@ Field *createField(const std::map<const std::string, std::string>& data) {
 }
 
 Target *createTarget(const std::map<const std::string, std::string>& data) {
-    const ofPoint position = getVec2f(data.at("position"));
-    const ofRectangle zone(position, TARGET_SIZE, TARGET_SIZE);
+    const ofPoint position = scaleToScreen(getVec2f(data.at("position")));
+
+    const ofVec2f size = scaleToScreen(getVec2f(data.at("size")));
+
+    const ofRectangle zone(position, size.x, size.y);
 
     const float flowRate = std::stof(data.at("flowRate"));
     const ofColor color = getColor(data.at("color"));

@@ -31,6 +31,13 @@ void Rectangle::scale(float amount) {
     translate(center - getCenter());
 }
 
+void Rectangle::scale(const ofVec2f& screenChangeProportion) {
+    origin *= screenChangeProportion;
+
+    width *= screenChangeProportion.x;
+    height *= screenChangeProportion.y;
+}
+
 void Rectangle::translate(const ofPoint &amount) {
     origin += amount;
 }
@@ -76,6 +83,13 @@ void Ellipse::scale(float amount) {
     height *= amount;
 }
 
+void Ellipse::scale(const ofVec2f& screenChangeProportion) {
+    center *= screenChangeProportion;
+
+    width *= screenChangeProportion.x;
+    height *= screenChangeProportion.y;
+}
+
 void Ellipse::translate(const ofPoint &amount) {
     center += amount;
 }
@@ -112,6 +126,15 @@ void PolylineShape::scale(float amount) {
     ofPolyline::scale(amount, amount);
 
     ofPolyline::translate(center - getCenter());
+}
+
+void PolylineShape::scale(const ofVec2f& screenChangeProportion) {
+    auto oldPoints = getVertices();
+    
+    clear();
+
+    for (auto& oldPoint : oldPoints)
+        addVertex(oldPoint * ofPoint(screenChangeProportion.x, screenChangeProportion.y, 1));
 }
 
 void PolylineShape::translate(const ofPoint &amount) {

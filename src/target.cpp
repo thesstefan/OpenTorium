@@ -1,7 +1,5 @@
 #include "target.h"
 
-#include <iostream>
-
 const ofColor Target::BACKGROUND(60, 60, 60);
 const ofColor Target::GRID_LINE_COLOR(25, 25, 25);
 
@@ -76,6 +74,18 @@ void Target::updateParticle(Particle &particle) {
         track.setPaused(false);
 }
 
+void Target::scale(const ofVec2f& screenDifferenceProportion) {
+    targetZone.setPosition(targetZone.getPosition() * ofVec3f(screenDifferenceProportion.x,
+                                                              screenDifferenceProportion.y,
+                                                              1));
+
+    targetZone.setWidth(targetZone.width * screenDifferenceProportion.x);
+    targetZone.setHeight(targetZone.height * screenDifferenceProportion.y);
+
+    GRID_LINE_WIDTH *= screenDifferenceProportion.y;
+    GRID_MARGIN_LINE_WIDTH *= screenDifferenceProportion.y;
+}
+
 void Target::draw() const {
     ofPushStyle();
 
@@ -97,7 +107,7 @@ void Target::draw() const {
 
     ofDrawRectangle(progressRender);
 
-    const float nextBarProgress = heightScale - floor(heightScale);;
+    const float nextBarProgress = heightScale - floor(heightScale);
 
     ofRectangle nextBar = ofRectangle(targetZone.x, 
                                       targetZone.y + (targetZone.height / GRID_HORIZONTAL_LINES) * 

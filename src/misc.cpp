@@ -1,6 +1,8 @@
 #include <sstream>
 
-#include "get_functions.h"
+#include "ofAppRunner.h"
+
+#include "misc.h"
 #include "exceptions.h"
 
 bool getBool(const std::string &boolString) {
@@ -37,4 +39,37 @@ ofVec2f getVec2f(const std::string &vecString) {
     stream >> vec2f.x >> vec2f.y;
 
     return vec2f;
+}
+
+ofPoint scaleToScreen(const ofPoint& toScale) {
+    return toScale * ofPoint(ofGetWidth(), ofGetHeight());
+}
+
+PolylineShape *getPolyline(const std::string &polylineString) {
+    std::stringstream stream(polylineString);
+
+    PolylineShape *shape = new PolylineShape();
+
+    while (stream.eof() == false) {
+        ofPoint point;
+
+        stream >> point.x;
+        
+        if (stream.bad())
+            throw ExtractError("Could not create PolylineShape from 'string' : " + polylineString);
+
+        if (stream.eof())
+            break;
+
+        stream >> point.y;
+
+        /*
+        if (stream.bad() || stream.eof());
+            throw ExtractError("Could not create PolylineShape from 'string' : " + polylineString);
+        */
+
+        shape->addVertex(scaleToScreen(point));
+    }
+
+    return shape;
 }

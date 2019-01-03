@@ -1,6 +1,8 @@
 #include "ofApp.h"
 
 ofApp::ofApp() :
+    screenBounds(ofGetWidth(), ofGetHeight()),
+
     targetMap(ofGetWidth(), ofGetHeight()),
     fieldMap(ofGetWidth(), ofGetHeight()),
 
@@ -54,6 +56,11 @@ void ofApp::setup() {
     } catch (const std::exception &exception) {
         std::cerr << exception.what() << std::endl;
     }
+
+    lastDragField = fields.end();
+        
+    targetMap.update();
+    fieldMap.update();
 }
 
 void ofApp::clearDeadParticles() {
@@ -76,8 +83,8 @@ void ofApp::update() {
         std::insert_iterator<std::list<std::unique_ptr<Particle>>> 
             inserter(particles, particles.end());
 
-        targetMap.update();
-        fieldMap.update();
+        targetMap.updateObjects();
+        fieldMap.updateObjects();
 
         END = targetMap.ready();
 
@@ -98,7 +105,9 @@ void ofApp::update() {
 }
 
 void ofApp::draw() {
-    if (END == false) { 
+    if (UNSUPPORTED_RES)
+        drawLowResOverlay();
+    else if (END == false) { 
         fieldMap.draw();
         targetMap.draw();
 
@@ -120,25 +129,29 @@ void ofApp::draw() {
 
 void ofApp::mousePressed(int x, int y, int button) {
     if (button == 0)
-        for (auto& field : fields)
-            if (field->inside(ofPoint(x, y)))
+        for (auto field = fields.begin(); field != fields.end(); field++)
+            if ((*field)->inside(ofPoint(x, y))) {
                 lastDragPosition = ofPoint(x, y);
+
+                lastDragField = field;
+            }
 }
 
 void ofApp::mouseReleased(int x, int y, int button) {
     lastDragPosition = ofPoint(0, 0);
+
+    lastDragField = fields.end();
 }
 
 void ofApp::mouseDragged(int x, int y, int button) {
     if (button == 0)
-        for (auto& field : fields)
-            if (field->inside(ofPoint(x, y)) && lastDragPosition != ofPoint(0, 0)) {
-                ofPoint center = field->getCenter();
+        if (lastDragPosition != ofPoint(0, 0) && lastDragField != fields.end()) {
+            ofPoint center = (*lastDragField)->getCenter();
+            
+            (*lastDragField)->move(center + ofPoint(x,y) - lastDragPosition);
 
-                field->move(center + ofPoint(x,y) - lastDragPosition);
-
-                lastDragPosition = ofPoint(x, y);
-            }
+            lastDragPosition = ofPoint(x, y);
+        }
 }
 
 void ofApp::mouseScrolled(int x, int y, float scrollX, float scrollY) {
@@ -152,4 +165,35 @@ void ofApp::mouseScrolled(int x, int y, float scrollX, float scrollY) {
                     field->scale(0.9);
             }
         }
+}
+
+void ofApp::drawLowResOverlay() {
+    ofDrawBitmapString(std::string("Unsupported \n Resolution. \n Resize."), 20, 20);
+}
+
+void ofApp::windowResized(int w, int h) {
+    if (w < MIN_RESOLUTION_WIDTH || h < MIN_RESOLUTION_HEIGHT) {
+        UNSUPPORTED_RES = true;
+
+        return;
+    } else
+        UNSUPPORTED_RES = false;
+
+    const ofVec2f newScreenBounds(w, h);
+
+    const ofVec2f screenChangeProportion = newScreenBounds / screenBounds;
+
+    for (auto& emitter : emitters)
+        emitter->scale(screenChangeProportion);
+
+    for (auto& field : fields)
+        field->scale(screenChangeProportion);
+
+    for (auto& particle : particles)
+        particle->scale(screenChangeProportion);
+
+    targetMap.scale(screenChangeProportion);
+    fieldMap.scale(screenChangeProportion);
+
+    screenBounds = newScreenBounds;
 }

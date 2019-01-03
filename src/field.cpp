@@ -16,6 +16,10 @@ void Field::scale(float amount) {
     shape->scale(amount);
 }
 
+void Field::scale(const ofVec2f& screenChangeProportion) {
+    shape->scale(screenChangeProportion);
+}
+
 void Field::move(const ofPoint &newPosition) {
     shape->translate(newPosition - shape->getCenter());
 }
@@ -30,11 +34,6 @@ ofPoint Field::getCenter() const {
 
 void Field::draw() const {
     ofPushStyle();
-
-    ofFill();
-
-    ofSetColor(15, 15, 15);
-    shape->draw();
 
     ofNoFill();
     ofSetColor(ofColor::white);
@@ -55,11 +54,6 @@ void ColorField::updateParticle(Particle &particle) const {
 
 void ColorField::draw() const {
     ofPushStyle();
-
-    ofFill();
-
-    ofSetColor(15, 15, 15);
-    shape->draw();
 
     ofNoFill();
     ofSetColor(color);

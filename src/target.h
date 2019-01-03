@@ -30,7 +30,7 @@ class Target {
          * @brief The area of the Target in which the Particles
          *        must arrive.
          */
-        const ofRectangle targetZone;
+        ofRectangle targetZone;
 
         /**
          * @brief Current progress towards the objective.
@@ -68,17 +68,17 @@ class Target {
         /** @brief The track to be played while the Target is filled. **/
         ofSoundPlayer track;
 
+        /** @brief The width of the lines of the grid. **/
+        float GRID_LINE_WIDTH = 4;
+        /** @brief The width of the grid's margin line. **/
+        float GRID_MARGIN_LINE_WIDTH = 5;
+
     public:
         /** @brief The background color of the Target. **/
         static const ofColor BACKGROUND;
         /** @brief The color of the Target's grid. **/
         static const ofColor GRID_LINE_COLOR;
     
-        /** @brief The width of the lines of the grid. **/
-        constexpr static float GRID_LINE_WIDTH = 4;
-        /** @brief The width of the grid's margin line. **/
-        constexpr static float GRID_MARGIN_LINE_WIDTH = 5;
-
         /** @brief The number of horizontal lines in the grid. **/
         constexpr static int GRID_HORIZONTAL_LINES = 10;
 
@@ -128,6 +128,11 @@ class Target {
 
         /** @brief Checks if the Target objective was achieved. */
         bool ready() const;
+
+        /** @brief Adjusts the Target's shape and draw parameters
+         *         after a window resize.
+         */
+        void scale(const ofVec2f& screenDifferenceProportion);
 
         /** 
          * @brief Draws the contour of the rectangle shaped Target

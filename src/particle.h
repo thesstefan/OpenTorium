@@ -126,6 +126,11 @@ class Particle {
         void applyForce(const ofPoint &force);
 
         /**
+         * @brief Adjusts the velocity and position of the Particle after window resize.
+         */
+        void scale(const ofVec2f &screenChangeProportion);
+
+        /**
          * @brief Kills the Particle
          *
          * It won't be updated or drawn anymore and most likely be deleted.
