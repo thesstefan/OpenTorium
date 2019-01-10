@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<header>OpenTorium Level File</header>
+
+<data>
+    <object type="TARGET">
+        <position>
+            <x>0.5</x>
+            <y>0.6</y>
+        </position>
+
+        <flowRate>200</flowRate>
+        <color>RED</color>
+        <trackPath>track_1.mp3</trackPath>
+        <size>
+            <x>0.075</x>
+            <y>0.075</y>
+        </size>
+    </object>
+
+    <object type="FIELD">
+        <position>
+            <x>0.3</x>
+            <y>0.3</y>
+        </position>
+
+        <shape>RECTANGLE</shape>
+
+        <size>
+            <x>0.1</x>
+            <y>0.1</y>
+        </size>
+
+        <mobile>TRUE</mobile>
+        <type>COLOR</type>
+        <force_or_color>RED</force_or_color>
+    </object>
+
+    <object type="EMITTER">
+        <position>
+            <x>0.1</x>
+            <y>0.1</y>
+        </position>
+
+        <shape>ELLIPSE</shape>
+        <direction>
+            <x>1</x>
+            <y>1</y>
+        </direction>
+
+        <maxVelocity>350</maxVelocity>
+        <lifeTime>5</lifeTime>
+        <spawnRate>50</spawnRate>
+        <color>GREEN</color>
+        <size>
+            <x>0.2</x>
+            <y>0.2</y>
+        </size>
+    </object>
+</data>
