@@ -5,15 +5,7 @@
 #include "misc.h"
 #include "exceptions.h"
 
-bool getBool(const std::string &boolString) {
-    if (boolString == "TRUE" || boolString == "true" || boolString == "1")
-        return true;
-
-    if (boolString == "FALSE" || boolString == "false" || boolString == "0")
-        return false;
-
-    throw ExtractError("Could not extract 'bool' from 'string' : " + boolString);
-}
+#include <iostream>
 
 ofColor getColor(const std::string &colorString) {
     if (colorString == "WHITE")
@@ -31,14 +23,15 @@ ofColor getColor(const std::string &colorString) {
     throw UnknownType("Unknown color  : " + colorString);
 }
 
-ofVec2f getVec2f(const std::string &vecString) {
-    std::stringstream stream(vecString);
+ofVec2f getVec2f(const ofXml& xml) {
+    auto x_data = xml.getChild("x");
+    auto y_data = xml.getChild("y");
 
-    ofVec2f vec2f;
+    if (x_data && y_data == false)
+        throw ExtractError("Could not extract ofVec2f from ofXml.");
 
-    stream >> vec2f.x >> vec2f.y;
-
-    return vec2f;
+    return ofVec2f(x_data.getFloatValue(),
+                   y_data.getFloatValue());
 }
 
 ofPoint scaleToScreen(const ofPoint& toScale) {
