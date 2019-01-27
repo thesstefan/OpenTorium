@@ -1,39 +1,44 @@
 OpenTorium Level File
 
 EMITTER
-    position            200 200
-    shape               CIRCLE
+    position            0.2 0.2
+    shape               ELLIPSE
     direction           1 1
     maxVelocity         350
     lifeTime            1
     spawnRate           50
     color               WHITE
+    size                0.1 0.1
 
 EMITTER
-    position            500 200
-    shape               SQUARE
+    position            0.1 0.5
+    shape               RECTANGLE
     direction           0 1
     maxVelocity         150
     lifeTime            10
     spawnRate           100
     color               BLUE
+    size                0.1 0.1
 
 FIELD
-    position            400 400
-    shape               CIRCLE
+    position            0.1 0.2
+    shape               ELLIPSE
     mobile              TRUE
     type                FORCE
     force/color         100 0
+    size                0.1 0.1
 
 FIELD
-    position            800 300
-    shape               SQUARE
+    position            0.5 0.6
+    shape               RECTANGLE
     mobile              FALSE
     type                COLOR
     force/color         RED
+    size                0.1 0.1
 
 TARGET
-    position            1000 300
+    position            0.7 0.9
     flowRate            200
     color               RED
     trackPath           track_1.mp3
+    size                0.1 0.1
