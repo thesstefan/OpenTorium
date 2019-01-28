@@ -104,7 +104,7 @@ template <class Zone>
 void ZoneMap<Zone>::update() {
     map.clear();
 
-    unsigned char *pixels = new unsigned char[ofGetWidth() * ofGetHeight()];
+    unsigned char *pixels = new unsigned char[ofGetWidth() * ofGetHeight()]();
 
     for (size_t zoneIndex = 0; zoneIndex < zones.size(); zoneIndex++)
         for (int heightIndex = 0; heightIndex < ofGetHeight(); heightIndex++)
@@ -135,7 +135,7 @@ void ZoneMap<Zone>::updateParticle(Particle &particle) {
     if (!position.x || !position.y || position.x > ofGetWidth() || position.y > ofGetHeight())
         return;
 
-    auto id = map[(int)position.y * ofGetWidth() + (int)position.x];
+    auto id = map[(unsigned int)position.y * ofGetWidth() + (unsigned int)position.x];
 
     for (size_t zoneIndex = 0; zoneIndex < zones.size(); zoneIndex++) {
         if (id & 1) 
