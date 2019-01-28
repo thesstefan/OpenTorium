@@ -43,24 +43,16 @@ class Target {
         float progress;
 
         /**
-         * @brief The needed flow rate for the progress to not
-         *        decrease
+         * @brief The needed particles in the target in a frame for the
+         *        progress to increase.
          */
-        const float neededFlowRate;
+        const float neededFrameParticles;
 
         /** @brief The needed color of the Particles needed by the Target. **/
         const ofColor color;
 
-        /** @brief The number of Particles received by the Target the last frame. **/
-        int lastFrameParticles = 0;
         /** @brief The number of Particles received by the Target the current frame. **/
         int currentFrameParticles = 0;
-
-        /** 
-         * @brief The number of Particles received by the Target across frames which exceeded
-         *        MAX_FRAME_DIFFERENCE.
-         */
-        int frameOverflow = 0;
 
         /** @brief The current status of the frame. The sum of differences across the frames. **/
         float flowStatus = 0;
@@ -73,8 +65,12 @@ class Target {
         /** @brief The width of the grid's margin line. **/
         float GRID_MARGIN_LINE_WIDTH = 5;
 
+        /** @brief Draws the progress view. **/
         void drawProgress() const;
+
+        /** @brief Draws the grid view. **/
         void drawGrid() const;
+
     public:
         /** @brief The background color of the Target. **/
         static const ofColor BACKGROUND;
@@ -85,18 +81,28 @@ class Target {
         constexpr static int GRID_HORIZONTAL_LINES = 10;
 
         /** 
-         * @brief The percent of the needed flow rate which can't be exceeded by the difference 
-         *        between two frames. If the percent is exceeded, the excess is used later for a more
-         *        balanced distribution in progress changes across frames.
+         * @brief The maximum change in progress that can be made between 2 frames.
          */
-        constexpr static float SMOOTHING_STEP = 15;
-        
-        /**
-         * @brief The maximum number of particles between frames which can be used for the progress
-         *        change in an update call. The excess is stored as overflow.
-         */
-        const float MAX_FRAME_DIFFERENCE;
+        constexpr static float MAX_PROGRESS_CHANGE = 12.5;
 
+        /**
+         * @brief The progress decrease applied when the number of 
+         *        current frame particles are less than needed. (sometimes delayed)
+         */
+        constexpr static float PROGRESS_DECREASE_STEP = 5;
+
+        /**
+         * @brief The number of calls needed between sequential progress
+         *        decreases.
+         */
+        constexpr static float DECREASE_DELAY = 5;
+
+        /**
+         * @brief The maximum number of calls needed between sequential progress
+         *        maximum increases.
+         */
+        constexpr static float MAX_DELAY_INCREASE = 5;
+        
         /**
          * @brief Constructs the Target.
          *
