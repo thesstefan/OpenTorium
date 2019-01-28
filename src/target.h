@@ -73,6 +73,8 @@ class Target {
         /** @brief The width of the grid's margin line. **/
         float GRID_MARGIN_LINE_WIDTH = 5;
 
+        void drawProgress() const;
+        void drawGrid() const;
     public:
         /** @brief The background color of the Target. **/
         static const ofColor BACKGROUND;

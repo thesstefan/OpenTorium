@@ -86,16 +86,10 @@ void Target::scale(const ofVec2f& screenDifferenceProportion) {
     GRID_MARGIN_LINE_WIDTH *= screenDifferenceProportion.y;
 }
 
-void Target::draw() const {
+void Target::drawProgress() const {
     ofPushStyle();
 
     ofFill();
-
-    // Draw the background of the Target.
-    ofSetColor(BACKGROUND);
-    ofDrawRectangle(targetZone);
-
-    // Draw the progress rectangle.
     ofSetColor(color);
 
     ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y + targetZone.height,
@@ -123,8 +117,13 @@ void Target::draw() const {
     ofDrawRectangle(nextBar);
 
     ofDisableBlendMode();
+    
+    ofPopStyle();
+}
 
-    // Draw the grid.
+void Target::drawGrid() const {
+    ofPushStyle();
+
     ofSetColor(GRID_LINE_COLOR);
     ofSetLineWidth(GRID_LINE_WIDTH);
 
@@ -141,7 +140,22 @@ void Target::draw() const {
 
     ofNoFill();
     ofSetLineWidth(GRID_MARGIN_LINE_WIDTH);
+
     ofDrawRectangle(targetZone);
+
+    ofPopStyle();
+}
+
+
+void Target::draw() const {
+    ofPushStyle();
+
+    // Draw the background of the Target.
+    ofSetColor(BACKGROUND);
+    ofDrawRectangle(targetZone);
+
+    drawProgress();
+    drawGrid();
 
     ofPopStyle();
 }
