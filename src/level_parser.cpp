@@ -6,7 +6,7 @@
 #include <sstream>
 
 const std::vector<std::string> emitterIdentifiers = 
-    { "direction", "maxVelocity", "lifeTime", "spawnRate", "shape", "position", "color", "size" };
+    { "direction", "maxRelativeSpeed", "lifeTime", "spawnRate", "shape", "position", "color", "size" };
 
 const std::vector<std::string> fieldIdentifiers = 
     { "shape", "position", "mobile", "type", "force/color", "size" };
@@ -53,10 +53,15 @@ Shape *getShape(const ofPoint &position, const std::string &shape, const float w
 }
 
 Emitter *createEmitter(const std::map<const std::string, std::string>& data) {
-    const ofPoint position = scaleToScreen(getVec2f(data.at("position")));
-    const ofVec2f direction = getVec2f(data.at("direction"));
+    const ofPoint position = getScreenScaled(getVec2f(data.at("position")));
 
-    const float maxVelocity = std::stof(data.at("maxVelocity"));
+    ofVec2f scalingMatrix;
+    ofGetWidth() > ofGetHeight() ? scalingMatrix = ofVec2f(1, ofGetWidth() / ofGetHeight()) :
+                                   scalingMatrix = ofVec2f(ofGetHeight() / ofGetWidth(), 1);
+
+    const ofVec2f direction = getScaled(getVec2f(data.at("direction")), scalingMatrix).getNormalized();
+
+    const float maxRelativeSpeed = std::stof(data.at("maxRelativeSpeed"));
     const float lifeTime = std::stof(data.at("lifeTime"));
     const float spawnRate = std::stof(data.at("spawnRate"));
 
@@ -65,18 +70,18 @@ Emitter *createEmitter(const std::map<const std::string, std::string>& data) {
     if (data.at("shape") == "POLYLINE")
         shape = getPolyline(data.at("size"));
     else {
-        const ofVec2f size = scaleToScreen(getVec2f(data.at("size")));
+        const ofVec2f size = getScreenScaled(getVec2f(data.at("size")));
         
         shape = getShape(position, data.at("shape"), size.x, size.y);
     }
 
     const ofColor color = getColor(data.at("color"));
 
-    return new Emitter(shape, direction, maxVelocity, lifeTime, spawnRate, color);
+    return new Emitter(shape, direction, maxRelativeSpeed, lifeTime, spawnRate, color);
 }
 
 Field *createField(const std::map<const std::string, std::string>& data) {
-    const ofPoint position = scaleToScreen(getVec2f(data.at("position")));
+    const ofPoint position = getScreenScaled(getVec2f(data.at("position")));
     const bool mobile = getBool(data.at("mobile"));
 
     Shape *shape = nullptr;
@@ -84,13 +89,13 @@ Field *createField(const std::map<const std::string, std::string>& data) {
     if (data.at("shape") == "POLYLINE")
         shape = getPolyline(data.at("size"));
     else {
-        const ofVec2f size = scaleToScreen(getVec2f(data.at("size")));
+        const ofVec2f size = getScreenScaled(getVec2f(data.at("size")));
         
         shape = getShape(position, data.at("shape"), size.x, size.y);
     }
 
     if (data.at("type") == "FORCE") {
-        const ofVec2f force = getVec2f(data.at("force/color"));
+        const ofVec2f force = getScreenScaled(getVec2f(data.at("force/color")));
 
         return new ForceField(shape, force, mobile);
     } 
@@ -105,9 +110,9 @@ Field *createField(const std::map<const std::string, std::string>& data) {
 }
 
 Target *createTarget(const std::map<const std::string, std::string>& data) {
-    const ofPoint position = scaleToScreen(getVec2f(data.at("position")));
+    const ofPoint position = getScreenScaled(getVec2f(data.at("position")));
 
-    const ofVec2f size = scaleToScreen(getVec2f(data.at("size")));
+    const ofVec2f size = getScreenScaled(getVec2f(data.at("size")));
 
     const ofRectangle zone(position, size.x, size.y);
 

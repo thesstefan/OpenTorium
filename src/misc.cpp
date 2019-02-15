@@ -5,6 +5,14 @@
 #include "misc.h"
 #include "exceptions.h"
 
+ofVec2f getScaled(const ofVec2f& toScale, const ofVec2f& scalingMatrix) {
+    return toScale * scalingMatrix;
+}
+
+ofVec2f getScreenScaled(const ofVec2f& toScale) {
+    return getScaled(toScale, ofVec2f(ofGetWidth(), ofGetHeight()));
+}
+
 bool getBool(const std::string &boolString) {
     if (boolString == "TRUE" || boolString == "true" || boolString == "1")
         return true;
@@ -41,10 +49,6 @@ ofVec2f getVec2f(const std::string &vecString) {
     return vec2f;
 }
 
-ofPoint scaleToScreen(const ofPoint& toScale) {
-    return toScale * ofPoint(ofGetWidth(), ofGetHeight());
-}
-
 PolylineShape *getPolyline(const std::string &polylineString) {
     std::stringstream stream(polylineString);
 
@@ -68,7 +72,7 @@ PolylineShape *getPolyline(const std::string &polylineString) {
             throw ExtractError("Could not create PolylineShape from 'string' : " + polylineString);
         */
 
-        shape->addVertex(scaleToScreen(point));
+        shape->addVertex(ofPoint(getScreenScaled(point)));
     }
 
     return shape;

@@ -71,3 +71,9 @@ ForceField::ForceField(Shape *shape, const ofVec2f &force, bool mobile) :
 void ForceField::updateParticle(Particle &particle) const {
     particle.applyForce(force);
 }
+
+void ForceField::scale(const ofVec2f& screenChangeProportion) {
+    Field::scale(screenChangeProportion);
+
+    force *= screenChangeProportion;
+}

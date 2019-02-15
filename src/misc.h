@@ -17,8 +17,13 @@ ofColor getColor(const std::string &colorString);
 /** @brief Extracts an @b ofVec2f from a @b std::string. **/
 ofVec2f getVec2f(const std::string &vecString);
 
-/** @brief Scales a normalized point to the screen. **/
-ofPoint scaleToScreen(const ofPoint& toScale);
+/** @brief Returns the given vector scaled by the dimensions of the screen. **/
+ofVec2f getScreenScaled(const ofVec2f& toScale);
+
+/** @brief Returns the given vector scaled by a given scaling matrix represented as an
+ *         ofVec2f(a, b), where the real scaling matrix is [[a, 0], [0, b]].
+ */
+ofVec2f getScaled(const ofVec2f& toScale, const ofVec2f& scalingMatrix);
 
 /** @brief Extracts a PolylineShape from a @b std::string. **/
 PolylineShape *getPolyline(const std::string& polylineString);

@@ -35,8 +35,13 @@ class Emitter {
         /** @brief The direction of the Particle motion. **/
         ofVec2f direction;
 
-        /** @brief The maximum value of the @b velocity possesed by a Particle. **/
-        const float maxVelocity;
+        /** @brief The maximum value of the relative speed. **/
+        const float maxRelativeSpeed;
+
+        /** @brief The maximum value of the speed possessed by a Particle.
+         *         Calculated using maxRelativeSpeed. Updated at every scale() call.
+         */
+        float maxSpeed;
 
         /** @brief The maximum @b lifeTime of a Particle. **/
         const float lifeTime;
@@ -58,7 +63,7 @@ class Emitter {
     public:
         /** @brief Constructs the Emitter. */
         Emitter(Shape *shape, const ofVec2f &direction,
-                float maxVelocity, float lifeTime, float spawnRate,
+                float maxRelativeSpeed, float lifeTime, float spawnRate,
                 const ofColor &color);
 
         /** 
