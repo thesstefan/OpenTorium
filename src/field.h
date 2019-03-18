@@ -14,7 +14,7 @@
 /**
  * @class Field
  *
- * This class encapsulates an area in which Particles are modified in a specific 
+ * This class encapsulates an area in which Particles are modified in a specific
  * way (accelerated / colorized).
  *
  * The area has a defined Shape.
@@ -25,8 +25,8 @@ class Field {
         std::unique_ptr<Shape> shape;
 
     public:
-        /** 
-         * @brief Constructs the Field. 
+        /**
+         * @brief Constructs the Field.
          *
          * @param shape -> The Shape of the Field.
          *
@@ -57,7 +57,7 @@ class Field {
         /** @brief Draws the Field. **/
         virtual void draw() const;
 
-        /** 
+        /**
          * @brief Checks if the Field is ready. (empty)
          *
          * Returns true.
@@ -83,7 +83,7 @@ class Field {
 /**
  * @class ColorField
  *
- * This class provides a Field which colorizes the Particle instances 
+ * This class provides a Field which colorizes the Particle instances
  * inside it's shape.
  */
 class ColorField : public Field {
@@ -128,7 +128,7 @@ class ForceField : public Field {
         ofVec2f force;
 
     public:
-        /** 
+        /**
          * @brief Constructs the ForceField.
          *
          * @param shape -> The Shape of the ForceField.
@@ -139,7 +139,7 @@ class ForceField : public Field {
          */
         ForceField(Shape *shape, const ofVec2f &force, bool mobile);
 
-        /** 
+        /**
          * @brief Updates a Particle.
          *
          * The force is applied on the Particle if it's inside the Field.
@@ -147,4 +147,7 @@ class ForceField : public Field {
          * @param particle -> The Particle to be updated.
          */
         virtual void updateParticle(Particle &particle) const override;
+
+        /** @brief Adjusts the ForceField after a window resize. **/
+        void scale(const ofVec2f& screenChangeProportion);
 };

@@ -4,12 +4,12 @@ EMITTER
     position            0.2 0.2
     shape               ELLIPSE
     direction           1 1
-    maxVelocity         350
     lifeTime            1
     spawnRate           20
     color               RED
     size                0.1 0.1
     particleSize        5
+    maxRelativeSpeed    0.5
 
 TARGET
     position            0.3 0.3
@@ -17,11 +17,4 @@ TARGET
     color               RED
     trackPath           track_1.mp3
     size                0.1 0.1
-
-FIELD
-    position            0.5 0.5
-    shape               ELLIPSE
-    mobile              TRUE
-    type                COLOR
-    force/color         GREEN
-    size                0.1 0.1
+    
