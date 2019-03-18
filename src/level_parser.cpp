@@ -6,7 +6,7 @@
 #include <sstream>
 
 const std::vector<std::string> emitterIdentifiers = 
-    { "direction", "maxVelocity", "lifeTime", "spawnRate", "shape", "position", "color", "size" };
+    { "direction", "maxVelocity", "lifeTime", "spawnRate", "shape", "position", "color", "size", "particleSize" };
 
 const std::vector<std::string> fieldIdentifiers = 
     { "shape", "position", "mobile", "type", "force/color", "size" };
@@ -59,6 +59,7 @@ Emitter *createEmitter(const std::map<const std::string, std::string>& data) {
     const float maxVelocity = std::stof(data.at("maxVelocity"));
     const float lifeTime = std::stof(data.at("lifeTime"));
     const float spawnRate = std::stof(data.at("spawnRate"));
+    const float particleSize = std::stof(data.at("particleSize"));
 
     Shape *shape = nullptr;
 
@@ -72,7 +73,7 @@ Emitter *createEmitter(const std::map<const std::string, std::string>& data) {
 
     const ofColor color = getColor(data.at("color"));
 
-    return new Emitter(shape, direction, maxVelocity, lifeTime, spawnRate, color);
+    return new Emitter(shape, direction, maxVelocity, lifeTime, spawnRate, color, particleSize);
 }
 
 Field *createField(const std::map<const std::string, std::string>& data) {

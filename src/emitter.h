@@ -47,6 +47,9 @@ class Emitter {
         /** @brief The color of the created Particles. **/
         const ofColor color;
 
+        /** @brief The size of the created Particles. **/
+        float particleSize;
+
         /**
          * @brief The remaining part of the number of Particles to create in
          *        many update calls.
@@ -59,7 +62,7 @@ class Emitter {
         /** @brief Constructs the Emitter. */
         Emitter(Shape *shape, const ofVec2f &direction,
                 float maxVelocity, float lifeTime, float spawnRate,
-                const ofColor &color);
+                const ofColor &color, float particleSize);
 
         /** 
          * @brief Creates a Particle.

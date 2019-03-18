@@ -36,7 +36,7 @@ enum ParticleType {
 class Particle {
     protected:
         /** @brief The size of the Particle. **/
-        const int size;
+        const float size;
 
         /** @brief The color of the Particle. **/
         ofColor color;
@@ -77,7 +77,7 @@ class Particle {
          *
          * @param lifeTime -> The maximum lifeTime of the Particle.
          */
-        Particle(int size, const ofColor &color, const ofPoint &position, 
+        Particle(float size, const ofColor &color, const ofPoint &position, 
                  const ofVec2f &velocity, float lifeTime, float mass = 1.0);
 
         /** @brief Updates the Particle.
@@ -192,7 +192,7 @@ class CircleParticle : public Particle {
  * @param lifeTime -> The maximum lifeTime of the Particle.
 */
 std::unique_ptr<Particle> getParticle(const enum ParticleType &type,
-                                      int size, 
+                                      float size, 
                                       const ofColor &color,
                                       const ofPoint &position,
                                       const ofVec2f &velocity,

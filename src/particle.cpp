@@ -1,6 +1,6 @@
 #include "particle.h"
 
-Particle::Particle(int size, const ofColor &color, const ofPoint &position, 
+Particle::Particle(float size, const ofColor &color, const ofPoint &position, 
                    const ofVec2f &velocity, float lifeTime, float mass) : 
     size(size), 
     color(color), 
@@ -71,7 +71,7 @@ void CircleParticle::draw() const {
 }
 
 std::unique_ptr<Particle> getParticle(const enum ParticleType &type,
-                                      int size, 
+                                      float size, 
                                       const ofColor &color,
                                       const ofPoint &position,
                                       const ofVec2f &velocity,

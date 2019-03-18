@@ -1,13 +1,15 @@
 #include "emitter.h"
 
 Emitter::Emitter(Shape *shape, const ofVec2f &direction, float maxVelocity,
-                 float lifeTime, float spawnRate, const ofColor &color) :
+                 float lifeTime, float spawnRate, const ofColor &color,
+                 float particleSize) :
     shape(shape), 
     direction(direction), 
     maxVelocity(maxVelocity), 
     lifeTime(lifeTime),
     spawnRate(spawnRate),
-    color(color) {
+    color(color),
+    particleSize(particleSize) {
 
     spawnCount = 0;
 }
@@ -17,9 +19,7 @@ std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType &type)
     const ofVec2f position = shape->getRandomPoint();
     const ofVec2f velocity = direction * ofRandom(1, maxVelocity);
 
-    const int size = 1;
-
-    return getParticle(type, size, color, position, velocity, lifeTime);
+    return getParticle(type, particleSize, color, position, velocity, lifeTime);
 }
 
 void Emitter::draw() const {
