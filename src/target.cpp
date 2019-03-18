@@ -3,12 +3,11 @@
 const ofColor Target::BACKGROUND(60, 60, 60);
 const ofColor Target::GRID_LINE_COLOR(25, 25, 25);
 
-Target::Target(const ofRectangle &zone, float neededFlowRate, const ofColor &color,
+Target::Target(const ofRectangle &zone, float neededFrameParticles, const ofColor &color,
                const std::string &trackPath = "") :
     targetZone(zone), 
-    neededFlowRate(neededFlowRate), 
-    color(color),
-    MAX_FRAME_DIFFERENCE(SMOOTHING_STEP / 100 * neededFlowRate) {
+    neededFrameParticles(neededFrameParticles), 
+    color(color) {
         track.load(trackPath);
 
         if (track.isLoaded() == false)
@@ -28,29 +27,31 @@ bool Target::inside(const ofPoint& point) const {
 }
 
 void Target::update() {
-    int frameDifference = currentFrameParticles - lastFrameParticles;
+    static int decreaseDelay = 0;
+    static int increaseDelay = 0;
 
-    lastFrameParticles = currentFrameParticles;
-    currentFrameParticles = 0;
+    if (currentFrameParticles < neededFrameParticles) {
+        if (decreaseDelay == 0) {
+            progress -= PROGRESS_DECREASE_STEP;
 
-    if (abs(frameDifference) > MAX_FRAME_DIFFERENCE && ready() == false) {
-        frameDifference -= MAX_FRAME_DIFFERENCE;
+            decreaseDelay = DECREASE_DELAY;
+        } else
+            decreaseDelay--;
+    } else {
+        if (increaseDelay)
+            increaseDelay--;
+        else {
+            const float progressChange = ofMap(currentFrameParticles - neededFrameParticles,
+                                               0, currentFrameParticles,
+                                               0, MAX_PROGRESS_CHANGE);
 
-        flowStatus += MAX_FRAME_DIFFERENCE;
-        frameOverflow += frameDifference;
-    } else if (abs(frameDifference) < MAX_FRAME_DIFFERENCE && frameOverflow) {
-        const int overflowUsage = MAX_FRAME_DIFFERENCE - frameDifference;
+            increaseDelay = ofMap(progressChange, 0, MAX_PROGRESS_CHANGE, 0, MAX_DELAY_INCREASE);
 
-        frameOverflow -= overflowUsage;
-        flowStatus += frameDifference + overflowUsage;
-    } else
-        flowStatus += frameDifference;
+            progress += progressChange;
+        }
+    }
 
-    frameOverflow = ofClamp(frameOverflow, 0, MAX_FRAME_DIFFERENCE * 5);
-
-    flowStatus = ofClamp(flowStatus, 0, neededFlowRate);
-
-    progress = ofMap(flowStatus, 0, neededFlowRate, 0, 100);
+    progress = ofClamp(progress, 0, 100);
 
     float volume = ofMap(progress, 0, 100, 0.1, 1);
 
@@ -58,6 +59,8 @@ void Target::update() {
 
     if (progress == 0)
         track.setPaused(true);
+
+    currentFrameParticles = 0;
 }
 
 bool Target::ready() const {
@@ -86,16 +89,10 @@ void Target::scale(const ofVec2f& screenDifferenceProportion) {
     GRID_MARGIN_LINE_WIDTH *= screenDifferenceProportion.y;
 }
 
-void Target::draw() const {
+void Target::drawProgress() const {
     ofPushStyle();
 
     ofFill();
-
-    // Draw the background of the Target.
-    ofSetColor(BACKGROUND);
-    ofDrawRectangle(targetZone);
-
-    // Draw the progress rectangle.
     ofSetColor(color);
 
     ofRectangle progressRender = ofRectangle(targetZone.x, targetZone.y + targetZone.height,
@@ -123,8 +120,13 @@ void Target::draw() const {
     ofDrawRectangle(nextBar);
 
     ofDisableBlendMode();
+    
+    ofPopStyle();
+}
 
-    // Draw the grid.
+void Target::drawGrid() const {
+    ofPushStyle();
+
     ofSetColor(GRID_LINE_COLOR);
     ofSetLineWidth(GRID_LINE_WIDTH);
 
@@ -141,7 +143,22 @@ void Target::draw() const {
 
     ofNoFill();
     ofSetLineWidth(GRID_MARGIN_LINE_WIDTH);
+
     ofDrawRectangle(targetZone);
+
+    ofPopStyle();
+}
+
+
+void Target::draw() const {
+    ofPushStyle();
+
+    // Draw the background of the Target.
+    ofSetColor(BACKGROUND);
+    ofDrawRectangle(targetZone);
+
+    drawProgress();
+    drawGrid();
 
     ofPopStyle();
 }
