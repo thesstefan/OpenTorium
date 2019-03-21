@@ -35,7 +35,7 @@ class Emitter {
         /** @brief The direction of the Particle motion. **/
         ofVec2f direction;
 
-        /** @brief The maximum value of the relative speed. **/
+        /** @brief The maximum value of the relativeative speed. **/
         const float maxRelativeSpeed;
 
         /** @brief The maximum value of the speed possessed by a Particle.
@@ -52,8 +52,8 @@ class Emitter {
         /** @brief The color of the created Particles. **/
         const ofColor color;
 
-        /** @brief The relative size of the Particle created by the Emitter. **/
-        const float relParticleSize;
+        /** @brief The relativeative size of the Particle created by the Emitter. **/
+        const float relativeParticleSize;
 
         /**
          * @brief The remaining part of the number of Particles to create in
@@ -66,8 +66,8 @@ class Emitter {
     public:
         /** @brief Constructs the Emitter. */
         Emitter(Shape *shape, const ofVec2f &direction,
-                float maxRelativespeed, float lifeTime, float spawnRate,
-                const ofColor &color, float relParticleSize);
+                float maxRelativeSpeed, float lifeTime, float spawnRate,
+                const ofColor &color, float relativeParticleSize);
 
         /** 
          * @brief Creates a Particle.

@@ -3,7 +3,7 @@
 
 Emitter::Emitter(Shape *shape, const ofVec2f &direction, float maxRelativeSpeed,
                  float lifeTime, float spawnRate, const ofColor &color,
-                 float relParticleSize) :
+                 float relativeParticleSize) :
     shape(shape), 
     direction(direction), 
     maxRelativeSpeed(maxRelativeSpeed), 
@@ -11,10 +11,8 @@ Emitter::Emitter(Shape *shape, const ofVec2f &direction, float maxRelativeSpeed,
     lifeTime(lifeTime),
     spawnRate(spawnRate),
     color(color),
-    relParticleSize(relParticleSize) {
-
-        spawnCount = 0;
-}
+    relativeParticleSize(relativeParticleSize),
+    spawnCount(0) {}
 
 std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType &type) const {
     const ofVec2f position = shape->getRandomPoint();
@@ -23,7 +21,7 @@ std::unique_ptr<Particle> Emitter::createParticle(const enum ParticleType &type)
 
     const ofVec2f velocity = direction.getScaled(speed);
 
-    return getParticle(type, relParticleSize, color, position, velocity, lifeTime);
+    return getParticle(type, relativeParticleSize, color, position, velocity, lifeTime);
 }
 
 void Emitter::draw() const {

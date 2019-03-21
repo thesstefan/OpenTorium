@@ -40,8 +40,8 @@ enum ParticleType {
  */
 class Particle {
     protected:
-        /** @brief The relative size of the Particle. **/
-        const float relSize;
+        /** @brief The relativeative size of the Particle. **/
+        const float relativeSize;
 
         /** @brief The size of the Particle. **/
         float size;
@@ -73,7 +73,7 @@ class Particle {
         /** 
          * @brief Constructs the Particle, using several properties.
          *
-         * @param relSize -> The relative size of the Particle.
+         * @param relativeSize -> The relativeative size of the Particle.
          *
          * @param mass -> The mass of the Particle.
          *
@@ -85,7 +85,7 @@ class Particle {
          *
          * @param lifeTime -> The maximum lifeTime of the Particle.
          */
-        Particle(float relSize, const ofColor &color, const ofPoint &position, 
+        Particle(float relativeSize, const ofColor &color, const ofPoint &position, 
                  const ofVec2f &velocity, float lifeTime, float mass = 1.0);
 
         /** @brief Updates the Particle.
@@ -156,7 +156,7 @@ class CircleParticle : public Particle {
         /** 
          * @brief Constructs the CircleParticle, using several properties.
          *
-         * @param relSize -> The relative size of the Particle.
+         * @param relativeSize -> The relativeative size of the Particle.
          *
          * @param color -> The color of the Particle.
          *
@@ -168,7 +168,7 @@ class CircleParticle : public Particle {
          *
          * @param lifeTime -> The maximum lifeTime of the Particle.
          */
-        CircleParticle(float relSize, const ofColor& color, const ofPoint &position, 
+        CircleParticle(float relativeSize, const ofColor& color, const ofPoint &position, 
                        const ofVec2f &velocity, int lifeTime, float mass = 1.0);
 
         /**
@@ -187,7 +187,7 @@ class CircleParticle : public Particle {
  *
  * @param type -> The type of the Particle.
  *
- * @param relSize -> The relative size of the Particle.
+ * @param relativeSize -> The relativeative size of the Particle.
  *
  * @param color -> The color of the Particle.
  *
@@ -200,7 +200,7 @@ class CircleParticle : public Particle {
  * @param lifeTime -> The maximum lifeTime of the Particle.
 */
 std::unique_ptr<Particle> getParticle(const enum ParticleType &type,
-                                      float relSize, 
+                                      float relativeSize, 
                                       const ofColor &color,
                                       const ofPoint &position,
                                       const ofVec2f &velocity,
