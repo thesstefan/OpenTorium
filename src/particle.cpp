@@ -1,16 +1,19 @@
 #include "particle.h"
 
-Particle::Particle(float size, const ofColor &color, const ofPoint &position, 
+#include <iostream>
+
+Particle::Particle(float relSize, const ofColor &color, const ofPoint &position, 
                    const ofVec2f &velocity, float lifeTime, float mass) : 
-    size(size), 
+    relSize(relSize), 
     color(color), 
     position(position), 
     velocity(velocity), 
     lifeTime(lifeTime), 
     mass(mass) {
         age = 0;
-
         live = true;
+
+        size = relSize * ofVec2f(ofGetWidth(), ofGetHeight()).length();
 }
 
 void Particle::update(float deltaTime) {
@@ -49,11 +52,7 @@ void Particle::applyForce(const ofPoint &force) {
 }
 
 void Particle::scale(const ofVec2f &screenChangeProportion) {
-    const ofVec2f screen = ofVec2f(ofGetWidth(), ofGetHeight());
-    const ofVec2f oldScreen = screen / screenChangeProportion;
-
-    size *= screen.length() / oldScreen.length();
-    size = ofClamp(size, MIN_PARTICLE_SIZE, MAX_PARTICLE_SIZE);
+    size = relSize * ofVec2f(ofGetWidth(), ofGetHeight()).length();
 
     position *= screenChangeProportion;
 
@@ -61,9 +60,9 @@ void Particle::scale(const ofVec2f &screenChangeProportion) {
     acceleration *= screenChangeProportion;
 }
 
-CircleParticle::CircleParticle(int size, const ofColor &color, const ofPoint &position, 
+CircleParticle::CircleParticle(float relSize, const ofColor &color, const ofPoint &position, 
                                const ofVec2f &velocity, int lifeTime, float mass) :
-    Particle(size, color, position, velocity, lifeTime, mass) {}
+    Particle(relSize, color, position, velocity, lifeTime, mass) {}
 
 void CircleParticle::draw() const {
     if (live) {
@@ -77,13 +76,13 @@ void CircleParticle::draw() const {
 }
 
 std::unique_ptr<Particle> getParticle(const enum ParticleType &type,
-                                      float size, 
+                                      float relSize, 
                                       const ofColor &color,
                                       const ofPoint &position,
                                       const ofVec2f &velocity,
                                       float lifeTime) {
     if (type == ParticleType::Circle)
-        return std::make_unique<CircleParticle>(size, color, position, velocity, lifeTime);
+        return std::make_unique<CircleParticle>(relSize, color, position, velocity, lifeTime);
     else
         throw "Unknown particle type";
 }

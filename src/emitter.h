@@ -52,8 +52,8 @@ class Emitter {
         /** @brief The color of the created Particles. **/
         const ofColor color;
 
-        /** @brief The size of the created Particles. **/
-        float particleSize;
+        /** @brief The relative size of the Particle created by the Emitter. **/
+        const float relParticleSize;
 
         /**
          * @brief The remaining part of the number of Particles to create in
@@ -67,7 +67,7 @@ class Emitter {
         /** @brief Constructs the Emitter. */
         Emitter(Shape *shape, const ofVec2f &direction,
                 float maxRelativespeed, float lifeTime, float spawnRate,
-                const ofColor &color, float particleSize);
+                const ofColor &color, float relParticleSize);
 
         /** 
          * @brief Creates a Particle.
