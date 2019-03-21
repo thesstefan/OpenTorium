@@ -8,13 +8,12 @@ EMITTER
     spawnRate           20
     color               RED
     size                0.1 0.1
-    particleSize        5
+    particleSize        0.005
     maxRelativeSpeed    0.5
 
 TARGET
     position            0.3 0.3
-    flowRate            10
+    flowRate            20
     color               RED
     trackPath           track_1.mp3
     size                0.1 0.1
-    

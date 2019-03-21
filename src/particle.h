@@ -6,6 +6,11 @@
 
 #pragma once
 
+/** @brief The minimum size of a particle. **/
+constexpr int MIN_PARTICLE_SIZE = 1;
+/** @brief The maximum size of a particle. **/
+constexpr int MAX_PARTICLE_SIZE = 1000;
+
 #include "ofMain.h"
 
 /** @brief Defines the existing Particle types. */
@@ -36,7 +41,7 @@ enum ParticleType {
 class Particle {
     protected:
         /** @brief The size of the Particle. **/
-        const float size;
+        float size;
 
         /** @brief The color of the Particle. **/
         ofColor color;

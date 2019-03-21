@@ -180,7 +180,6 @@ void ofApp::windowResized(int w, int h) {
         UNSUPPORTED_RES = false;
 
     const ofVec2f newScreenBounds(w, h);
-
     const ofVec2f screenChangeProportion = newScreenBounds / screenBounds;
 
     for (auto& emitter : emitters)

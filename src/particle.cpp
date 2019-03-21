@@ -49,6 +49,12 @@ void Particle::applyForce(const ofPoint &force) {
 }
 
 void Particle::scale(const ofVec2f &screenChangeProportion) {
+    const ofVec2f screen = ofVec2f(ofGetWidth(), ofGetHeight());
+    const ofVec2f oldScreen = screen / screenChangeProportion;
+
+    size *= screen.length() / oldScreen.length();
+    size = ofClamp(size, MIN_PARTICLE_SIZE, MAX_PARTICLE_SIZE);
+
     position *= screenChangeProportion;
 
     velocity *= screenChangeProportion;

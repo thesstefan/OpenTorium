@@ -11,7 +11,7 @@ Emitter::Emitter(Shape *shape, const ofVec2f &direction, float maxRelativeSpeed,
     lifeTime(lifeTime),
     spawnRate(spawnRate),
     color(color),
-    particleSize(particleSize) {
+    particleSize(particleSize * ofVec2f(ofGetWidth(), ofGetHeight()).length()) {
 
     spawnCount = 0;
 }
@@ -39,6 +39,12 @@ void Emitter::draw() const {
 
 void Emitter::scale(const ofVec2f& screenChangeProportion) {
     shape->scale(screenChangeProportion);
+
+    const ofVec2f screen = ofVec2f(ofGetWidth(), ofGetHeight());
+    const ofVec2f oldScreen = screen / screenChangeProportion;
+
+    particleSize *= screen.length() / oldScreen.length();
+    particleSize = ofClamp(particleSize, MIN_PARTICLE_SIZE, MAX_PARTICLE_SIZE);
 
     maxSpeed = getScreenScaled(direction.getScaled(maxRelativeSpeed)).length();
 
