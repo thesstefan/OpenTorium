@@ -16,6 +16,8 @@ void ofApp::loadLevel(const std::string& path) {
         parser.load(path);
     } catch (const LevelLoadFail& exception) {
         std::cerr << exception.what() << std::endl;
+
+        return;
     }
 
     bool read = false;
@@ -52,7 +54,7 @@ void ofApp::setup() {
     timePassed = ofGetElapsedTimef();
 
     try {
-        loadLevel("data/level.txt");
+        loadLevel("data/level.xml");
     } catch (const std::exception &exception) {
         std::cerr << exception.what() << std::endl;
     }

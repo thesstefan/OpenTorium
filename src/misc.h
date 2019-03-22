@@ -4,6 +4,7 @@
 
 #include "ofColor.h"
 #include "ofVec2f.h"
+#include "ofXml.h"
 #include "ofPoint.h"
 
 #include "shape.h"
@@ -14,8 +15,8 @@ bool getBool(const std::string &boolString);
 /** @brief Extracts an @b ofColor from a @b std::string. **/
 ofColor getColor(const std::string &colorString);
 
-/** @brief Extracts an @b ofVec2f from a @b std::string. **/
-ofVec2f getVec2f(const std::string &vecString);
+/** @brief Extracts an @b ofVec2f from an @b ofXml. **/
+ofVec2f getVec2f(const ofXml &xml);
 
 /** @brief Returns the given vector scaled by the dimensions of the screen. **/
 ofVec2f getScreenScaled(const ofVec2f& toScale);

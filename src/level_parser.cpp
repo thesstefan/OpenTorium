@@ -9,36 +9,23 @@ const std::vector<std::string> emitterIdentifiers =
     { "direction", "maxRelativeSpeed", "lifeTime", "spawnRate", "shape", "position", "color", "size", "particleSize" };
 
 const std::vector<std::string> fieldIdentifiers = 
-    { "shape", "position", "mobile", "type", "force/color", "size" };
+    { "shape", "position", "mobile", "type", "force_or_color", "size" };
 
 const std::vector<std::string> targetIdentifiers = 
     { "position", "flowRate", "color", "trackPath", "size" };
 
 
-const enum ObjectType getObjectType(const std::string &typeString) {
-    if (typeString == "EMITTER" || typeString == "emitter")
-        return ObjectType::EmitterType;
-    
-    if (typeString == "FIELD" || typeString == "field")
-        return ObjectType::FieldType;
-
-    if (typeString == "TARGET" || typeString == "target")
-        return ObjectType::TargetType;
-
-    throw UnknownType("Unknown object type : " + typeString);
-}
-
-const std::vector<std::string> getIdentifiers(const enum ObjectType &type) {
-    if (type == ObjectType::EmitterType)
+const std::vector<std::string> getIdentifiers(const std::string &type) {
+    if (type == "EMITTER")
         return emitterIdentifiers;
 
-    if (type == ObjectType::FieldType)
+    if (type == "FIELD")
         return fieldIdentifiers;
 
-    if (type == ObjectType::TargetType)
+    if (type == "TARGET")
         return targetIdentifiers;
 
-    throw UnknownType("getIdentifiers -> UnknownType");
+    throw UnknownType("UnknownType : getIdentifiers -> " + type);
 }
 
 Shape *getShape(const ofPoint &position, const std::string &shape, const float width, 
@@ -49,181 +36,144 @@ Shape *getShape(const ofPoint &position, const std::string &shape, const float w
     if (shape == "RECTANGLE")
         return new Rectangle(position, width, height);
 
-    throw UnknownType("getShape -> UnknownType");
+    throw UnknownType("UnknownType : getShape -> " + shape);
 }
 
-Emitter *createEmitter(const std::map<const std::string, std::string>& data) {
-    const ofPoint position = getScreenScaled(getVec2f(data.at("position")));
+Emitter *createEmitter(const ofXml& data) {
+    const ofPoint position = getScreenScaled(getVec2f(data.getChild("position")));
 
     ofVec2f scalingMatrix;
     ofGetWidth() > ofGetHeight() ? scalingMatrix = ofVec2f(1, ofGetWidth() / ofGetHeight()) :
                                    scalingMatrix = ofVec2f(ofGetHeight() / ofGetWidth(), 1);
 
-    const ofVec2f direction = getScaled(getVec2f(data.at("direction")), scalingMatrix).getNormalized();
+    const ofVec2f direction = getScaled(getVec2f(data.getChild("direction")), scalingMatrix).getNormalized();
 
-    const float maxRelativeSpeed = std::stof(data.at("maxRelativeSpeed"));
-    const float lifeTime = std::stof(data.at("lifeTime"));
-    const float spawnRate = std::stof(data.at("spawnRate"));
-    const float particleSize = std::stof(data.at("particleSize"));
+    const float maxRelativeSpeed = data.getChild("maxRelativeSpeed").getFloatValue();
+    const float lifeTime = data.getChild("lifeTime").getFloatValue();
+    const float spawnRate = data.getChild("spawnRate").getFloatValue();
+    const float particleSize = data.getChild("particleSize").getFloatValue();
 
     Shape *shape = nullptr;
 
-    if (data.at("shape") == "POLYLINE")
-        shape = getPolyline(data.at("size"));
+    if (data.getChild("shape").getValue() == "POLYLINE")
+        shape = getPolyline(data.getChild("size").getValue());
     else {
-        const ofVec2f size = getScreenScaled(getVec2f(data.at("size")));
+        const ofVec2f size = getScreenScaled(getVec2f(data.getChild("size")));
         
-        shape = getShape(position, data.at("shape"), size.x, size.y);
+        shape = getShape(position, data.getChild("shape").getValue(), size.x, size.y);
     }
 
-    const ofColor color = getColor(data.at("color"));
+    const ofColor color = getColor(data.getChild("color").getValue());
 
     return new Emitter(shape, direction, maxRelativeSpeed, lifeTime, spawnRate, color, particleSize);
 }
 
-Field *createField(const std::map<const std::string, std::string>& data) {
-    const ofPoint position = getScreenScaled(getVec2f(data.at("position")));
-    const bool mobile = getBool(data.at("mobile"));
+Field *createField(const ofXml& data) {
+    const ofPoint position = getScreenScaled(getVec2f(data.getChild("position")));
+    const bool mobile = data.getChild("mobile").getBoolValue();
 
     Shape *shape = nullptr;
 
-    if (data.at("shape") == "POLYLINE")
-        shape = getPolyline(data.at("size"));
+    if (data.getChild("shape").getValue() == "POLYLINE")
+        shape = getPolyline(data.getChild("size").getValue());
     else {
-        const ofVec2f size = getScreenScaled(getVec2f(data.at("size")));
+        const ofVec2f size = getScreenScaled(getVec2f(data.getChild("size")));
         
-        shape = getShape(position, data.at("shape"), size.x, size.y);
+        shape = getShape(position, data.getChild("shape").getValue(), size.x, size.y);
     }
 
-    if (data.at("type") == "FORCE") {
-        const ofVec2f force = getScreenScaled(getVec2f(data.at("force/color")));
+    if (data.getChild("type").getValue() == "FORCE") {
+        const ofVec2f force = getScreenScaled(getVec2f(data.getChild("force_or_color")));
 
         return new ForceField(shape, force, mobile);
     } 
         
-    if (data.at("type") == "COLOR") {
-        const ofColor color = getColor(data.at("force/color"));
+    if (data.getChild("type").getValue() == "COLOR") {
+        const ofColor color = getColor(data.getChild("force_or_color").getValue());
 
         return new ColorField(shape, color, mobile);
     }
 
-    throw UnknownType("Unknown field type : " + data.at("type"));
+    throw UnknownType("Unknown field type : " + data.getChild("type").getValue());
 }
 
-Target *createTarget(const std::map<const std::string, std::string>& data) {
-    const ofPoint position = getScreenScaled(getVec2f(data.at("position")));
+Target *createTarget(const ofXml& data) {
+    const ofPoint position = getScreenScaled(getVec2f(data.getChild("position")));
 
-    const ofVec2f size = getScreenScaled(getVec2f(data.at("size")));
+    const ofVec2f size = getScreenScaled(getVec2f(data.getChild("size")));
 
     const ofRectangle zone(position, size.x, size.y);
 
-    const float flowRate = std::stof(data.at("flowRate"));
-    const ofColor color = getColor(data.at("color"));
+    const float flowRate = data.getChild("flowRate").getFloatValue();
+    const ofColor color = getColor(data.getChild("color").getValue());
 
-    const std::string trackPath = data.at("trackPath");
+    const std::string trackPath = data.getChild("trackPath").getValue();
 
     return new Target(zone, flowRate, color, trackPath);
 }
 
-std::variant<Emitter *, Field *, Target *> 
-    createObject(const std::map<const std::string, std::string>& data, 
-                 const enum ObjectType& type) {
+std::variant<Emitter *, Field *, Target *> createObject(const ofXml& objectData) {
+    const std::string type = objectData.getAttribute("type").getValue();
 
     std::variant<Emitter *, Field *, Target *> object;
 
-    if (type == ObjectType::EmitterType)
-        object = createEmitter(data);
-    else if (type == ObjectType::FieldType)
-        object = createField(data);
-    else if (type == ObjectType::TargetType)
-        object = createTarget(data);
+    if (type == "EMITTER")
+        object = createEmitter(objectData);
+    else if (type == "FIELD")
+        object = createField(objectData);
+    else if (type == "TARGET")
+        object = createTarget(objectData);
     else
-        throw UnknownType("Unknown object type");
+        throw UnknownType("Unknown object type : " + type);
 
     return object;
 }
 
-ObjectParser::ObjectParser(const std::vector<std::string>& identifiers,
-                           std::ifstream& stream,
-                           const enum ObjectType type) : stream(stream), type(type) {
+bool hasRequiredFields(const ofXml& data, const std::vector<std::string>& identifiers) {
+    for (const auto& identifier : identifiers) {
+        auto child = data.getChild(identifier);
 
-    for (const auto& identifier : identifiers)
-        data.insert(std::pair<const std::string, std::string>(identifier, ""));
-}
-
-void ObjectParser::addValue(const std::string& identifier, const std::string& value) {
-    if (data.count(identifier) == 0)
-        throw UnknownType("Unknown identifier : " + identifier);
-
-    if (data.find(identifier)->second == "")
-        data[identifier] = value;
-}
-
-bool ObjectParser::ready() const {
-    for (const auto& pair : data) 
-        if (pair.second == "")
+        if (!child) 
             return false;
-
-    return true;
-}
-
-const std::map<const std::string, std::string> &ObjectParser::parse() {
-    std::string line;
-    
-    while (line.empty())
-        std::getline(stream, line);
-
-    while (ready() == false && line.empty() == false) {
-        std::stringstream stringStream(line);
-
-        std::string identifier;
-        stringStream >> identifier;
-
-        int valuePosition = 0;
-
-        for ( ; isspace(line[valuePosition]); valuePosition++);
-
-        valuePosition += identifier.length();
-
-        for ( ; isspace(line[valuePosition]); valuePosition++);
-
-        std::string value(line.substr(valuePosition));
-
-        addValue(identifier, value);
-
-        std::getline(stream, line);
     }
 
-    return data;
+    return true;
 }
 
 LevelParser::LevelParser() {}
 
 void LevelParser::load(const std::string &path) {
-    levelStream.open(path, std::ifstream::in);
+    ofXml level;
+    level.load(path);
 
-    if (levelStream.fail())
+    if (!level)
         throw LevelLoadFail("Error opening level file : " + path);
 
-    std::string levelHeader;
-    std::getline(levelStream, levelHeader);
+    auto header = level.getChild("header");
 
-    if (levelHeader != "OpenTorium Level File")
+    if (!header)
+        throw LevelLoadFail("Could not find header in file : " + path);
+    else if (header.getValue() != "OpenTorium Level File")
         throw LevelLoadFail("Error processing file. " + path + " is not a level file.");
+
+    auto data = level.getChild("data");
+
+    if (!data)
+        throw LevelLoadFail("Could not process game data in file : " + path);
+
+    currentObjectData = data.getFirstChild();
 }
 
 std::variant<Emitter *, Field *, Target *> LevelParser::getObject() {
-    std::string typeString;
-    levelStream >> typeString;
-
-    if (levelStream.eof())
+    if (!currentObjectData)
         throw EOFReached("Reached EOF");
 
-    enum ObjectType type = getObjectType(typeString);
+    if (hasRequiredFields(currentObjectData, getIdentifiers(currentObjectData.getAttribute("type").getValue())) == false)
+        throw LevelLoadFail("Could not process object data in level file.");
 
-    ObjectParser objectParser(getIdentifiers(type), levelStream, type);
+    auto object = createObject(currentObjectData);
 
-    auto objectData = objectParser.parse();
+    currentObjectData = currentObjectData.getNextSibling();
 
-    return createObject(objectData, type);
+    return object;
 }

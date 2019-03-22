@@ -39,14 +39,15 @@ ofColor getColor(const std::string &colorString) {
     throw UnknownType("Unknown color  : " + colorString);
 }
 
-ofVec2f getVec2f(const std::string &vecString) {
-    std::stringstream stream(vecString);
+ofVec2f getVec2f(const ofXml& xml) {
+    auto x_data = xml.getChild("x");
+    auto y_data = xml.getChild("y");
 
-    ofVec2f vec2f;
+    if (x_data && y_data == false)
+        throw ExtractError("Could not extract ofVec2f from ofXml.");
 
-    stream >> vec2f.x >> vec2f.y;
-
-    return vec2f;
+    return ofVec2f(x_data.getFloatValue(),
+                   y_data.getFloatValue());
 }
 
 PolylineShape *getPolyline(const std::string &polylineString) {
