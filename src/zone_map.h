@@ -128,11 +128,10 @@ void ZoneMap<Zone>::updateObjects() {
 
 template <class Zone>
 void ZoneMap<Zone>::updateParticle(Particle &particle) {
-
     const ofPoint &position = particle.getPosition();
 
     // Skip update if the particle is not inside the zone.
-    if (!position.x || !position.y || position.x > ofGetWidth() || position.y > ofGetHeight())
+    if (position.x < 0 || position.y < 0 || position.x > ofGetWidth() || position.y > ofGetHeight())
         return;
 
     auto id = map[(unsigned int)position.y * ofGetWidth() + (unsigned int)position.x];
