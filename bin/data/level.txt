@@ -4,8 +4,8 @@ EMITTER
     position            0.2 0.2
     shape               ELLIPSE
     direction           1 1
-    lifeTime            1
-    spawnRate           20
+    lifeTime            5
+    spawnRate           50
     color               RED
     size                0.1 0.1
     particleSize        0.005
@@ -15,18 +15,18 @@ EMITTER
     position            0.4 0.4
     shape               RECTANGLE
     direction           1 1
-    lifeTime            1
+    lifeTime            5
     spawnRate           60
     color               GREEN
     size                0.1 0.1
     particleSize        0.0025
-    maxRelativeSpeed    0.7
+    maxRelativeSpeed    0.3
 
 FIELD
     position            0.6 0.6
     shape               ELLIPSE
     type                FORCE
-    force/color         5 5
+    force/color         1 1
     size                0.2 0.2
     mobile              TRUE
 
@@ -40,14 +40,14 @@ FIELD
 
 TARGET
     position            0.3 0.3
-    flowRate            20
+    flowRate            5
     color               BLUE
     trackPath           track_1.mp3
     size                0.1 0.1
 
 TARGET
     position            0.7 0.7
-    flowRate            20
+    flowRate            5
     color               GREEN
     trackPath           track_2.mp3
     size                0.075 0.075
