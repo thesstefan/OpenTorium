@@ -1,5 +1,14 @@
 #include "ofApp.h"
 
+#include "kernel.h"
+
+static constexpr size_t KERNEL_WIDTH = 75;
+static constexpr size_t KERNEL_HEIGHT = 75;
+static constexpr double KERNEL_SIGMA = 10;
+
+static constexpr GLuint KERNEL_X_BINDING_INDEX = 0;
+static constexpr GLuint KERNEL_Y_BINDING_INDEX = 1;
+
 ofApp::ofApp() :
     screenBounds(ofGetWidth(), ofGetHeight()),
 
@@ -47,11 +56,51 @@ void ofApp::addObject(const std::variant<Emitter *, Field *, Target *> &object) 
         throw LevelLoadFail("addObject -> Unknown object received");
 }
 
+void ofApp::applyBlur() {
+    ofFbo halfBlurred;
+    halfBlurred.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
+
+    halfBlurred.begin();
+        blurX.begin();
+            blurX.setUniformTexture("tex0", scene.getTexture(), 0);
+
+            scene.draw(0, 0);
+        blurX.end();
+    halfBlurred.end();
+
+    scene.begin();
+        blurY.begin();
+            blurY.setUniformTexture("tex0", halfBlurred.getTexture(), 0);
+
+            halfBlurred.draw(0, 0);
+        blurY.end();
+    scene.end();
+}
+            
+void ofApp::applyGlow() {
+    ofFbo glow;
+    glow.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
+
+    applyBlur();
+
+    glow.begin();
+        blend.begin();
+            blend.setUniformTexture("tex0", scene.getTexture(), 0);
+
+            scene.draw(0, 0);
+        blend.end();
+    glow.end();
+
+    scene = glow;
+}
+
 void ofApp::setup() {
     ofSetFrameRate(60);
     ofBackground(20, 20, 20);
 
     timePassed = ofGetElapsedTimef();
+
+    scene.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
 
     try {
         loadLevel("data/level.xml");
@@ -63,6 +112,20 @@ void ofApp::setup() {
         
     targetMap.update();
     fieldMap.update();
+
+    // Load shaders
+    blurX.load("blur.vert", "blurX.frag");
+    blurY.load("blur.vert", "blurY.frag");
+    blend.load("blend.vert", "blend.frag");
+
+    GaussianKernel<float, KERNEL_WIDTH, 1> kernelX(KERNEL_SIGMA);
+    kernelBufferX.allocate(sizeof(float) * kernelX[0].size(), kernelX[0].data(), GL_STATIC_COPY);
+
+    GaussianKernel<float, KERNEL_HEIGHT, 1> kernelY(KERNEL_SIGMA);
+    kernelBufferY.allocate(sizeof(float) * kernelY[0].size(), kernelY[0].data(), GL_STATIC_COPY);
+
+    kernelBufferX.bindBase(GL_SHADER_STORAGE_BUFFER, KERNEL_X_BINDING_INDEX);
+    kernelBufferY.bindBase(GL_SHADER_STORAGE_BUFFER, KERNEL_Y_BINDING_INDEX);
 }
 
 void ofApp::clearDeadParticles() {
@@ -104,29 +167,39 @@ void ofApp::update() {
             targetMap.updateParticle(*particle);
         }
     }
+
 }
 
 void ofApp::draw() {
-    if (UNSUPPORTED_RES)
-        drawLowResOverlay();
-    else if (END == false) { 
-        fieldMap.draw();
-        targetMap.draw();
+    // Draw previous frame
+    //applyGlow();
+    applyBlur();
+    scene.draw(0, 0);
 
-        for (auto& emitter : emitters)
-            emitter->draw();
+    scene.begin();
+        ofBackground(0, 0, 0);
 
-        for (auto& field : fields)
-            field->draw();
+        if (UNSUPPORTED_RES)
+            drawLowResOverlay();
+        else if (END == false) { 
+            fieldMap.draw();
+            targetMap.draw();
 
-        for (const auto &particle : particles)
-            particle->draw();
-    } else {
-        ofTrueTypeFont font;
+            for (auto& emitter : emitters)
+                emitter->draw();
 
-        font.load("arial.ttf", 80, true, true);
-        font.drawString(std::string("Game Over"), 150, 400);
-    }
+            for (auto& field : fields)
+                field->draw();
+
+            for (const auto &particle : particles)
+                particle->draw();
+        } else {
+            ofTrueTypeFont font;
+
+            font.load("arial.ttf", 80, true, true);
+            font.drawString(std::string("Game Over"), 150, 400);
+        }
+    scene.end();
 }
 
 void ofApp::mousePressed(int x, int y, int button) {
@@ -197,4 +270,6 @@ void ofApp::windowResized(int w, int h) {
     fieldMap.scale(screenChangeProportion);
 
     screenBounds = newScreenBounds;
+
+    scene.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
 }

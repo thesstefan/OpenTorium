@@ -11,6 +11,10 @@
 
 #include "ofMain.h"
 
+#include "ofShader.h"
+#include "ofBufferObject.h"
+#include "ofFbo.h"
+
 #include "zone_map.h"
 #include "level_parser.h"
 
@@ -31,6 +35,22 @@
  */
 class ofApp : public ofBaseApp {
     private:
+        /** @brief Blurs horizontally provided a float 1d kernel. (using a SSBO) **/
+        ofShader blurX;
+        /** @brief Provides the kernel for the horizontal shader. **/
+        ofBufferObject kernelBufferX;
+
+        /** @brief Blurs vertically provided a float 1d kernel. (using a SSBO) **/
+        ofShader blurY;
+        /** @brief Provides the kernel for the vertical shader. **/
+        ofBufferObject kernelBufferY;
+
+        /** @brief Blends. Creates a glowing effect when used on the blurred scene. */
+        ofShader blend;
+
+        /** @brief The scene to be drawn. **/
+        ofFbo scene;
+
         /** @brief The dimensions of the screen. **/
         ofVec2f screenBounds;
 
@@ -78,6 +98,9 @@ class ofApp : public ofBaseApp {
 
         /** @brief Draws an overlay when the resolution is to small. */
         void drawLowResOverlay();
+
+        void applyGlow();
+        void applyBlur();
 
     public:
         /** 
