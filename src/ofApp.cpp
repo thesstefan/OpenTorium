@@ -56,6 +56,7 @@ void ofApp::addObject(const std::variant<Emitter *, Field *, Target *> &object) 
         throw LevelLoadFail("addObject -> Unknown object received");
 }
 
+/*
 void ofApp::applyBlur() {
     ofFbo halfBlurred;
     halfBlurred.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
@@ -93,6 +94,7 @@ void ofApp::applyGlow() {
 
     scene = glow;
 }
+*/
 
 void ofApp::setup() {
     ofSetFrameRate(60);
@@ -173,8 +175,11 @@ void ofApp::update() {
 void ofApp::draw() {
     // Draw previous frame
     //applyGlow();
-    applyBlur();
-    scene.draw(0, 0);
+    //scene.draw(0, 0);
+
+    blurX.begin();
+        ofDrawCircle(200, 200, 200);
+    blurX.end();
 
     scene.begin();
         ofBackground(0, 0, 0);
