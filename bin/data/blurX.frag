@@ -13,8 +13,6 @@ in vec2 texCoord;
 out vec4 outColor;
 
 void main() {
-    vec4 color = vec4(1.0f, 0.0f, 0.0f, 0.0f);
-
     /*
     int bound = kernelX.data.length() / 2;
 
@@ -23,5 +21,5 @@ void main() {
             texture(tex0, texCoord + vec2(kernelIndex, 0.0));
     */
 
-    outColor = color;
+    outColor = vec4(1.0f, 0.0f, 0.0f, 0.0f);
 }

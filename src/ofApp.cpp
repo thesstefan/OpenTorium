@@ -101,7 +101,7 @@ void ofApp::applyGlow() {
 */
 
 void ofApp::setup() {
-    blurX.load("blur.vert", "blurX.frag");
+    blurX.load("blurX");
     blurY.load("blur.vert", "blurY.frag");
     blend.load("blend.vert", "blend.frag");
     /*
