@@ -2,14 +2,17 @@
 
 #include "kernel.h"
 
+/*
 static constexpr size_t KERNEL_WIDTH = 75;
 static constexpr size_t KERNEL_HEIGHT = 75;
 static constexpr double KERNEL_SIGMA = 10;
 
 static constexpr GLuint KERNEL_X_BINDING_INDEX = 0;
 static constexpr GLuint KERNEL_Y_BINDING_INDEX = 1;
+*/
 
-ofApp::ofApp() :
+ofApp::ofApp() {}
+    /*
     screenBounds(ofGetWidth(), ofGetHeight()),
 
     targetMap(ofGetWidth(), ofGetHeight()),
@@ -55,6 +58,7 @@ void ofApp::addObject(const std::variant<Emitter *, Field *, Target *> &object) 
     } else
         throw LevelLoadFail("addObject -> Unknown object received");
 }
+*/
 
 /*
 void ofApp::applyBlur() {
@@ -97,6 +101,10 @@ void ofApp::applyGlow() {
 */
 
 void ofApp::setup() {
+    blurX.load("blur.vert", "blurX.frag");
+    blurY.load("blur.vert", "blurY.frag");
+    blend.load("blend.vert", "blend.frag");
+    /*
     ofSetFrameRate(60);
     ofBackground(20, 20, 20);
 
@@ -128,8 +136,10 @@ void ofApp::setup() {
 
     kernelBufferX.bindBase(GL_SHADER_STORAGE_BUFFER, KERNEL_X_BINDING_INDEX);
     kernelBufferY.bindBase(GL_SHADER_STORAGE_BUFFER, KERNEL_Y_BINDING_INDEX);
+    */
 }
 
+/*
 void ofApp::clearDeadParticles() {
     const auto removeIt = std::remove_if(particles.begin(), particles.end(),
                           [](const std::unique_ptr<Particle> &particle)
@@ -137,8 +147,10 @@ void ofApp::clearDeadParticles() {
 
     particles.erase(removeIt, particles.end());
 }
+*/
 
 void ofApp::update() {
+    /*
     if (END == false) {
         const float time = ofGetElapsedTimef();
         const float deltaTime = ofClamp(time - timePassed, 0, 0.1);
@@ -169,6 +181,7 @@ void ofApp::update() {
             targetMap.updateParticle(*particle);
         }
     }
+    */
 
 }
 
@@ -181,6 +194,7 @@ void ofApp::draw() {
         ofDrawCircle(200, 200, 200);
     blurX.end();
 
+    /*
     scene.begin();
         ofBackground(0, 0, 0);
 
@@ -205,8 +219,10 @@ void ofApp::draw() {
             font.drawString(std::string("Game Over"), 150, 400);
         }
     scene.end();
+    */
 }
 
+/*
 void ofApp::mousePressed(int x, int y, int button) {
     if (button == 0)
         for (auto field = fields.begin(); field != fields.end(); field++)
@@ -277,4 +293,5 @@ void ofApp::windowResized(int w, int h) {
     screenBounds = newScreenBounds;
 
     scene.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
-}
+    */
+//}

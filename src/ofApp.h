@@ -38,21 +38,21 @@ class ofApp : public ofBaseApp {
         /** @brief Blurs horizontally provided a float 1d kernel. (using a SSBO) **/
         ofShader blurX;
         /** @brief Provides the kernel for the horizontal shader. **/
-        ofBufferObject kernelBufferX;
+//        ofBufferObject kernelBufferX;
 
         /** @brief Blurs vertically provided a float 1d kernel. (using a SSBO) **/
         ofShader blurY;
         /** @brief Provides the kernel for the vertical shader. **/
-        ofBufferObject kernelBufferY;
+//        ofBufferObject kernelBufferY;
 
         /** @brief Blends. Creates a glowing effect when used on the blurred scene. */
         ofShader blend;
 
         /** @brief The scene to be drawn. **/
-        ofFbo scene;
+//        ofFbo scene;
 
         /** @brief The dimensions of the screen. **/
-        ofVec2f screenBounds;
+//        ofVec2f screenBounds;
 
         /** 
          * @brief If END is true, the game ends (the end message is the only 
@@ -60,47 +60,47 @@ class ofApp : public ofBaseApp {
          *
          * That happens when all the Target objectives are achieved.
          */
-        bool END = false;
+//        bool END = false;
 
-        bool UNSUPPORTED_RES = false;
+//        bool UNSUPPORTED_RES = false;
 
         /** @brief The Target instances, encapsulated by a ZoneMap. **/
-        ZoneMap<Target> targetMap;
+//        ZoneMap<Target> targetMap;
 
         /** @brief The static Field instances, encapsulated by a ZoneMap. **/
-        ZoneMap<Field> fieldMap;
+//        ZoneMap<Field> fieldMap;
 
         /** @brief The Emitter used to create Particle instances. **/
-        std::vector<std::unique_ptr<Emitter>> emitters;
+//        std::vector<std::unique_ptr<Emitter>> emitters;
 
         /** @brief The Field instances which can be modified by the user. **/
-        std::vector<std::unique_ptr<Field>> fields;
+//        std::vector<std::unique_ptr<Field>> fields;
 
         /** @brief The std::list used to store the Particle instances used. **/
-        std::list<std::unique_ptr<Particle>> particles;
+//        std::list<std::unique_ptr<Particle>> particles;
 
         /** @brief The time that has passed since the beginning of the program. **/
-        float timePassed;
+//        float timePassed;
 
         /** @brief The position of the cursor at the last mouseDragged call. **/
-        LevelParser parser;
+//        LevelParser parser;
 
         /** @brief The position of the last drag event. */
-        ofPoint lastDragPosition;
+//        ofPoint lastDragPosition;
         /** @brief The iterator of the last dragged Field. */
-        std::vector<std::unique_ptr<Field>>::iterator lastDragField;
+//        std::vector<std::unique_ptr<Field>>::iterator lastDragField;
 
         /** @brief Adds an object to the game environment. **/
-        void addObject(const std::variant<Emitter *, Field *, Target *> &object);
+//        void addObject(const std::variant<Emitter *, Field *, Target *> &object);
 
         /** @brief Loads a level file, given the path. */
-        void loadLevel(const std::string &path);
+//        void loadLevel(const std::string &path);
 
         /** @brief Draws an overlay when the resolution is to small. */
-        void drawLowResOverlay();
+//        void drawLowResOverlay();
 
-        void applyGlow();
-        void applyBlur();
+//        void applyGlow();
+//        void applyBlur();
 
     public:
         /** 
@@ -111,7 +111,7 @@ class ofApp : public ofBaseApp {
          *
          * Actual limit => (MIN_FIELD_AREA + 1) * 0.9.
          */
-        constexpr static float MIN_FIELD_AREA = 2500;
+ //       constexpr static float MIN_FIELD_AREA = 2500;
 
         /** @brief The maximum area of a Feild. It can't be enlarged 
          *         if it's already larger.
@@ -120,7 +120,7 @@ class ofApp : public ofBaseApp {
          *
          * Actual limit => (MAX_FIELD_AREA - 1) * 1.1;
          */
-        constexpr static float MAX_FIELD_AREA = 125000;
+  //      constexpr static float MAX_FIELD_AREA = 125000;
 
         /**
          * @brief Construts ofApp.
@@ -152,20 +152,20 @@ class ofApp : public ofBaseApp {
          *
          * The container might be resized. Iterators are invalidated.
          */
-        void clearDeadParticles();
+//        void clearDeadParticles();
 
         /** @brief Called when the mouse is pressed. **/
-        void mousePressed(int x, int y, int button);
+//        void mousePressed(int x, int y, int button);
 
         /** @brief Called when the mouse is releasde. **/
-        void mouseReleased(int x, int y, int button);
+//        void mouseReleased(int x, int y, int button);
 
         /** @brief Called when the mouse is dragged. **/
-        void mouseDragged(int x, int y, int button);
+//        void mouseDragged(int x, int y, int button);
 
         /** @brief Called when the mouse is scrolled. **/
-        void mouseScrolled(int x, int y, float scrollX, float scrollY);
+//        void mouseScrolled(int x, int y, float scrollX, float scrollY);
 
         /** @brief Called when the window is resized. **/
-        void windowResized(int w, int h);
+//        void windowResized(int w, int h);
 };
