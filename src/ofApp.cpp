@@ -2,9 +2,9 @@
 
 #include "kernel.h"
 
-static constexpr size_t KERNEL_WIDTH = 75;
-static constexpr size_t KERNEL_HEIGHT = 75;
-static constexpr double KERNEL_SIGMA = 10;
+static constexpr size_t KERNEL_WIDTH = 45;
+static constexpr size_t KERNEL_HEIGHT = 45;
+static constexpr double KERNEL_SIGMA = 5;
 
 static constexpr GLuint KERNEL_X_BINDING_INDEX = 0;
 static constexpr GLuint KERNEL_Y_BINDING_INDEX = 1;
@@ -57,35 +57,48 @@ void ofApp::addObject(const std::variant<Emitter *, Field *, Target *> &object) 
 }
 
 void ofApp::applyBlur() {
-    ofFbo halfBlurred;
-    halfBlurred.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
+    ofTexture screen;
+    screen.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
 
-    halfBlurred.begin();
-        blurX.begin();
-            blurX.setUniformTexture("tex0", scene.getTexture(), 0);
+    scene.draw(0, 0);
+    screen.loadScreenData(0, 0, screenBounds.x, screenBounds.y);
+    ofClear(0, 0, 0);
 
-            scene.draw(0, 0);
-        blurX.end();
-    halfBlurred.end();
+    blurX.begin();
+        blurX.setUniformTexture("tex0", screen, 0);
+
+        scene.draw(0, 0);
+    blurX.end();
+
+    scene.draw(0, 0);
+    screen.loadScreenData(0, 0, screenBounds.x, screenBounds.y);
+    ofClear(0, 0, 0);
 
     scene.begin();
         blurY.begin();
-            blurY.setUniformTexture("tex0", halfBlurred.getTexture(), 0);
+            blurY.setUniformTexture("tex0", screen, 0);
 
-            halfBlurred.draw(0, 0);
+            screen.draw(0, 0);
         blurY.end();
     scene.end();
 }
             
 void ofApp::applyGlow() {
-    ofFbo glow;
-    glow.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
+    ofTexture screen;
+    screen.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
+
+    scene.draw(0, 0);
+    screen.loadScreenData(0, 0, screenBounds.x, screenBounds.y);
+    ofClear(0, 0, 0);
 
     applyBlur();
 
+    ofFbo glow;
+    glow.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
+
     glow.begin();
         blend.begin();
-            blend.setUniformTexture("tex0", scene.getTexture(), 0);
+            blend.setUniformTexture("tex0", screen, 0);
 
             scene.draw(0, 0);
         blend.end();
@@ -119,9 +132,11 @@ void ofApp::setup() {
     blend.load("blend.vert", "blend.frag");
 
     GaussianKernel<float, KERNEL_WIDTH, 1> kernelX(KERNEL_SIGMA);
+    kernelX.normalize();
     kernelBufferX.allocate(sizeof(float) * kernelX[0].size(), kernelX[0].data(), GL_STATIC_COPY);
 
     GaussianKernel<float, KERNEL_HEIGHT, 1> kernelY(KERNEL_SIGMA);
+    kernelY.normalize();
     kernelBufferY.allocate(sizeof(float) * kernelY[0].size(), kernelY[0].data(), GL_STATIC_COPY);
 
     kernelBufferX.bindBase(GL_SHADER_STORAGE_BUFFER, KERNEL_X_BINDING_INDEX);
@@ -171,11 +186,6 @@ void ofApp::update() {
 }
 
 void ofApp::draw() {
-    // Draw previous frame
-    //applyGlow();
-    applyBlur();
-    scene.draw(0, 0);
-
     scene.begin();
         ofBackground(0, 0, 0);
 
@@ -200,6 +210,10 @@ void ofApp::draw() {
             font.drawString(std::string("Game Over"), 150, 400);
         }
     scene.end();
+
+    applyGlow();
+
+    scene.draw(0, 0);
 }
 
 void ofApp::mousePressed(int x, int y, int button) {
