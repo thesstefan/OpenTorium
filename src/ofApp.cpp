@@ -4,7 +4,7 @@
 
 static constexpr size_t KERNEL_WIDTH = 45;
 static constexpr size_t KERNEL_HEIGHT = 45;
-static constexpr double KERNEL_SIGMA = 5;
+static constexpr double KERNEL_SIGMA = 10;
 
 static constexpr GLuint KERNEL_X_BINDING_INDEX = 0;
 static constexpr GLuint KERNEL_Y_BINDING_INDEX = 1;
@@ -70,7 +70,6 @@ void ofApp::applyBlur() {
         scene.draw(0, 0);
     blurX.end();
 
-    scene.draw(0, 0);
     screen.loadScreenData(0, 0, screenBounds.x, screenBounds.y);
     ofClear(0, 0, 0);
 
