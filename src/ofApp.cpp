@@ -2,8 +2,8 @@
 
 #include "kernel.h"
 
-static constexpr size_t KERNEL_WIDTH = 45;
-static constexpr size_t KERNEL_HEIGHT = 45;
+static constexpr size_t KERNEL_WIDTH = 75;
+static constexpr size_t KERNEL_HEIGHT = 75;
 static constexpr double KERNEL_SIGMA = 10;
 
 static constexpr GLuint KERNEL_X_BINDING_INDEX = 0;
@@ -15,7 +15,8 @@ ofApp::ofApp() :
     targetMap(ofGetWidth(), ofGetHeight()),
     fieldMap(ofGetWidth(), ofGetHeight()),
 
-    lastDragPosition(0, 0) {
+    lastDragPosition(0, 0),
+    BACKGROUND_COLOR(20, 20, 20) {
     
     ofSetDataPathRoot("data/");
 }
@@ -62,7 +63,7 @@ void ofApp::applyBlur() {
 
     scene.draw(0, 0);
     screen.loadScreenData(0, 0, screenBounds.x, screenBounds.y);
-    ofClear(0, 0, 0);
+    ofClear(BACKGROUND_COLOR);
 
     blurX.begin();
         blurX.setUniformTexture("tex0", screen, 0);
@@ -71,7 +72,7 @@ void ofApp::applyBlur() {
     blurX.end();
 
     screen.loadScreenData(0, 0, screenBounds.x, screenBounds.y);
-    ofClear(0, 0, 0);
+    ofClear(BACKGROUND_COLOR);
 
     scene.begin();
         blurY.begin();
@@ -88,7 +89,7 @@ void ofApp::applyGlow() {
 
     scene.draw(0, 0);
     screen.loadScreenData(0, 0, screenBounds.x, screenBounds.y);
-    ofClear(0, 0, 0);
+    ofClear(BACKGROUND_COLOR);
 
     applyBlur();
 
@@ -98,6 +99,7 @@ void ofApp::applyGlow() {
     glow.begin();
         blend.begin();
             blend.setUniformTexture("tex0", screen, 0);
+            blend.setUniform4f("backgroundColor", ofFloatColor(BACKGROUND_COLOR));
 
             scene.draw(0, 0);
         blend.end();
@@ -108,7 +110,7 @@ void ofApp::applyGlow() {
 
 void ofApp::setup() {
     ofSetFrameRate(60);
-    ofBackground(20, 20, 20);
+    ofBackground(BACKGROUND_COLOR);
 
     timePassed = ofGetElapsedTimef();
 
@@ -186,7 +188,7 @@ void ofApp::update() {
 
 void ofApp::draw() {
     scene.begin();
-        ofBackground(0, 0, 0);
+        ofBackground(BACKGROUND_COLOR);
 
         if (UNSUPPORTED_RES)
             drawLowResOverlay();

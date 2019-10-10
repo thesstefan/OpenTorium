@@ -102,6 +102,8 @@ class ofApp : public ofBaseApp {
         void applyGlow();
         void applyBlur();
 
+        const ofColor BACKGROUND_COLOR;
+
     public:
         /** 
          * @brief The minimum area of a Field. It can't be shrinked if 
