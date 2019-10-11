@@ -2,8 +2,8 @@
 
 #include "kernel.h"
 
-static constexpr size_t KERNEL_WIDTH = 75;
-static constexpr size_t KERNEL_HEIGHT = 75;
+static constexpr size_t KERNEL_WIDTH = 45;
+static constexpr size_t KERNEL_HEIGHT = 45;
 static constexpr double KERNEL_SIGMA = 10;
 
 static constexpr GLuint KERNEL_X_BINDING_INDEX = 0;
@@ -99,6 +99,7 @@ void ofApp::applyGlow() {
     glow.begin();
         blend.begin();
             blend.setUniformTexture("tex0", screen, 0);
+            blend.setUniform1f("backgroundThreshold", 0.08);
             blend.setUniform4f("backgroundColor", ofFloatColor(BACKGROUND_COLOR));
 
             scene.draw(0, 0);
