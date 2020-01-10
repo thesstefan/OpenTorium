@@ -58,55 +58,39 @@ void ofApp::addObject(const std::variant<Emitter *, Field *, Target *> &object) 
 }
 
 void ofApp::applyBlur() {
-    ofTexture screen;
-    screen.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
+    ofTexture scene;
+    scene.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
 
-    scene.draw(0, 0);
-    screen.loadScreenData(0, 0, screenBounds.x, screenBounds.y);
-    ofClear(BACKGROUND_COLOR);
+    scene.loadScreenData(0, 0, screenBounds.x, screenBounds.y);
 
     blurX.begin();
-        blurX.setUniformTexture("tex0", screen, 0);
+        blurX.setUniformTexture("tex0", scene, 0);
 
         scene.draw(0, 0);
     blurX.end();
 
-    screen.loadScreenData(0, 0, screenBounds.x, screenBounds.y);
-    ofClear(BACKGROUND_COLOR);
+    scene.loadScreenData(0, 0, screenBounds.x, screenBounds.y);
 
-    scene.begin();
-        blurY.begin();
-            blurY.setUniformTexture("tex0", screen, 0);
+    blurY.begin();
+        blurY.setUniformTexture("tex0", scene, 0);
 
-            screen.draw(0, 0);
-        blurY.end();
-    scene.end();
+        scene.draw(0, 0);
+    blurY.end();
 }
             
 void ofApp::applyGlow() {
-    ofTexture screen;
-    screen.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
+    ofTexture scene;
+    scene.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
 
-    scene.draw(0, 0);
-    screen.loadScreenData(0, 0, screenBounds.x, screenBounds.y);
-    ofClear(BACKGROUND_COLOR);
+    scene.loadScreenData(0, 0, screenBounds.x, screenBounds.y);
 
-    applyBlur();
+    blend.begin();
+        blend.setUniformTexture("tex0", scene, 0);
+        blend.setUniform1f("backgroundThreshold", 0.08);
+        blend.setUniform4f("backgroundColor", ofFloatColor(BACKGROUND_COLOR));
 
-    ofFbo glow;
-    glow.allocate(screenBounds.x, screenBounds.y, GL_RGBA);
-
-    glow.begin();
-        blend.begin();
-            blend.setUniformTexture("tex0", screen, 0);
-            blend.setUniform1f("backgroundThreshold", 0.08);
-            blend.setUniform4f("backgroundColor", ofFloatColor(BACKGROUND_COLOR));
-
-            scene.draw(0, 0);
-        blend.end();
-    glow.end();
-
-    scene = glow;
+        scene.draw(0, 0);
+    blend.end();
 }
 
 void ofApp::setup() {
@@ -184,38 +168,33 @@ void ofApp::update() {
             targetMap.updateParticle(*particle);
         }
     }
-
 }
 
 void ofApp::draw() {
-    scene.begin();
-        ofBackground(BACKGROUND_COLOR);
+    ofBackground(BACKGROUND_COLOR);
 
-        if (UNSUPPORTED_RES)
-            drawLowResOverlay();
-        else if (END == false) { 
-            fieldMap.draw();
-            targetMap.draw();
+    if (UNSUPPORTED_RES)
+        drawLowResOverlay();
+    else if (END == false) { 
+        fieldMap.draw();
+        targetMap.draw();
 
-            for (auto& emitter : emitters)
-                emitter->draw();
+        for (auto& emitter : emitters)
+            emitter->draw();
 
-            for (auto& field : fields)
-                field->draw();
+        for (auto& field : fields)
+            field->draw();
 
-            for (const auto &particle : particles)
-                particle->draw();
-        } else {
-            ofTrueTypeFont font;
+        for (const auto &particle : particles)
+            particle->draw();
+    } else {
+        ofTrueTypeFont font;
 
-            font.load("arial.ttf", 80, true, true);
-            font.drawString(std::string("Game Over"), 150, 400);
-        }
-    scene.end();
+        font.load("arial.ttf", 80, true, true);
+        font.drawString(std::string("Game Over"), 150, 400);
+    }
 
-    applyGlow();
-
-    scene.draw(0, 0);
+     applyBlur();
 }
 
 void ofApp::mousePressed(int x, int y, int button) {
