@@ -14,23 +14,28 @@
 /**
  * @class Field
  *
- * This class encapsulates an area in which Particles are modified in a specific 
+ * This class encapsulates an area in which Particles are modified in a specific
  * way (accelerated / colorized).
  *
  * The area has a defined Shape.
  */
 class Field {
-    private:
+    protected:
         /** @brief The Shape of the Field. **/
         std::unique_ptr<Shape> shape;
 
     public:
-        /** 
-         * @brief Constructs the Field. 
+        /**
+         * @brief Constructs the Field.
          *
          * @param shape -> The Shape of the Field.
+         *
+         * @param mobile -> The ability of the field to be moved/scaled or not.
          */
-        Field(Shape *shape);
+        Field(Shape *shape, bool mobile);
+
+        /** @brief The ability of the field to be moved/scaled or not. */
+        const bool mobile;
 
         /**
          * @brief Checks if a point is inside the Field.
@@ -38,6 +43,9 @@ class Field {
          * @param point -> The point to be checked.
          */
         bool inside(const ofPoint &point) const;
+
+        /** @brief Updates the Field. (empty) **/
+        void update();
 
         /**
          * @brief Updates a Particle. (If it's inside the Field, it's affected by it).
@@ -47,10 +55,20 @@ class Field {
         virtual void updateParticle(Particle &particle) const = 0;
 
         /** @brief Draws the Field. **/
-        void draw() const;
+        virtual void draw() const;
+
+        /**
+         * @brief Checks if the Field is ready. (empty)
+         *
+         * Returns true.
+         */
+        bool ready() const;
 
         /** @brief Scales the Field. **/
         void scale(float amount);
+
+        /** @brief Adjusts the Field after a window resize. **/
+        void scale(const ofVec2f& screenChangeProportion);
 
         /** @brief Moves the Field. **/
         void move(const ofPoint &newPosition);
@@ -65,7 +83,7 @@ class Field {
 /**
  * @class ColorField
  *
- * This class provides a Field which colorizes the Particle instances 
+ * This class provides a Field which colorizes the Particle instances
  * inside it's shape.
  */
 class ColorField : public Field {
@@ -80,8 +98,10 @@ class ColorField : public Field {
          * @param shape -> The Shape of the ColorField.
          *
          * @parma color -> The ofColor of the ColorField.
+         *
+         * @param mobile -> The ability of the field to be moved/scaled or not.
          */
-        ColorField(Shape *shape, const ofColor &color);
+        ColorField(Shape *shape, const ofColor &color, bool mobile);
 
         /**
          * @brief Updates a Particle.
@@ -91,6 +111,9 @@ class ColorField : public Field {
          * @param particle -> The Particle to be updated.
          */
         virtual void updateParticle(Particle &particle) const override;
+
+        /** @brief Draws the ColorField. **/
+        void draw() const override;
 };
 
 /**
@@ -105,16 +128,18 @@ class ForceField : public Field {
         ofVec2f force;
 
     public:
-        /** 
+        /**
          * @brief Constructs the ForceField.
          *
          * @param shape -> The Shape of the ForceField.
          *
          * @parma force -> The force of the ForceField.
+         *
+         * @param mobile -> The ability of the field to be moved/scaled or not.
          */
-        ForceField(Shape *shape, const ofVec2f &force);
+        ForceField(Shape *shape, const ofVec2f &force, bool mobile);
 
-        /** 
+        /**
          * @brief Updates a Particle.
          *
          * The force is applied on the Particle if it's inside the Field.
@@ -122,4 +147,7 @@ class ForceField : public Field {
          * @param particle -> The Particle to be updated.
          */
         virtual void updateParticle(Particle &particle) const override;
+
+        /** @brief Adjusts the ForceField after a window resize. **/
+        void scale(const ofVec2f& screenChangeProportion);
 };

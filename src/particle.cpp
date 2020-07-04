@@ -1,16 +1,19 @@
 #include "particle.h"
 
-Particle::Particle(int size, const ofColor &color, const ofPoint &position, 
+#include <iostream>
+
+Particle::Particle(float relativeSize, const ofColor &color, const ofPoint &position, 
                    const ofVec2f &velocity, float lifeTime, float mass) : 
-    size(size), 
+    relativeSize(relativeSize), 
     color(color), 
     position(position), 
     velocity(velocity), 
     lifeTime(lifeTime), 
     mass(mass) {
         age = 0;
-
         live = true;
+
+        size = relativeSize * ofVec2f(ofGetWidth(), ofGetHeight()).length();
 }
 
 void Particle::update(float deltaTime) {
@@ -32,21 +35,6 @@ bool Particle::isAlive() const {
     return live;
 }
 
-CircleParticle::CircleParticle(int size, const ofColor &color, const ofPoint &position, 
-                               const ofVec2f &velocity, int lifeTime, float mass) :
-    Particle(size, color, position, velocity, lifeTime, mass) {}
-
-void CircleParticle::draw() const {
-    if (live) {
-        ofPushStyle();
-
-        ofSetColor(color);
-        ofDrawCircle(position, size);
-
-        ofPopStyle();
-    }
-}
-
 ofPoint Particle::getPosition() const {
     return position;
 }
@@ -63,14 +51,38 @@ void Particle::applyForce(const ofPoint &force) {
     acceleration += force / mass;
 }
 
+void Particle::scale(const ofVec2f &screenChangeProportion) {
+    size = relativeSize * ofVec2f(ofGetWidth(), ofGetHeight()).length();
+
+    position *= screenChangeProportion;
+
+    velocity *= screenChangeProportion;
+    acceleration *= screenChangeProportion;
+}
+
+CircleParticle::CircleParticle(float relativeSize, const ofColor &color, const ofPoint &position, 
+                               const ofVec2f &velocity, int lifeTime, float mass) :
+    Particle(relativeSize, color, position, velocity, lifeTime, mass) {}
+
+void CircleParticle::draw() const {
+    if (live) {
+        ofPushStyle();
+
+        ofSetColor(color);
+        ofDrawCircle(position, size);
+
+        ofPopStyle();
+    }
+}
+
 std::unique_ptr<Particle> getParticle(const enum ParticleType &type,
-                                      int size, 
+                                      float relativeSize, 
                                       const ofColor &color,
                                       const ofPoint &position,
                                       const ofVec2f &velocity,
                                       float lifeTime) {
     if (type == ParticleType::Circle)
-        return std::make_unique<CircleParticle>(size, color, position, velocity, lifeTime);
+        return std::make_unique<CircleParticle>(relativeSize, color, position, velocity, lifeTime);
     else
         throw "Unknown particle type";
 }

@@ -39,6 +39,9 @@ class Shape {
         /** @brief Scales the Shape by an amount. **/
         virtual void scale(float amount) = 0;
 
+        /** @brief Adjusts the attributes of the Shape after a window resize. **/
+        virtual void scale(const ofVec2f &screenChangeProportion) = 0;
+
         /** @brief Translates the Shape. **/
         virtual void translate(const ofPoint &amount) = 0;
 
@@ -92,6 +95,9 @@ class Rectangle : public Shape {
 
         /** @brief Scales the Rectangle by an amount. **/
         void scale(float amount);
+
+        /** @brief Adjusts the attributes of the Rectangle after a window resize. **/
+        void scale(const ofVec2f& screenChangeProportion);
 
         /** @brief Translates the Rectangle to a new position. **/
         void translate(const ofPoint &amount);
@@ -147,6 +153,9 @@ class Ellipse : public Shape {
         /** @brief Scales the Ellipse by an amount. **/
         void scale(float amount);
 
+        /** @brief Adjusts the attributes of the Ellipse after a window resize. **/
+        void scale(const ofVec2f& screenChangeProportion);
+
         /** @brief Moves the Ellipse to a new position. **/
         void translate(const ofPoint &amount);
 
@@ -183,6 +192,9 @@ class PolylineShape : public ofPolyline, public Shape {
 
         /** @brief Scales the PolylineShape by an amount. **/
         void scale(float amount);
+
+        /** @brief Adjusts the attributes of the PolylineShape after a window resize. **/
+        void scale(const ofVec2f& screenChangeProportion);
 
         /** @brief Translates the PolylineShape to a new position. **/
         void translate(const ofPoint &amount);

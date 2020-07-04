@@ -30,13 +30,18 @@
 class Emitter {
     private:
         /** @brief The shape of the Emitter. **/
-        const std::unique_ptr<const Shape> shape;
+        std::unique_ptr<Shape> shape;
 
         /** @brief The direction of the Particle motion. **/
-        const ofVec2f direction;
+        ofVec2f direction;
 
-        /** @brief The maximum value of the @b velocity possesed by a Particle. **/
-        const float maxVelocity;
+        /** @brief The maximum value of the relativeative speed. **/
+        const float maxRelativeSpeed;
+
+        /** @brief The maximum value of the speed possessed by a Particle.
+         *         Calculated using maxRelativeSpeed. Updated at every scale() call.
+         */
+        float maxSpeed;
 
         /** @brief The maximum @b lifeTime of a Particle. **/
         const float lifeTime;
@@ -46,6 +51,9 @@ class Emitter {
 
         /** @brief The color of the created Particles. **/
         const ofColor color;
+
+        /** @brief The relativeative size of the Particle created by the Emitter. **/
+        const float relativeParticleSize;
 
         /**
          * @brief The remaining part of the number of Particles to create in
@@ -57,9 +65,9 @@ class Emitter {
 
     public:
         /** @brief Constructs the Emitter. */
-        Emitter(const Shape *shape, const ofVec2f &direction,
-                float maxVelocity, float lifeTime, float spawnRate,
-                const ofColor &color);
+        Emitter(Shape *shape, const ofVec2f &direction,
+                float maxRelativeSpeed, float lifeTime, float spawnRate,
+                const ofColor &color, float relativeParticleSize);
 
         /** 
          * @brief Creates a Particle.
@@ -68,7 +76,13 @@ class Emitter {
          */
         std::unique_ptr<Particle> createParticle(const enum ParticleType &type) const;
 
+        /** @brief Draws the Emitter. **/
         void draw() const;
+
+        /** @brief Adjusts the Emitter's Shape and Particle direction after 
+         *         a window resize.
+         */
+        void scale(const ofVec2f& screenChangeProportion);
 
         /**
          * @brief Updates the Emitter.
