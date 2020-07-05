@@ -8,6 +8,8 @@ ofApp::ofApp() :
 
     lastDragPosition(0, 0) {
     
+    blur.setup(screenBounds.x, screenBounds.y, BLUR_RADIUS, BLUR_SHAPE, 
+                                               BLUR_PASSES, BLUR_DOWNSAMPLE);
     ofSetDataPathRoot("data/");
 }
 
@@ -110,8 +112,18 @@ void ofApp::draw() {
     if (UNSUPPORTED_RES)
         drawLowResOverlay();
     else if (END == false) { 
+        blur.begin();
+            ofBackground(0);
+
+            for (const auto &particle : particles)
+                particle->draw();
+
+            targetMap.draw();
+        blur.end();
+    
+        blur.draw();
+
         fieldMap.draw();
-        targetMap.draw();
 
         for (auto& emitter : emitters)
             emitter->draw();
@@ -119,8 +131,8 @@ void ofApp::draw() {
         for (auto& field : fields)
             field->draw();
 
-        for (const auto &particle : particles)
-            particle->draw();
+
+    ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
     } else {
         ofTrueTypeFont font;
 
@@ -197,4 +209,7 @@ void ofApp::windowResized(int w, int h) {
     fieldMap.scale(screenChangeProportion);
 
     screenBounds = newScreenBounds;
+
+    blur.setup(screenBounds.x, screenBounds.y, BLUR_RADIUS, BLUR_SHAPE, 
+                                               BLUR_PASSES, BLUR_DOWNSAMPLE);
 }

@@ -21,6 +21,8 @@
 #include "constants.h"
 #include "exceptions.h"
 
+#include "ofxBlur.h"
+
 /**
  * @class ofApp
  *
@@ -78,6 +80,9 @@ class ofApp : public ofBaseApp {
 
         /** @brief Draws an overlay when the resolution is to small. */
         void drawLowResOverlay();
+
+        /** @brief Blur shader which creates a glow effect. */
+        ofxBlur blur;
 
     public:
         /** 

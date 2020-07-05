@@ -8,3 +8,8 @@ constexpr float TARGET_SIZE = 75.0;
 
 constexpr float MIN_RESOLUTION_WIDTH = 150;
 constexpr float MIN_RESOLUTION_HEIGHT = 150;
+
+constexpr float BLUR_RADIUS = 2;
+constexpr float BLUR_SHAPE = 0.2;
+constexpr float BLUR_PASSES = 3;
+constexpr float BLUR_DOWNSAMPLE = 0.5;
