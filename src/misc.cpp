@@ -36,7 +36,16 @@ ofColor getColor(const std::string &colorString) {
     if (colorString == "GREEN")
         return ofColor::green;
 
-    throw UnknownType("Unknown color  : " + colorString);
+    if (colorString == "YELLOW")
+        return ofColor::yellow;
+
+    if (colorString == "ORANGE")
+        return ofColor::orange;
+
+    if (colorString == "MAGENTA")
+        return ofColor::magenta;
+
+    throw UnknownType("Unknown color: " + colorString);
 }
 
 ofVec2f getVec2f(const ofXml& xml) {

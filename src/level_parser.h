@@ -11,7 +11,6 @@
 #include "field.h"
 
 #include <fstream>
-#include <variant>
 #include <exception>
 
 #include "ofXml.h"
@@ -36,6 +35,5 @@ class LevelParser {
         void load(const std::string &path);
 
         /** @brief Parses an object from the file. */
-        std::variant<Emitter *, Field *, Target *> 
-            getObject();
+        std::pair<void *, std::string> getObject();
 };
