@@ -112,21 +112,21 @@ Target *createTarget(const ofXml& data) {
     return new Target(zone, flowRate, color, trackPath);
 }
 
-std::variant<Emitter *, Field *, Target *> createObject(const ofXml& objectData) {
-    const std::string type = objectData.getAttribute("type").getValue();
+std::pair<void *, std::string> createObject(const ofXml& objectData) {
+    std::string type = objectData.getAttribute("type").getValue();
 
-    std::variant<Emitter *, Field *, Target *> object;
+    void *object = nullptr;
 
     if (type == "EMITTER")
-        object = createEmitter(objectData);
+        object = static_cast<void *>(createEmitter(objectData));
     else if (type == "FIELD")
-        object = createField(objectData);
+        object = static_cast<void *>(createField(objectData));
     else if (type == "TARGET")
-        object = createTarget(objectData);
+        object = static_cast<void *>(createTarget(objectData));
     else
         throw UnknownType("Unknown object type : " + type);
 
-    return object;
+    return std::make_pair<void *, std::string>(std::move(object), std::string(type));
 }
 
 bool hasRequiredFields(const ofXml& data, const std::vector<std::string>& identifiers) {
@@ -164,7 +164,7 @@ void LevelParser::load(const std::string &path) {
     currentObjectData = data.getFirstChild();
 }
 
-std::variant<Emitter *, Field *, Target *> LevelParser::getObject() {
+std::pair<void *, std::string> LevelParser::getObject() {
     if (!currentObjectData)
         throw EOFReached("Reached EOF");
 

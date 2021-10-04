@@ -57,6 +57,8 @@ class Field {
         /** @brief Draws the Field. **/
         virtual void draw() const;
 
+        virtual void drawInside() const;
+
         /**
          * @brief Checks if the Field is ready. (empty)
          *
@@ -126,6 +128,9 @@ class ForceField : public Field {
     private:
         /** @brief The force to be applied on the Particles. **/
         ofVec2f force;
+        ofImage arrow;
+
+        float rotationAngle;
 
     public:
         /**
@@ -150,4 +155,9 @@ class ForceField : public Field {
 
         /** @brief Adjusts the ForceField after a window resize. **/
         void scale(const ofVec2f& screenChangeProportion);
+
+        /** @brief Draws the ColorField. **/
+        void draw() const override;
+
+        void drawInside() const override;
 };

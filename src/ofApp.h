@@ -21,6 +21,8 @@
 #include "constants.h"
 #include "exceptions.h"
 
+#include "ofxBlur.h"
+
 /**
  * @class ofApp
  *
@@ -71,13 +73,16 @@ class ofApp : public ofBaseApp {
         std::vector<std::unique_ptr<Field>>::iterator lastDragField;
 
         /** @brief Adds an object to the game environment. **/
-        void addObject(const std::variant<Emitter *, Field *, Target *> &object);
+        void addObject(const std::pair<void *, std::string> &object);
 
         /** @brief Loads a level file, given the path. */
         void loadLevel(const std::string &path);
 
         /** @brief Draws an overlay when the resolution is to small. */
         void drawLowResOverlay();
+
+        /** @brief Blur shader which creates a glow effect. */
+        ofxBlur blur;
 
     public:
         /** 

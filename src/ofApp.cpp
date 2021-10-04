@@ -8,6 +8,8 @@ ofApp::ofApp() :
 
     lastDragPosition(0, 0) {
     
+    blur.setup(screenBounds.x, screenBounds.y, BLUR_RADIUS, BLUR_SHAPE, 
+                                               BLUR_PASSES, BLUR_DOWNSAMPLE);
     ofSetDataPathRoot("data/");
 }
 
@@ -33,16 +35,18 @@ void ofApp::loadLevel(const std::string& path) {
     }
 }
 
-void ofApp::addObject(const std::variant<Emitter *, Field *, Target *> &object) {
-    if (std::holds_alternative<Emitter *>(object)) {
-        emitters.push_back(std::unique_ptr<Emitter>(std::get<Emitter *>(object)));
-    } else if (std::holds_alternative<Field *>(object)) {
-        if (std::get<Field *>(object)->mobile)
-            fields.push_back(std::unique_ptr<Field>(std::get<Field *>(object)));
+void ofApp::addObject(const std::pair<void *, std::string> &object) {
+    if (object.second == "EMITTER")
+        emitters.push_back(std::unique_ptr<Emitter>(static_cast<Emitter *>(object.first)));
+    else if (object.second == "FIELD") {
+        Field *field = static_cast<Field *>(object.first);
+
+        if (field->mobile)
+            fields.push_back(std::unique_ptr<Field>(field));
         else
-            fieldMap.addZone(std::get<Field *>(object));
-    } else if (std::holds_alternative<Target *>(object)) {
-        targetMap.addZone(std::get<Target *>(object));
+            fieldMap.addZone(field);
+    } else if (object.second == "TARGET") {
+        targetMap.addZone(static_cast<Target *>(object.first));
     } else
         throw LevelLoadFail("addObject -> Unknown object received");
 }
@@ -110,22 +114,39 @@ void ofApp::draw() {
     if (UNSUPPORTED_RES)
         drawLowResOverlay();
     else if (END == false) { 
-        fieldMap.draw();
-        targetMap.draw();
+        blur.begin();
+            ofBackground(0);
+            for (auto& field : fields)
+                field->drawInside();
+
+            fieldMap.draw();
+
+            targetMap.draw();
+
+            for (auto& field : fields)
+                field->draw();
+
+
+            for (const auto &particle : particles)
+                particle->draw();
+
+
+        blur.end();
+    
+        blur.draw();
+
 
         for (auto& emitter : emitters)
             emitter->draw();
 
-        for (auto& field : fields)
-            field->draw();
 
-        for (const auto &particle : particles)
-            particle->draw();
+
+    ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
     } else {
         ofTrueTypeFont font;
 
-        font.load("arial.ttf", 80, true, true);
-        font.drawString(std::string("Game Over"), 150, 400);
+        font.load("arial.ttf", 35, true, true);
+        font.drawString(std::string("Level Completed"), 20, 50);
     }
 }
 
@@ -197,4 +218,7 @@ void ofApp::windowResized(int w, int h) {
     fieldMap.scale(screenChangeProportion);
 
     screenBounds = newScreenBounds;
+
+    blur.setup(screenBounds.x, screenBounds.y, BLUR_RADIUS, BLUR_SHAPE, 
+                                               BLUR_PASSES, BLUR_DOWNSAMPLE);
 }

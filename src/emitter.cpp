@@ -30,7 +30,7 @@ void Emitter::draw() const {
     ofNoFill();
     ofSetColor(ofColor::white);
 
-    shape->draw();
+//    shape->draw();
 
     ofPopStyle();
 }

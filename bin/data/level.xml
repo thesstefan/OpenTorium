@@ -5,44 +5,27 @@
 <data>
     <object type="EMITTER">
         <position>
-            <x>0.1</x>
-            <y>0.1</y>
+            <x>0.9</x>
+            <y>0.2</y>
         </position>
 
         <direction>
-            <x>1</x>
+            <x>-0.5</x>
             <y>1</y>
         </direction>
 
         <size>
-            <x>0.1</x>
-            <y>0.1</y>
+            <x>0.005</x>
+            <y>0.0889</y>
         </size>
 
         <shape>ELLIPSE</shape>
-        <color>BLUE</color>
+        <color>WHITE</color>
 
         <lifeTime>5</lifeTime>
-        <spawnRate>100</spawnRate>
+        <spawnRate>75</spawnRate>
         <particleSize>0.0025</particleSize>
-        <maxRelativeSpeed>0.3</maxRelativeSpeed>
-    </object>
-
-    <object type="FIELD">
-        <position>
-            <x>0.7</x>
-            <y>0.7</y>
-        </position>
-
-        <size>
-            <x>0.2</x>
-            <y>0.2</y>
-        </size>
-
-        <shape>ELLIPSE</shape>
-        <mobile>TRUE</mobile>
-        <type>COLOR</type>
-        <force_or_color>GREEN</force_or_color>
+        <maxRelativeSpeed>0.75</maxRelativeSpeed>
     </object>
 
     <object type="FIELD">
@@ -53,19 +36,107 @@
 
         <size>
             <x>0.1</x>
-            <y>0.1</y>
+            <y>0.1833</y>
         </size>
 
         <shape>ELLIPSE</shape>
         <mobile>TRUE</mobile>
         <type>FORCE</type>
         <force_or_color>
-            <x>1</x> 
-            <y>-1.25</y>
+            <x>-1</x> 
+            <y>-2</y>
         </force_or_color>
     </object>
 
-    <object type="TARGET">
+    <object type="FIELD">
+        <position>
+            <x>0.35</x>
+            <y>0.55</y>
+        </position>
+
+        <size>
+            <x>0.2</x>
+            <y>0.367</y>
+        </size>
+
+        <shape>ELLIPSE</shape>
+        <mobile>FALSE</mobile>
+        <type>COLOR</type>
+        <force_or_color>WHITE</force_or_color>
+    </object>
+
+    <object type="FIELD">
+        <position>
+            <x>0.2</x>
+            <y>0.2</y>
+        </position>
+
+        <size>
+            <x>0.2</x>
+            <y>0.3667</y>
+        </size>
+
+        <shape>ELLIPSE</shape>
+        <mobile>FALSE</mobile>
+        <type>COLOR</type>
+        <force_or_color>GREEN</force_or_color>
+    </object>
+
+    <object type="FIELD">
+        <position>
+            <x>0.7</x>
+            <y>0.7</y>
+        </position>
+
+        <size>
+            <x>0.3</x>
+            <y>0.533</y>
+        </size>
+
+        <shape>ELLIPSE</shape>
+        <mobile>FALSE</mobile>
+        <type>COLOR</type>
+        <force_or_color>YELLOW</force_or_color>
+    </object>
+
+    <object type="FIELD">
+        <position>
+            <x>0.6</x>
+            <y>0.3</y>
+        </position>
+
+        <size>
+            <x>0.2</x>
+            <y>0.3667</y>
+        </size>
+
+        <shape>ELLIPSE</shape>
+        <mobile>FALSE</mobile>
+        <type>COLOR</type>
+        <force_or_color>RED</force_or_color>
+    </object>
+
+    <object type="FIELD">
+        <position>
+            <x>0.9</x>
+            <y>0.5</y>
+        </position>
+
+        <size>
+            <x>0.1</x>
+            <y>0.1833</y>
+        </size>
+
+        <shape>ELLIPSE</shape>
+        <mobile>TRUE</mobile>
+        <type>FORCE</type>
+        <force_or_color>
+            <x>3</x> 
+            <y>5</y>
+        </force_or_color>
+    </object>
+
+    <object type="FIELD">
         <position>
             <x>0.3</x>
             <y>0.5</y>
@@ -73,29 +144,83 @@
 
         <size>
             <x>0.1</x>
-            <y>0.1</y>
+            <y>0.1833</y>
         </size>
 
-        <color>BLUE</color>
-        <trackPath>track_1.mp3</trackPath>
-
-        <flowRate>5</flowRate>
+        <shape>ELLIPSE</shape>
+        <mobile>TRUE</mobile>
+        <type>FORCE</type>
+        <force_or_color>
+            <x>5</x> 
+            <y>0</y>
+        </force_or_color>
     </object>
 
     <object type="TARGET">
         <position>
-            <x>0.8</x>
-            <y>0.2</y>
+            <x>0.275</x>
+            <y>0.8</y>
         </position>
 
         <size>
-            <x>0.1</x>
+            <x>0.07</x>
+            <y>0.1</y>
+        </size>
+
+        <color>WHITE</color>
+        <trackPath>track_1.mp3</trackPath>
+
+        <flowRate>1</flowRate>
+    </object>
+
+    <object type="TARGET">
+        <position>
+            <x>0.6</x>
+            <y>0.1</y>
+        </position>
+
+        <size>
+            <x>0.07</x>
+            <y>0.1</y>
+        </size>
+
+        <color>RED</color>
+        <trackPath>track_1.mp3</trackPath>
+
+        <flowRate>1</flowRate>
+    </object>
+
+    <object type="TARGET">
+        <position>
+            <x>0.3</x>
+            <y>0.25</y>
+        </position>
+
+        <size>
+            <x>0.07</x>
             <y>0.1</y>
         </size>
 
         <color>GREEN</color>
-        <trackPath>track_2.mp3</trackPath>
+        <trackPath>track_1.mp3</trackPath>
 
-        <flowRate>5</flowRate>
+        <flowRate>1</flowRate>
+    </object>
+
+    <object type="TARGET">
+        <position>
+            <x>0.6</x>
+            <y>0.6</y>
+        </position>
+
+        <size>
+            <x>0.07</x>
+            <y>0.1</y>
+        </size>
+
+        <color>YELLOW</color>
+        <trackPath>track_1.mp3</trackPath>
+
+        <flowRate>1</flowRate>
     </object>
 </data>
