@@ -1,6 +1,5 @@
 # OpenTorium
-
-Auditorium clone made using C++ and [openFrameworks](https://openframeworks.cc/), an OpenGL wrapper.
+Game inspired by [Auditorium](https://store.steampowered.com/app/205870/Auditorium/) made using C++ and [openFrameworks](https://openframeworks.cc/), an OpenGL wrapper.
 
 The game is powered by a particle system fueled by a simple force-based physics
 engine. The goal of the game is to direcy rays of particles from emitters
